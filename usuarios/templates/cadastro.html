@@ -27,6 +27,7 @@
             <br>
             <input type="submit" value="Cadastrar" id="cadastro-submit">
             <br>
+            <a href="{% url 'login' %}"><span id="cadastro-sugestao">Já tem conta? Faça login aqui!</span></a>
             {% if mensagem %}
             <p id="cadastro-feedback">{{ mensagem }}</p>
             <script>
