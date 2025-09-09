@@ -12,7 +12,7 @@
             {% if user.is_authenticated %}
             <span>Bem-vindo, {{ user.username }}</span>
             {% else %}
-            <span>Faça seu login</span>
+            <a href="{% url 'login' %}"><span>Faça seu login</span></a>
             {% endif %}
         </div>
     </header>
