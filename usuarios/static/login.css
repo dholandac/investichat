@@ -61,6 +61,18 @@ input {
 #login-header {
     background-color: rgb(32, 99, 255);
     width: 100%;
+    text-align: center;
+    justify-content: center;
+    position: relative;
+}
+
+#login-header span {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-weight: 500;
 }
 
 #login-feedback {

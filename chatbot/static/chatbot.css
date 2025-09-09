@@ -1,9 +1,13 @@
+html {
+    background-color: rgb(26, 26, 26);
+    background-image: url("images/background.jpg");
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5;
 }
+
 .container {
     max-width: 800px;
     margin: 0 auto;
@@ -11,11 +15,14 @@ body {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-top:50px;
 }
+
 h1 {
     color: #333;
     text-align: center;
 }
+
 .logout-btn {
     float: right;
     background: #dc3545;
@@ -23,8 +30,40 @@ h1 {
     padding: 8px 16px;
     text-decoration: none;
     border-radius: 4px;
-    margin-bottom: 20px;
 }
 .logout-btn:hover {
     background: #c82333;
+}
+
+#chatbot-logo {
+    width:200px;
+    margin:10px;
+    user-select: none;
+    text-align: center;
+    justify-content: center;
+}
+
+#chatbot-header {
+    background-color: rgb(32, 99, 255);
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    position: relative;
+}
+
+#chatbot-header span {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-weight: 500;
+}
+
+#chatbot-container {
+    margin-top: 10px; 
+    padding: 20px; 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    background: #f9f9f9;
 }

@@ -9,6 +9,11 @@
     <header>
         <div id="cadastro-header">
             <img id="cadastro-logo" src="{% static 'images/investichattransparent.png' %}">
+            {% if user.is_authenticated %}
+            <span>Bem-vindo, {{ user.username }}</span>
+            {% else %}
+            <span>Faça seu login</span>
+            {% endif %}
         </div>
     </header>
     <body>
