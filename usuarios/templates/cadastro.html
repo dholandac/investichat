@@ -1,0 +1,35 @@
+<html>
+    <head>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'cadastro.css' %}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    </head>
+    <header>
+        <div id="cadastro-header">
+            <img id="cadastro-logo" src="{% static 'images/investichattransparent.png' %}">
+        </div>
+    </header>
+    <body>
+        <form action="{% url 'cadastro' %}" method="POST" id="cadastro-form">{% csrf_token %}
+            <h1 id="cadastro-title">Cadastro</h1>
+            <span>Usuário:</span><input type="text" name="username"/>
+            <br>
+            <span>Email:</span><input type="email" name="email"/>
+            <br>
+            <span>Senha:</span><input type="password" name="senha"/>
+            <br>
+            <input type="submit" value="Cadastrar" id="cadastro-submit">
+            <br>
+            {% if mensagem %}
+            <p id="cadastro-feedback">{{ mensagem }}</p>
+            <script>
+                setTimeout(function() {
+                document.getElementById('cadastro-feedback').style.display = 'none';
+                }, 3000);
+            </script>
+            {% endif %}
+        </form>
+    </body>
+</html>
