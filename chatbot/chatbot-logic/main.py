@@ -9,6 +9,6 @@ GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 client = genai.Client()
 
 response = client.models.generate_content(
-    model="gemini-2.5-flash", contents="Fale sobre o cenário de investimentos na atualidade de forma resumida"
+    model="gemini-2.5-flash", contents=""
 )
 print(response.text)
