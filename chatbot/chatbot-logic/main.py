@@ -1,14 +1,21 @@
-from google import genai
 from dotenv import load_dotenv
 import os
+from .gemini_api import GeminiAPI
+from .chatbot_logic import Chatbot
 
 load_dotenv()
 
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
-client = genai.Client()
+if GEMINI_API_KEY:
+    gemini_api_instance = GeminiAPI(api_key=GEMINI_API_KEY)
+    chatbot_instance = Chatbot(gemini_api=gemini_api_instance)
 
-response = client.models.generate_content(
-    model="gemini-2.5-flash", contents=""
-)
-print(response.text)
+    # Exemplo de uso:
+    user_query = "Qual a melhor forma de investir para iniciantes?"
+    response = chatbot_instance.get_response(user_query)
+    print(f"Chatbot: {response}")
+else:
+    print("GEMINI_API_KEY não configurada no .env")
+
+
