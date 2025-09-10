@@ -10,7 +10,7 @@ class Chatbot:
         self.add_to_history("user", user_message)
 
         # Constrói o prompt com base no histórico (opcional, dependendo da complexidade)
-        # Por simplicidade, neste exemplo, apenas a última mensagem do usuário é usada como prompt
+        # No momento, apenas a última mensagem do usuário é usada como prompt
         prompt = user_message
 
         # Gera a resposta usando a Gemini API

@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
-from .gemini_api import GeminiAPI
-from .chatbot_logic import Chatbot
+from chatbot.chatbot_logic.gemini_api import GeminiAPI
+from chatbot.chatbot_logic.chatbot_logic import Chatbot
 
 load_dotenv()
 
@@ -17,5 +17,3 @@ if GEMINI_API_KEY:
     print(f"Chatbot: {response}")
 else:
     print("GEMINI_API_KEY não configurada no .env")
-
-
