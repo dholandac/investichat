@@ -1,12 +1,15 @@
 from google import genai
 
 class GeminiAPI:
+    # Inicializa o cliente Gemini com a chave da API e o modelo desejado
     def __init__(self, api_key: str, model_name: str = "gemini-2.5-flash"):
         self.client = genai.Client(api_key=api_key)
         self.model_name = model_name
 
+    # Gera conteúdo com base no prompt fornecido
     def generate_content(self, prompt: str) -> str:
         try:
+            # Chama a API Gemini para gerar conteúdo
             response = self.client.models.generate_content(
                 model=self.model_name, contents=prompt
             )

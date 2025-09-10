@@ -23,28 +23,34 @@ else:
 def chatbot(request):
     return render(request, 'chatbot/chatbot.html')
 
+# Rota para processar mensagens do usuário e retornar respostas do chatbot
 @csrf_exempt
 @login_required(login_url="/auth/login/")
 def chat_message(request):
     if request.method == 'POST':
         try:
+            # Lê a mensagem do corpo da requisição
             data = json.loads(request.body)
             user_message = data.get('message', '')
             
+            # Valida a mensagem
             if not user_message:
                 return JsonResponse({'error': 'Mensagem vazia'}, status=400)
             
+            # Verifica se o chatbot está configurado corretamente
             if not chatbot_instance:
-                return JsonResponse({'error': 'Chatbot não configurado. Verifique a GEMINI_API_KEY'}, status=500)
-            
+                return JsonResponse({'error': 'Chatbot não configurado. Verifique a chave da API'}, status=500)
+
             # Gera resposta usando o chatbot
             bot_response = chatbot_instance.get_response(user_message)
             
+            # Retorna a resposta como JSON
             return JsonResponse({
                 'response': bot_response,
                 'status': 'success'
             })
-            
+        
+        # Tratamento de erros
         except json.JSONDecodeError:
             return JsonResponse({'error': 'JSON inválido'}, status=400)
         except Exception as e:
