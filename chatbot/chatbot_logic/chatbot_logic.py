@@ -6,6 +6,9 @@ class Chatbot:
         self.conversation_history = []
 
     def get_response(self, user_message: str) -> str:
+
+        # Define o prompt do sistema com as regras específicas para o Investichat
+        # Bloqueio as recomendações financeiras e mantenho o foco estrito em investimentos para segurança do usuário
         systemprompt = """
         Prompt de Sistema para o Investichat
         Você é o "Investichat", um assistente de IA especialista em analisar o cenário de investimentos. Sua única e exclusiva função é discutir tópicos relacionados a finanças e ao mercado financeiro.
