@@ -28,11 +28,9 @@
             {% endif %}
         </div>
         <div id="chatbot-container">
-            <h3>Interface do Chatbot</h3>
-            
             <div id="chat-messages">
                 <div class="message bot-message">
-                    <strong>InvestiChat:</strong> Olá! Sou seu assistente de investimentos. Como posso ajudá-lo hoje?
+                    <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong> Olá! Sou seu assistente de investimentos. Como posso ajudá-lo hoje?
                 </div>
             </div>
             
@@ -52,7 +50,11 @@
 
             function addMessage(message, isUser = false) {
                 const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+                if (isUser) {
+                    messageDiv.className = 'message user-message';
+                } else {
+                    messageDiv.className = 'message bot-message';
+                }
                 messageDiv.style.marginBottom = '10px';
                 messageDiv.style.padding = '8px';
                 messageDiv.style.borderRadius = '5px';
@@ -63,7 +65,7 @@
                     messageDiv.innerHTML = `<strong>Você:</strong> ${message}`;
                 } else {
                     messageDiv.style.backgroundColor = '#f1f8e9';
-                    messageDiv.innerHTML = `<strong>InvestiChat:</strong> ${message}`;
+                    messageDiv.innerHTML = `<img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>${message}`;
                 }
                 
                 chatMessages.appendChild(messageDiv);
