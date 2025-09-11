@@ -2,6 +2,7 @@
     <head>
         {% load static %}
         <title>Investichat</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="{% static 'images/investichattransparent.png' %}" type="image/x-icon">
         <link rel="stylesheet" href="{% static 'account.css' %}">
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,14 +28,62 @@
                 <strong>Usuário: </strong><span>{{ user.username }}</span>
             </div>
             <div class="account-info">
-                <strong>Email: </strong><span>{{ user.email }}</span><img id="user-edit" width="20" height="20" src="{% static 'images/edit.png' %}"/>
+                <strong>Email: </strong>
+                <span id="email-text">{{ user.email|default:"Não informado" }}</span>
+                <img id="user-edit" width="20" height="20" src="{% static 'images/edit.png' %}" alt="Editar email" title="Editar email"/>
+            </div>
+            <div class="account-info" id="email-edit-row" style="display:none;">
+                <form method="post" style="display:flex; gap:10px; align-items:center; width:100%;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_email" />
+                    <strong>Email: </strong>
+                    <input type="email" name="email" value="{{ user.email }}" placeholder="Seu email" style="flex:1; max-width:380px;" required />
+                    <button id="account-email-submit" type="submit">Salvar</button>
+                    <button id="account-email-cancel" type="button">Cancelar</button>
+                </form>
             </div>
             <div class="account-info">
                 <strong>Perfil de Investidor: </strong><span>{{ user.profile_type }}</span>
             </div>
+                        {% if mensagem %}
+            <p id="account-feedback">{{ mensagem }}</p>
+            <script>
+                setTimeout(function() {
+                    var el = document.getElementById('account-feedback');
+                    if (el) el.style.display = 'none';
+                }, 3000);
+            </script>
+            {% endif %}
         </div>
     </header>
     <body>
        
     </body>
+    <script>
+        // Script para alternar entre exibição e edição do email
+        document.addEventListener('DOMContentLoaded', function() {
+            const editBtn = document.getElementById('user-edit');
+            const editRow = document.getElementById('email-edit-row');
+            const cancelBtn = document.getElementById('account-email-cancel');
+            const emailDisplayRow = editBtn ? editBtn.closest('.account-info') : null;
+
+            // Abrir o campo de edição ao clicar no ícone de editar
+            if (editBtn && editRow && emailDisplayRow) {
+                editBtn.addEventListener('click', function() {
+                    emailDisplayRow.style.display = 'none';
+                    editRow.style.display = 'block';
+                    const input = editRow.querySelector('input[name="email"]');
+                    if (input) input.focus();
+                });
+            }
+
+            // Cancelar a edição e voltar para a exibição do email
+            if (cancelBtn && emailDisplayRow) {
+                cancelBtn.addEventListener('click', function() {
+                    editRow.style.display = 'none';
+                    emailDisplayRow.style.display = 'block';
+                });
+            }
+        });
+    </script>
 </html>

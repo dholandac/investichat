@@ -63,7 +63,24 @@ def logout(request):
     logout_django(request)
     return redirect('login')
 
+# Lógica da conta do usuário
 @login_required(login_url="/auth/login/")
 def account(request):
-    if request.method == "GET":
-            return render(request, 'account.html')
+    mensagem = None
+    if request.method == "POST":
+        action = request.POST.get('action')
+        if action == 'update_email':
+            novo_email = (request.POST.get('email') or '').strip()
+            if not novo_email:
+                mensagem = 'Informe um email válido.'
+            else:
+                # Verifica se já existe outro usuário com este email (case-insensitive)
+                existe = User.objects.filter(email__iexact=novo_email).exclude(pk=request.user.pk).exists()
+                if existe:
+                    mensagem = '*Este email já está em uso por outro usuário.'
+                else:
+                    request.user.email = novo_email
+                    request.user.save()
+                    mensagem = '*Email atualizado com sucesso!'
+
+    return render(request, 'account.html', {'mensagem': mensagem})
