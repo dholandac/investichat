@@ -11,9 +11,9 @@
     </head>
     <header>
         <div id="chatbot-header">
-            <img id="chatbot-logo" src="{% static 'images/investichattransparent.png' %}">
+            <a href="{% url 'chatbot' %}"><img id="chatbot-logo" src="{% static 'images/investichattransparent.png' %}"></a>
             {% if user.is_authenticated %}
-            <span>Bem-vindo, {{ user.username }}</span>
+            <a href="{% url 'account' %}"><span>Bem-vindo, {{ user.username }}<img id="user-icon" width="25" height="25" src="{% static 'images/user.png' %}"/></span></a>
             {% else %}
             <span>Faça seu login</span>
             {% endif %}
@@ -23,9 +23,6 @@
         <div class="container">
         <div class="chatbot-title-bar">
             <h1 style="margin: 0;">Investichat</h1>
-            {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
-            {% endif %}
         </div>
         <div id="chatbot-container">
             <div id="chat-messages">

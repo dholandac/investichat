@@ -138,3 +138,8 @@ h1 {
     padding: 8px;
     border-radius: 5px;
 }
+
+#user-icon {
+    float:right;
+    margin-left:5px;
+}

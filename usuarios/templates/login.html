@@ -10,9 +10,9 @@
     </head>
     <header>
         <div id="login-header">
-            <img id="login-logo" src="{% static 'images/investichattransparent.png' %}">
+            <a href="{% url 'chatbot' %}"><img id="login-logo" src="{% static 'images/investichattransparent.png' %}"></a>
             {% if user.is_authenticated %}
-            <span>Bem-vindo, {{ user.username }}</span>
+            <a href="{% url 'account' %}"><span>Bem-vindo, {{ user.username }}<img id="user-icon" width="25" height="25" src="{% static 'images/user.png' %}"/></span></a>
             {% else %}
             <a href="{% url 'login' %}"><span>Faça seu login</span></a>
             {% endif %}

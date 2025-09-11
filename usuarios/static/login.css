@@ -95,3 +95,8 @@ input {
         opacity:1;
     }
 }
+
+#user-icon {
+    float:right;
+    margin-left:5px;
+}
