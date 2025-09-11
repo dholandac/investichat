@@ -121,3 +121,9 @@ input {
     align-content: right;
     float:right;
 }
+
+#user-icon {
+    float:right;
+    margin-left:5px;
+    filter: invert(1);
+}

@@ -99,4 +99,5 @@ input {
 #user-icon {
     float:right;
     margin-left:5px;
+    filter: invert(1);
 }
