@@ -43,9 +43,12 @@
                 </form>
             </div>
             <div class="account-info">
+                <strong>Senha: </strong><span>********</span>
+            </div>
+            <div class="account-info">
                 <strong>Perfil de Investidor: </strong><span>{{ user.profile_type }}</span>
             </div>
-                        {% if mensagem %}
+            {% if mensagem %}
             <p id="account-feedback">{{ mensagem }}</p>
             <script>
                 setTimeout(function() {

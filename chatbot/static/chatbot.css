@@ -176,7 +176,7 @@ h1 {
 }
 
 .investment-sidebar h2 {
-    color: #2c3e50;
+    color: #333;
     margin-bottom: 20px;
     font-size: 1.5em;
     border-bottom: 2px solid #3498db;
@@ -194,7 +194,7 @@ h1 {
 
 .investment-card h3 {
     margin: 0 0 10px 0;
-    color: #2c3e50;
+    color: #333;
     font-size: 1.1em;
 }
 
@@ -208,7 +208,7 @@ h1 {
 .current-price {
     font-size: 1.2em;
     font-weight: bold;
-    color: #2c3e50;
+    color: #333;
 }
 
 .price-change {
