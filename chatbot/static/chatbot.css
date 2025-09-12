@@ -139,8 +139,213 @@ h1 {
     border-radius: 5px;
 }
 
+.message {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
 #user-icon {
     float:right;
     margin-left:5px;
     filter: invert(1);
+}
+
+.main-container {
+    display: flex;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.chatbot-section {
+    flex: 2;
+    min-width: 600px;
+}
+
+.investment-sidebar {
+    flex: 1;
+    min-width: 300px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-height: none;
+    overflow: visible;
+    margin-top:50px;
+}
+
+.investment-sidebar h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.investment-card {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-left: 4px solid #3498db;
+}
+
+.investment-card h3 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+    font-size: 1.1em;
+}
+
+.price-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.current-price {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.price-change {
+    font-size: 0.9em;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.price-change.positive {
+    background: #d4edda;
+    color: #155724;
+}
+
+.price-change.negative {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.market-summary {
+    margin-top: 20px;
+}
+
+.market-list {
+    list-style: none;
+    padding: 0;
+}
+
+.market-list li {
+    background: white;
+    margin-bottom: 8px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    display: flex;
+    justify-content: space-between;
+}
+
+.loading {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+.error {
+    color: #e74c3c;
+    background: #fdf2f2;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+.last-updated {
+    font-size: 0.8em;
+    color: #666;
+    text-align: center;
+    margin-top: 15px;
+    font-style: italic;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .main-container {
+        flex-direction: column;
+    }
+    
+    .investment-sidebar {
+        max-height: none;
+        order: -1;
+        margin-top: 10px;
+    }
+    .chatbot-section {
+        min-width: 0;
+    }
+    #chat-messages {
+        height: 40vh;
+    }
+    .container {
+        margin-top: 20px;
+        padding: 16px;
+    }
+}
+
+@media (max-width: 900px) {
+    .chatbot-section,
+    .investment-sidebar {
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    #chatbot-logo {
+        width: 150px;
+    }
+    .main-container {
+        padding: 12px;
+        gap: 14px;
+    }
+    .price-info {
+        flex-wrap: wrap;
+        gap: 6px 10px;
+    }
+    .current-price {
+        font-size: 1.1em;
+    }
+    #chat-messages {
+        height: 45vh;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+    }
+    #user-input {
+        height: 90px;
+    }
+    #send-button,
+    #clear-button {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    #chatbot-logo {
+        width: 120px;
+    }
+    #chatbot-header span {
+        display: none;
+    }
+    h1 {
+        font-size: 1.4rem;
+    }
+    .investment-sidebar h2 {
+        font-size: 1.25em;
+    }
+}
+
+#chat-messages {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
 }
