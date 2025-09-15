@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'questionario_perfil.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionário de Perfil de Investidor</title>
+</head>
+<body>
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <h2>Questionário de Perfil de Investidor</h2>
+            <p>Este questionário tem como objetivo determinar o seu perfil de investidor, classificando-o em Conservador, Moderado ou Agressivo, com base nas suas respostas.</p>
+            <form id="questionarioForm" method="POST" action="{% url 'questionario_perfil' %}">
+                {% csrf_token %}
+                <div class="question-group">
+                    <p>1. Qual o seu principal objetivo ao investir?</p>
+                    <label><input type="radio" name="pergunta_1" value="A"> A) Preservar o capital, mesmo que o retorno seja baixo.</label>
+                    <label><input type="radio" name="pergunta_1" value="B"> B) Obter retornos moderados, aceitando riscos controlados.</label>
+                    <label><input type="radio" name="pergunta_1" value="C"> C) Maximizar o retorno, mesmo que isso implique em riscos elevados.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>2. Como você reagiria a uma queda de 20% no valor dos seus investimentos em um curto período?</p>
+                    <label><input type="radio" name="pergunta_2" value="A"> A) Ficaria muito preocupado e resgataria parte ou todo o investimento.</label>
+                    <label><input type="radio" name="pergunta_2" value="B"> B) Ficaria apreensivo, mas manteria a calma e aguardaria a recuperação.</label>
+                    <label><input type="radio" name="pergunta_2" value="C"> C) Veria como uma oportunidade para comprar mais ativos a preços baixos.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>3. Qual o seu conhecimento sobre o mercado financeiro e os produtos de investimento?</p>
+                    <label><input type="radio" name="pergunta_3" value="A"> A) Básico: Conheço apenas os investimentos mais simples, como poupança.</label>
+                    <label><input type="radio" name="pergunta_3" value="B"> B) Médio: Conheço alguns tipos de investimentos e seus riscos.</label>
+                    <label><input type="radio" name="pergunta_3" value="C"> C) Avançado: Tenho bom conhecimento sobre diversos produtos e estratégias de investimento.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>4. Por quanto tempo você pretende manter seus investimentos?</p>
+                    <label><input type="radio" name="pergunta_4" value="A"> A) Curto prazo (até 1 ano).</label>
+                    <label><input type="radio" name="pergunta_4" value="B"> B) Médio prazo (de 1 a 5 anos).</label>
+                    <label><input type="radio" name="pergunta_4" value="C"> C) Longo prazo (acima de 5 anos).</label>
+                </div>
+
+                <div class="question-group">
+                    <p>5. Qual a porcentagem da sua renda mensal você está disposto a destinar para investimentos?</p>
+                    <label><input type="radio" name="pergunta_5" value="A"> A) Até 10%.</label>
+                    <label><input type="radio" name="pergunta_5" value="B"> B) Entre 10% e 30%.</label>
+                    <label><input type="radio" name="pergunta_5" value="C"> C) Acima de 30%.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>6. Você se sentiria confortável em investir em produtos que não garantem o capital principal, mas que podem oferecer retornos mais altos?</p>
+                    <label><input type="radio" name="pergunta_6" value="A"> A) Não, prefiro investimentos com garantia de capital.</label>
+                    <label><input type="radio" name="pergunta_6" value="B"> B) Talvez, em uma pequena parte do meu capital.</label>
+                    <label><input type="radio" name="pergunta_6" value="C"> C) Sim, estou disposto a assumir esse risco em busca de maior rentabilidade.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>7. Em relação à diversificação, qual sua preferência?</p>
+                    <label><input type="radio" name="pergunta_7" value="A"> A) Concentrar em poucos investimentos seguros.</label>
+                    <label><input type="radio" name="pergunta_7" value="B"> B) Diversificar em diferentes classes de ativos, com foco em equilíbrio.</label>
+                    <label><input type="radio" name="pergunta_7" value="C"> C) Diversificar amplamente, incluindo ativos de maior risco para potencializar ganhos.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>8. Qual a importância da liquidez (facilidade de resgatar o dinheiro) para você?</p>
+                    <label><input type="radio" name="pergunta_8" value="A"> A) Muito importante, preciso ter acesso ao dinheiro a qualquer momento.</label>
+                    <label><input type="radio" name="pergunta_8" value="B"> B) Importância moderada, posso esperar um pouco para resgatar.</label>
+                    <label><input type="radio" name="pergunta_8" value="C"> C) Pouco importante, priorizo o retorno a longo prazo.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>9. Você costuma acompanhar de perto o desempenho dos seus investimentos?</p>
+                    <label><input type="radio" name="pergunta_9" value="A"> A) Raramente ou nunca.</label>
+                    <label><input type="radio" name="pergunta_9" value="B"> B) Ocasionalmente, quando há notícias relevantes.</label>
+                    <label><input type="radio" name="pergunta_9" value="C"> C) Constantemente, acompanho o mercado e faço ajustes quando necessário.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>10. Se você tivesse um valor extra para investir hoje, qual seria sua escolha?</p>
+                    <label><input type="radio" name="pergunta_10" value="A"> A) Aplicação de baixo risco e retorno previsível (ex: CDB, Tesouro Direto Selic).</label>
+                    <label><input type="radio" name="pergunta_10" value="B"> B) Aplicação de risco moderado com potencial de retorno maior (ex: fundos multimercado, ações de empresas consolidadas).</label>
+                    <label><input type="radio" name="pergunta_10" value="C"> C) Aplicação de alto risco com grande potencial de retorno (ex: ações de empresas em crescimento, criptomoedas).</label>
+                </div>
+
+                <p class="error-message" id="errorMessage" style="display: none;">Por favor, responda a todas as perguntas.</p>
+                <button type="submit" class="submit-button">Finalizar Questionário</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("questionarioForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const errorMessage = document.getElementById("errorMessage");
+            let allAnswered = true;
+
+            // Verifica se todas as perguntas foram respondidas
+            for (let i = 1; i <= 10; i++) {
+                if (!formData.has(`pergunta_${i}`)) {
+                    allAnswered = false;
+                    break;
+                }
+            }
+
+            if (!allAnswered) {
+                errorMessage.style.display = "block";
+                return;
+            } else {
+                errorMessage.style.display = "none";
+            }
+
+            fetch(form.action, {
+                method: form.method,
+                body: new URLSearchParams(formData),
+                headers: {
+                    'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = "/chatbot/"; // Redireciona para a página do chatbot
+                } else {
+                    alert("Erro ao salvar o perfil: " + data.error);
+                }
+            })
+            .catch(error => {
+                console.error("Erro:", error);
+                alert("Ocorreu um erro ao enviar o questionário.");
+            });
+        });
+    </script>
+</body>
+</html>
+

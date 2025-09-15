@@ -1,15 +1,98 @@
-<html>
-    <head>
-        {% load static %}
-        <link rel="stylesheet" href="{% static 'chatbot.css' %}">
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>InvestiChat</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    </head>
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvestiChat</title>
+    <link rel="stylesheet" href="{% static 'chatbot.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos para o modal do questionário */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-content h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .question-group {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .question-group:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .question-group p {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        .question-group label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .question-group label:hover {
+            background-color: #f9f9f9;
+        }
+        .question-group input[type="radio"] {
+            margin-right: 10px;
+        }
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
     <header>
         <div id="chatbot-header">
             <a href="{% url 'chatbot' %}"><img id="chatbot-logo" src="{% static 'images/investichattransparent.png' %}"></a>
@@ -20,208 +103,344 @@
             {% endif %}
         </div>
     </header>
-    <body>
-        <div class="main-container">
-            <div class="chatbot-section">
-                <div class="container">
-                    <div class="chatbot-title-bar">
-                        <h1 style="margin: 0;">Investichat</h1>
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
-                        {% endif %}
+    <div class="main-container">
+        <div class="chatbot-section">
+            <div class="container">
+                <div class="chatbot-title-bar">
+                    <h1 style="margin: 0;">Investichat</h1>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+                    {% endif %}
+                </div>
+                <div id="chatbot-container">
+                    <div id="chat-messages">
+                        <div class="message bot-message">
+                            <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong>
+                            <br>Olá! Sou seu assistente de investimentos. Como posso ajudá-lo hoje?
+                        </div>
                     </div>
-                    <div id="chatbot-container">
-                        <div id="chat-messages">
-                            <div class="message bot-message">
-                                <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong>
-                                <br>Olá! Sou seu assistente de investimentos. Como posso ajudá-lo hoje?
-                            </div>
-                        </div>
-                        
-                        <div id="chatbot-container-msg">
-                            <textarea id="user-input" placeholder="Digite sua mensagem aqui..."></textarea>
-                            <br><br>
-                            <button id="send-button">Enviar</button>
-                            <button id="clear-button">Limpar Chat</button>
-                        </div>
+                    
+                    <div id="chatbot-container-msg">
+                        <textarea id="user-input" placeholder="Digite sua mensagem aqui..."></textarea>
+                        <br><br>
+                        <button id="send-button">Enviar</button>
+                        <button id="clear-button">Limpar</button>
                     </div>
                 </div>
             </div>
-            
-            <div class="investment-sidebar">
-                <h2>Mercado em Tempo Real</h2>
-                <div id="investment-data">
-                    <div class="loading">Carregando dados de investimento...</div>
-                </div>
+        </div>
+        
+        <div class="investment-sidebar">
+            <h2>Mercado em Tempo Real</h2>
+            <div id="investment-data">
+                <div class="loading">Carregando dados de investimento...</div>
             </div>
+        </div>
+    </div>
 
-        <script>
-            const chatMessages = document.getElementById('chat-messages');
-            const userInput = document.getElementById('user-input');
-            const sendButton = document.getElementById('send-button');
-            const clearButton = document.getElementById('clear-button');
-            const investmentData = document.getElementById('investment-data');
+    {% if show_questionnaire %}
+    <div class="modal-overlay" id="questionnaireModal">
+        <div class="modal-content">
+            <h2>Questionário de Perfil de Investidor</h2>
+            <p>Este questionário tem como objetivo determinar o seu perfil de investidor, classificando-o em Conservador, Moderado ou Agressivo, com base nas suas respostas.</p>
+            <form id="questionarioForm" method="POST" action="{% url 'questionario_perfil' %}">
+                {% csrf_token %}
+                <div class="question-group">
+                    <p>1. Qual o seu principal objetivo ao investir?</p>
+                    <label><input type="radio" name="pergunta_1" value="A"> A) Preservar o capital, mesmo que o retorno seja baixo.</label>
+                    <label><input type="radio" name="pergunta_1" value="B"> B) Obter retornos moderados, aceitando riscos controlados.</label>
+                    <label><input type="radio" name="pergunta_1" value="C"> C) Maximizar o retorno, mesmo que isso implique em riscos elevados.</label>
+                </div>
 
-            // Função para adicionar mensagem ao chat
-            function addMessage(message, isUser = false) {
-                const messageDiv = document.createElement('div');
-                if (isUser) {
-                    messageDiv.className = 'message user-message';
-                } else {
-                    messageDiv.className = 'message bot-message';
-                }
-                messageDiv.style.marginBottom = '10px';
-                messageDiv.style.padding = '8px';
-                messageDiv.style.borderRadius = '5px';
-                
-                if (isUser) {
-                    messageDiv.style.backgroundColor = '#e3f2fd';
-                    messageDiv.style.textAlign = 'right';
-                    messageDiv.innerHTML = `<strong>Você:</strong> ${message}`;
-                } else {
-                    messageDiv.style.backgroundColor = '#f1f8e9';
-                    messageDiv.innerHTML = `<img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>${message}`;
-                }
-                
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                <div class="question-group">
+                    <p>2. Como você reagiria a uma queda de 20% no valor dos seus investimentos em um curto período?</p>
+                    <label><input type="radio" name="pergunta_2" value="A"> A) Ficaria muito preocupado e resgataria parte ou todo o investimento.</label>
+                    <label><input type="radio" name="pergunta_2" value="B"> B) Ficaria apreensivo, mas manteria a calma e aguardaria a recuperação.</label>
+                    <label><input type="radio" name="pergunta_2" value="C"> C) Veria como uma oportunidade para comprar mais ativos a preços baixos.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>3. Qual o seu conhecimento sobre o mercado financeiro e os produtos de investimento?</p>
+                    <label><input type="radio" name="pergunta_3" value="A"> A) Básico: Conheço apenas os investimentos mais simples, como poupança.</label>
+                    <label><input type="radio" name="pergunta_3" value="B"> B) Médio: Conheço alguns tipos de investimentos e seus riscos.</label>
+                    <label><input type="radio" name="pergunta_3" value="C"> C) Avançado: Tenho bom conhecimento sobre diversos produtos e estratégias de investimento.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>4. Por quanto tempo você pretende manter seus investimentos?</p>
+                    <label><input type="radio" name="pergunta_4" value="A"> A) Curto prazo (até 1 ano).</label>
+                    <label><input type="radio" name="pergunta_4" value="B"> B) Médio prazo (de 1 a 5 anos).</label>
+                    <label><input type="radio" name="pergunta_4" value="C"> C) Longo prazo (acima de 5 anos).</label>
+                </div>
+
+                <div class="question-group">
+                    <p>5. Qual a porcentagem da sua renda mensal você está disposto a destinar para investimentos?</p>
+                    <label><input type="radio" name="pergunta_5" value="A"> A) Até 10%.</label>
+                    <label><input type="radio" name="pergunta_5" value="B"> B) Entre 10% e 30%.</label>
+                    <label><input type="radio" name="pergunta_5" value="C"> C) Acima de 30%.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>6. Você se sentiria confortável em investir em produtos que não garantem o capital principal, mas que podem oferecer retornos mais altos?</p>
+                    <label><input type="radio" name="pergunta_6" value="A"> A) Não, prefiro investimentos com garantia de capital.</label>
+                    <label><input type="radio" name="pergunta_6" value="B"> B) Talvez, em uma pequena parte do meu capital.</label>
+                    <label><input type="radio" name="pergunta_6" value="C"> C) Sim, estou disposto a assumir esse risco em busca de maior rentabilidade.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>7. Em relação à diversificação, qual sua preferência?</p>
+                    <label><input type="radio" name="pergunta_7" value="A"> A) Concentrar em poucos investimentos seguros.</label>
+                    <label><input type="radio" name="pergunta_7" value="B"> B) Diversificar em diferentes classes de ativos, com foco em equilíbrio.</label>
+                    <label><input type="radio" name="pergunta_7" value="C"> C) Diversificar amplamente, incluindo ativos de maior risco para potencializar ganhos.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>8. Qual a importância da liquidez (facilidade de resgatar o dinheiro) para você?</p>
+                    <label><input type="radio" name="pergunta_8" value="A"> A) Muito importante, preciso ter acesso ao dinheiro a qualquer momento.</label>
+                    <label><input type="radio" name="pergunta_8" value="B"> B) Importância moderada, posso esperar um pouco para resgatar.</label>
+                    <label><input type="radio" name="pergunta_8" value="C"> C) Pouco importante, priorizo o retorno a longo prazo.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>9. Você costuma acompanhar de perto o desempenho dos seus investimentos?</p>
+                    <label><input type="radio" name="pergunta_9" value="A"> A) Raramente ou nunca.</label>
+                    <label><input type="radio" name="pergunta_9" value="B"> B) Ocasionalmente, quando há notícias relevantes.</label>
+                    <label><input type="radio" name="pergunta_9" value="C"> C) Constantemente, acompanho o mercado e faço ajustes quando necessário.</label>
+                </div>
+
+                <div class="question-group">
+                    <p>10. Se você tivesse um valor extra para investir hoje, qual seria sua escolha?</p>
+                    <label><input type="radio" name="pergunta_10" value="A"> A) Aplicação de baixo risco e retorno previsível (ex: CDB, Tesouro Direto Selic).</label>
+                    <label><input type="radio" name="pergunta_10" value="B"> B) Aplicação de risco moderado com potencial de retorno maior (ex: fundos multimercado, ações de empresas consolidadas).</label>
+                    <label><input type="radio" name="pergunta_10" value="C"> C) Aplicação de alto risco com grande potencial de retorno (ex: ações de empresas em crescimento, criptomoedas).</label>
+                </div>
+
+                <p class="error-message" id="errorMessage" style="display: none;">Por favor, responda a todas as perguntas.</p>
+                <button type="submit" class="submit-button">Finalizar Questionário</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        const chatMessages = document.getElementById("chat-messages");
+        const userInput = document.getElementById("user-input");
+        const sendButton = document.getElementById("send-button");
+        const clearButton = document.getElementById("clear-button");
+        const investmentData = document.getElementById("investment-data");
+
+        // Função para adicionar mensagem ao chat
+        function addMessage(message, isUser = false) {
+            const messageDiv = document.createElement("div");
+            if (isUser) {
+                messageDiv.className = "message user-message";
+            } else {
+                messageDiv.className = "message bot-message";
             }
-
-            function sendMessage() {
-                const message = userInput.value.trim();
-                if (!message) return;
-
-                // Adiciona mensagem do usuário
-                addMessage(message, true);
-                
-                // Limpa o input
-                userInput.value = '';
-                
-                // Desabilita o botão durante o envio
-                sendButton.disabled = true;
-                sendButton.textContent = 'Enviando...';
-
-                // Envia para o backend
-                fetch('/chatbot/chat/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message: message })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        addMessage(data.response);
-                    } else {
-                        addMessage('Erro: ' + (data.error || 'Erro desconhecido'));
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                    addMessage('Erro de conexão. Tente novamente.');
-                })
-                .finally(() => {
-                    sendButton.disabled = false;
-                    sendButton.textContent = 'Enviar';
-                });
-            }
-
-            function clearChat() {
-                chatMessages.innerHTML = `<div class="message bot-message"><img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>Olá! Sou seu assistente de investimentos. Como posso ajudá-lo hoje?</div>`;
-            }
-
-            // Funções auxiliares para o painel de investimentos
-            function formatPrice(price) {
-                return parseFloat(price).toLocaleString('pt-BR', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-            }
-
-            function formatChange(change, changePercent) {
-                const changeValue = parseFloat(change);
-                const isPositive = changeValue >= 0;
-                const className = isPositive ? 'positive' : 'negative';
-                const symbol = isPositive ? '+' : '';
-                
-                return `<span class=\"price-change ${className}\">${symbol}${formatPrice(change)} (${changePercent})</span>`;
-            }
-
-            function updateInvestmentData() {
-                fetch('/chatbot/investment-data/')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        displayInvestmentData(data.data);
-                    } else {
-                        investmentData.innerHTML = `<div class=\"error\">Erro ao carregar dados: ${data.message}</div>`;
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro ao buscar dados de investimento:', error);
-                    investmentData.innerHTML = `<div class=\"error\">Erro de conexão ao buscar dados de investimento.</div>`;
-                });
-            }
-
-            function displayInvestmentData(data) {
-                let html = '';
-                
-                // Exibe cotações principais
-                if (data.quotes && data.quotes.length > 0) {
-                    data.quotes.forEach(quote => {
-                        const symbolName = getSymbolName(quote.symbol);
-                        html += `
-                            <div class=\"investment-card\">
-                                <h3>${symbolName}</h3>
-                                <div class=\"price-info\">
-                                    <span class=\"current-price\">R$ ${formatPrice(quote.current_price)}</span>
-                                    ${formatChange(quote.change, quote.change_percent)}
-                                </div>
-                                <small>Último: ${quote.latest_trading_day}</small>
-                            </div>
-                        `;
-                    });
-                }
-                
-                // Adiciona timestamp
-                if (data.last_updated) {
-                    html += `<div class=\"last-updated\">Atualizado: ${data.last_updated}</div>`;
-                }
-                
-                investmentData.innerHTML = html || '<div class=\"error\">Nenhum dado disponível no momento.</div>';
-            }
-
-            function getSymbolName(symbol) {
-                const symbolNames = {
-                    'PETR4.SA': 'Petrobras (PETR4)',
-                    'VALE3.SA': 'Vale (VALE3)',
-                    'ITUB4.SA': 'Itaú (ITUB4)',
-                    'BBDC4.SA': 'Bradesco (BBDC4)',
-                    '^BVSP': 'Ibovespa',
-                    'USDBRL=X': 'Dólar/Real',
-                    'BTC-USD': 'Bitcoin',
-                    '^GSPC': 'S&P 500'
-                };
-                
-                return symbolNames[symbol] || symbol;
-            }
-
-            // Event listeners
-            sendButton.addEventListener('click', sendMessage);
-            clearButton.addEventListener('click', clearChat);
+            messageDiv.style.marginBottom = "10px";
+            messageDiv.style.padding = "8px";
+            messageDiv.style.borderRadius = "5px";
             
-            userInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
+            if (isUser) {
+                messageDiv.style.backgroundColor = "#e3f2fd";
+                messageDiv.style.textAlign = "right";
+                messageDiv.innerHTML = `<strong>Você:</strong> ${message}`;
+            } else {
+                messageDiv.style.backgroundColor = "#f1f8e9";
+                messageDiv.innerHTML = `<img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>${message}`;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            // Adiciona mensagem do usuário
+            addMessage(message, true);
+            
+            // Limpa o input
+            userInput.value = '';
+            
+            // Desabilita o botão durante o envio
+            sendButton.disabled = true;
+            sendButton.textContent = 'Enviando...';
+
+            // Envia para o backend
+            fetch('/chatbot/chat/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    addMessage(data.response);
+                } else {
+                    addMessage('Erro: ' + (data.error || 'Erro desconhecido'));
                 }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                addMessage('Erro de conexão. Tente novamente.');
+            })
+            .finally(() => {
+                sendButton.disabled = false;
+                sendButton.textContent = 'Enviar';
             });
+        }
 
-            // Carrega dados de investimento inicialmente e atualiza a cada 30s
-            updateInvestmentData();
-            setInterval(updateInvestmentData, 30000);
-        </script>
-    </body>
+        function clearChat() {
+            chatMessages.innerHTML = `<div class="message bot-message"><img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>Olá! Sou seu assistente de investimentos. Como posso ajudá-lo hoje?</div>`;
+        }
+
+        // Funções auxiliares para o painel de investimentos
+        function formatPrice(price) {
+            return parseFloat(price).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function formatChange(change, changePercent) {
+            const changeValue = parseFloat(change);
+            const isPositive = changeValue >= 0;
+            const className = isPositive ? 'positive' : 'negative';
+            const symbol = isPositive ? '+' : '';
+            
+            return `<span class="price-change ${className}">${symbol}${formatPrice(change)} (${changePercent})</span>`;
+        }
+
+        function updateInvestmentData() {
+            fetch('/chatbot/investment-data/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    displayInvestmentData(data.data);
+                } else {
+                    investmentData.innerHTML = `<div class="error">Erro ao carregar dados: ${data.message}</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao buscar dados de investimento:', error);
+                investmentData.innerHTML = `<div class="error">Erro de conexão ao buscar dados de investimento.</div>`;
+            });
+        }
+
+        function displayInvestmentData(data) {
+            let html = '';
+            
+            // Exibe cotações principais
+            if (data.quotes && data.quotes.length > 0) {
+                data.quotes.forEach(quote => {
+                    const symbolName = getSymbolName(quote.symbol);
+                    html += `
+                        <div class="investment-card">
+                            <h3>${symbolName}</h3>
+                            <div class="price-info">
+                                <span class="current-price">R$ ${formatPrice(quote.current_price)}</span>
+                                ${formatChange(quote.change, quote.change_percent)}
+                            </div>
+                            <small>Último: ${quote.latest_trading_day}</small>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Adiciona timestamp
+            if (data.last_updated) {
+                html += `<div class="last-updated">Atualizado: ${data.last_updated}</div>`;
+            }
+            
+            investmentData.innerHTML = html || '<div class="error">Nenhum dado disponível no momento.</div>';
+        }
+
+        function getSymbolName(symbol) {
+            const symbolNames = {
+                'PETR4.SA': 'Petrobras (PETR4)',
+                'VALE3.SA': 'Vale (VALE3)',
+                'ITUB4.SA': 'Itaú (ITUB4)',
+                'BBDC4.SA': 'Bradesco (BBDC4)',
+                '^BVSP': 'Ibovespa',
+                'USDBRL=X': 'Dólar/Real',
+                'BTC-USD': 'Bitcoin',
+                '^GSPC': 'S&P 500'
+            };
+            
+            return symbolNames[symbol] || symbol;
+        }
+
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+        clearButton.addEventListener('click', clearChat);
+        
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Carrega dados de investimento inicialmente e atualiza a cada 30s
+        updateInvestmentData();
+        setInterval(updateInvestmentData, 30000);
+
+        // Lógica do questionário (executa apenas se o modal estiver visível)
+        // Evite usar tags Django dentro de <script>; verifique a existência do formulário no DOM
+        const questionnaireForm = document.getElementById("questionarioForm");
+        if (questionnaireForm) {
+            questionnaireForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+                const form = event.target;
+                const formData = new FormData(form);
+                const errorMessage = document.getElementById("errorMessage");
+                let allAnswered = true;
+
+                // Verifica se todas as perguntas foram respondidas
+                for (let i = 1; i <= 10; i++) {
+                    if (!formData.has(`pergunta_${i}`)) {
+                        allAnswered = false;
+                        break;
+                    }
+                }
+
+                if (!allAnswered) {
+                    errorMessage.style.display = "block";
+                    return;
+                } else {
+                    errorMessage.style.display = "none";
+                }
+
+                fetch(form.action, {
+                    method: form.method,
+                    body: new URLSearchParams(formData),
+                    headers: {
+                        'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const modal = document.getElementById("questionnaireModal");
+                        if (modal) modal.style.display = "none"; // Esconde o modal, se existir
+                        // Opcional: recarregar a página ou atualizar o estado do chatbot
+                        window.location.reload(); 
+                    } else {
+                        alert("Erro ao salvar o perfil: " + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro:", error);
+                    alert("Ocorreu um erro ao enviar o questionário.");
+                });
+            });
+        }
+    </script>
+</body>
 </html>
 

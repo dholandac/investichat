@@ -46,7 +46,14 @@
                 <strong>Senha: </strong><span>********</span><img id="user-edit" width="20" height="20" src="{% static 'images/edit.png' %}" alt="Editar senha" title="Editar senha"/>
             </div>
             <div class="account-info">
-                <strong>Perfil de Investidor: </strong><span>{{ user.profile_type }}</span>
+                <strong>Perfil de Investidor: </strong>
+                <span>
+                    {% if user.perfilusuario %}
+                        {{ user.perfilusuario.get_perfil_investidor_display }}
+                    {% else %}
+                        Não definido
+                    {% endif %}
+                </span>
             </div>
             {% if mensagem %}
             <p id="account-feedback">{{ mensagem }}</p>

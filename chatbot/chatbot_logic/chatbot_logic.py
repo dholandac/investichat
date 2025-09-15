@@ -5,8 +5,32 @@ class Chatbot:
         self.gemini_api = gemini_api
         self.conversation_history = []
 
-    def get_response(self, user_message: str) -> str:
+    def get_response(self, user_message: str, perfil_investidor: str | None = None) -> str:
         # Prompt do sistema para o Investichat (mais flexível, preservando segurança)
+        perfil = (perfil_investidor or "NAO_DEFINIDO").upper()
+
+        # Diretrizes adicionais por perfil
+        perfil_guidance_map = {
+            "CONSERVADOR": (
+                "Adote um tom conservador: priorize preservação de capital, liquidez e previsibilidade. "
+                "Dê ênfase a instrumentos de baixo risco (ex.: títulos públicos indexados à Selic, CDBs de alta liquidez) e à diversificação ampla. "
+                "Evite sugerir alavancagem, derivativos e ativos de alta volatilidade."
+            ),
+            "MODERADO": (
+                "Adote um tom equilibrado: combine estabilidade com crescimento de longo prazo. "
+                "Considere mistura de renda fixa e variável com controle de risco, ressaltando horizonte de médio/longo prazo e rebalanceamento periódico."
+            ),
+            "AGRESSIVO": (
+                "Adote um tom voltado a crescimento: aceite maior volatilidade e riscos, mas sempre descreva riscos e cenários adversos. "
+                "Mencione que concentração, small caps, cripto e setores cíclicos elevam riscos; enfatize gestão de risco e liquidez."
+            ),
+            "NAO_DEFINIDO": (
+                "Adote um tom neutro: ofereça opções por perfil e incentive realizar o questionário de perfil para recomendações educacionais mais relevantes."
+            ),
+        }
+
+        perfil_guidance = perfil_guidance_map.get(perfil, perfil_guidance_map["NAO_DEFINIDO"]) 
+
         systemprompt = """
         Prompt de Sistema para o Investichat
         Você é o "Investichat", um assistente de IA especialista em investimentos e mercado financeiro.
@@ -38,7 +62,10 @@ class Chatbot:
         Estilo e Formatação:
         - Sempre em texto plano (plain text), sem Markdown ou listas com marcadores/asteriscos.
         - Seja direto, organizado e acolhedor, usando linguagem simples e exemplos práticos quando útil.
-        """
+        
+    Diretriz dinâmica por perfil do investidor do usuário (perfil atual: {perfil}):
+    {perfil_guidance}
+    """.format(perfil=perfil, perfil_guidance=perfil_guidance)
 
         # Adiciona a mensagem do usuário ao histórico
         self.add_to_history("user", user_message)

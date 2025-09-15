@@ -15,7 +15,7 @@ body {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    margin-top:50px;
+    margin-top:40px;
 }
 
 h1 {
@@ -103,7 +103,7 @@ h1 {
 }
 
 #user-input {
-    width: 100%; 
+    width: calc(100% - 20px); 
     height: 70px; 
     padding: 10px; 
     border: 1px solid #ccc; 
@@ -172,7 +172,7 @@ h1 {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     max-height: none;
     overflow: visible;
-    margin-top:50px;
+    margin-top:40px;
 }
 
 .investment-sidebar h2 {
