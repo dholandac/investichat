@@ -26,7 +26,7 @@ class Chatbot:
             ),
             "NAO_DEFINIDO": (
                 "Adote um tom neutro: ofereça opções por perfil e incentive realizar o questionário de perfil para recomendações educacionais mais relevantes."
-            ),
+            )
         }
 
         perfil_guidance = perfil_guidance_map.get(perfil, perfil_guidance_map["NAO_DEFINIDO"]) 

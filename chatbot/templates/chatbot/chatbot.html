@@ -13,6 +13,9 @@
 <body>
     <header>
         <div id="chatbot-header">
+            <button id="sidebar-toggle" style="background:none; border:none; cursor:pointer; margin-right:12px; vertical-align:middle;">
+            <img id="menu-icon" src="{% static 'images/menu.png' %}" alt="Menu" width="32" height="32" />
+            </button>
             <a href="{% url 'chatbot' %}"><img id="chatbot-logo" src="{% static 'images/investichattransparent.png' %}"></a>
             {% if user.is_authenticated %}
             <a href="{% url 'account' %}"><span>Bem-vindo, {{ user.username }}<img id="user-icon" width="25" height="25" src="{% static 'images/user.png' %}"/></span></a>
@@ -20,6 +23,17 @@
             <span>Faça seu login</span>
             {% endif %}
         </div>
+    </header>
+    <div id="sidebar" class="sidebar-hidden">
+        <button class="sidebar-close" style="background:none; border:none; cursor:pointer; margin-left:15px; margin-top:20px; display:flex; align-items:center;">
+            <img id="close-menu-icon" src="{% static 'images/menu.png' %}" alt="Fechar" width="32" height="32" style="filter: invert(1) brightness(100);" />
+        </button>
+        <div class="sidebar-content">
+            <button class="sidebar-btn">Chatbot</button>
+            <button class="sidebar-btn">Contato</button>
+            <button class="sidebar-btn">Placeholder</button>
+        </div>
+    </div>
     </header>
     <div class="main-container">
         <div class="chatbot-section">
@@ -142,6 +156,10 @@
     {% endif %}
 
     <script>
+        const menuIcon = document.getElementById('menu-icon');
+        if (menuIcon) {
+            menuIcon.style.filter = 'invert(1) brightness(100)';
+        }
         const chatMessages = document.getElementById("chat-messages");
         const userInput = document.getElementById("user-input");
         const sendButton = document.getElementById("send-button");
@@ -293,10 +311,26 @@
             return symbolNames[symbol] || symbol;
         }
 
+        // Sidebar logic
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarClose = document.querySelector('.sidebar-close');
+        // Garante que o botão está visível ao carregar
+        sidebarToggle.classList.remove('hide-when-sidebar');
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.remove('sidebar-hidden');
+            sidebar.classList.add('sidebar-visible');
+            sidebarToggle.classList.add('hide-when-sidebar');
+        });
+        sidebarClose.addEventListener('click', function() {
+            sidebar.classList.remove('sidebar-visible');
+            sidebar.classList.add('sidebar-hidden');
+            sidebarToggle.classList.remove('hide-when-sidebar');
+        });
+
         // Event listeners
         sendButton.addEventListener('click', sendMessage);
         clearButton.addEventListener('click', clearChat);
-        
         userInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -309,7 +343,6 @@
         setInterval(updateInvestmentData, 30000);
 
         // Lógica do questionário (executa apenas se o modal estiver visível)
-        // Evite usar tags Django dentro de <script>; verifique a existência do formulário no DOM
         const questionnaireForm = document.getElementById("questionarioForm");
         if (questionnaireForm) {
             questionnaireForm.addEventListener("submit", function(event) {
@@ -318,22 +351,18 @@
                 const formData = new FormData(form);
                 const errorMessage = document.getElementById("errorMessage");
                 let allAnswered = true;
-
-                // Verifica se todas as perguntas foram respondidas
                 for (let i = 1; i <= 10; i++) {
                     if (!formData.has(`pergunta_${i}`)) {
                         allAnswered = false;
                         break;
                     }
                 }
-
                 if (!allAnswered) {
                     errorMessage.style.display = "block";
                     return;
                 } else {
                     errorMessage.style.display = "none";
                 }
-
                 fetch(form.action, {
                     method: form.method,
                     body: new URLSearchParams(formData),
@@ -347,7 +376,6 @@
                     if (data.success) {
                         const modal = document.getElementById("questionnaireModal");
                         if (modal) modal.style.display = "none"; // Esconde o modal, se existir
-                        // Opcional: recarregar a página ou atualizar o estado do chatbot
                         window.location.reload(); 
                     } else {
                         alert("Erro ao salvar o perfil: " + data.error);
