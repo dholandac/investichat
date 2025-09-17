@@ -30,7 +30,7 @@
             <div class="account-info">
                 <strong>Email: </strong>
                 <span id="email-text">{{ user.email|default:"Não informado" }}</span>
-                <img id="user-edit" width="20" height="20" src="{% static 'images/edit.png' %}" alt="Editar email" title="Editar email"/>
+                <img class="edit-btn" data-edit="email" width="20" height="20" src="{% static 'images/edit.png' %}" alt="Editar email" title="Editar email"/>
             </div>
             <div class="account-info" id="email-edit-row" style="display:none;">
                 <form method="post" style="display:flex; gap:10px; align-items:center; width:100%;">
@@ -42,10 +42,26 @@
                     <button id="account-email-cancel" type="button">Cancelar</button>
                 </form>
             </div>
-            <div class="account-info">
-                <strong>Senha: </strong><span>********</span><img id="user-edit" width="20" height="20" src="{% static 'images/edit.png' %}" alt="Editar senha" title="Editar senha"/>
+            <div class="account-info" id="password-display-row">
+                <strong>Senha: </strong><span>******** </span><img class="edit-btn" data-edit="password" width="20" height="20" src="{% static 'images/edit.png' %}" alt="Editar senha" title="Editar senha"/>
             </div>
-            <div class="account-info">
+            <div class="account-info" id="password-edit-row" style="display:none;">
+                <form method="post" style="display:flex; flex-direction:column; gap:10px; width:100%;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_password" />
+                    <label><strong>Senha atual:</strong></label>
+                    <input type="password" name="senha_atual" placeholder="Senha atual" required />
+                    <label><strong>Nova senha:</strong></label>
+                    <input type="password" name="nova_senha" placeholder="Nova senha" required />
+                    <label><strong>Confirme a nova senha:</strong></label>
+                    <input type="password" name="confirma_senha" placeholder="Confirme a nova senha" required />
+                    <div style="display:flex; gap:10px;">
+                        <button type="submit">Salvar</button>
+                        <button id="account-password-cancel" type="button">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+            <div class="account-info" id="perfil-display-row">
                 <strong>Perfil de Investidor: </strong>
                 <span>
                     {% if user.perfilusuario %}
@@ -53,14 +69,49 @@
                     {% else %}
                         Não definido
                     {% endif %}
-                </span><img id="user-edit" width="20" height="20" src="{% static 'images/edit.png' %}" alt="Editar perfil" title="Editar perfil"/>
+                </span>
+                <img class="edit-btn" data-edit="perfil" width="20" height="20" src="{% static 'images/edit.png' %}" alt="Editar perfil" title="Editar perfil"/>
+            </div>
+            <div class="account-info" id="perfil-edit-row" style="display:none;">
+                <form method="post" style="display:flex; gap:10px; align-items:center; width:100%;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_perfil_investidor" />
+                    <strong>Perfil de Investidor: </strong>
+                    <select name="perfil_investidor" required style="flex:1; max-width:250px;">
+                        <option value="CONSERVADOR" {% if user.perfilusuario and user.perfilusuario.perfil_investidor == 'CONSERVADOR' %}selected{% endif %}>Conservador</option>
+                        <option value="MODERADO" {% if user.perfilusuario and user.perfilusuario.perfil_investidor == 'MODERADO' %}selected{% endif %}>Moderado</option>
+                        <option value="AGRESSIVO" {% if user.perfilusuario and user.perfilusuario.perfil_investidor == 'AGRESSIVO' %}selected{% endif %}>Agressivo</option>
+                    </select>
+                    <button type="submit">Salvar</button>
+                    <button id="account-perfil-cancel" type="button">Cancelar</button>
+                </form>
+            </div>
+            <div class="account-info" id="password-edit-row" style="display:none;">
+                <form method="post" style="display:flex; flex-direction:column; gap:10px; width:100%;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_password" />
+                    <label>Senha atual:</label>
+                    <input type="password" name="senha_atual" placeholder="Senha atual" required />
+                    <label>Nova senha:</label>
+                    <input type="password" name="nova_senha" placeholder="Nova senha" required />
+                    <label>Confirme a nova senha:</label>
+                    <input type="password" name="confirma_senha" placeholder="Confirme a nova senha" required />
+                    <div style="display:flex; gap:10px;">
+                        <button type="submit">Salvar</button>
+                        <button id="account-password-cancel" type="button">Cancelar</button>
+                    </div>
+                </form>
+            </div>
             </div>
             {% if mensagem %}
             <p id="account-feedback">{{ mensagem }}</p>
             <script>
                 setTimeout(function() {
                     var el = document.getElementById('account-feedback');
-                    if (el) el.style.display = 'none';
+                    if (el) {
+                        el.style.display = 'none';
+                        el.style.color = 'white';
+                    }
                 }, 3000);
             </script>
             {% endif %}
@@ -70,28 +121,62 @@
        
     </body>
     <script>
-        // Script para alternar entre exibição e edição do email
+        // Script para alternar entre exibição e edição dos campos
         document.addEventListener('DOMContentLoaded', function() {
-            const editBtn = document.getElementById('user-edit');
-            const editRow = document.getElementById('email-edit-row');
-            const cancelBtn = document.getElementById('account-email-cancel');
-            const emailDisplayRow = editBtn ? editBtn.closest('.account-info') : null;
-
-            // Abrir o campo de edição ao clicar no ícone de editar
-            if (editBtn && editRow && emailDisplayRow) {
-                editBtn.addEventListener('click', function() {
+            // Email
+            const emailEditBtn = document.querySelector('.edit-btn[data-edit="email"]');
+            const emailEditRow = document.getElementById('email-edit-row');
+            const emailDisplayRow = emailEditBtn ? emailEditBtn.closest('.account-info') : null;
+            const emailCancelBtn = document.getElementById('account-email-cancel');
+            if (emailEditBtn && emailEditRow && emailDisplayRow) {
+                emailEditBtn.addEventListener('click', function() {
                     emailDisplayRow.style.display = 'none';
-                    editRow.style.display = 'block';
-                    const input = editRow.querySelector('input[name="email"]');
+                    emailEditRow.style.display = 'block';
+                    const input = emailEditRow.querySelector('input[name="email"]');
                     if (input) input.focus();
                 });
             }
-
-            // Cancelar a edição e voltar para a exibição do email
-            if (cancelBtn && emailDisplayRow) {
-                cancelBtn.addEventListener('click', function() {
-                    editRow.style.display = 'none';
+            if (emailCancelBtn && emailDisplayRow) {
+                emailCancelBtn.addEventListener('click', function() {
+                    emailEditRow.style.display = 'none';
                     emailDisplayRow.style.display = 'block';
+                });
+            }
+
+            // Senha
+            const passwordEditBtn = document.querySelector('.edit-btn[data-edit="password"]');
+            const passwordEditRow = document.getElementById('password-edit-row');
+            const passwordDisplayRow = document.getElementById('password-display-row');
+            const passwordCancelBtn = document.getElementById('account-password-cancel');
+            if (passwordEditBtn && passwordEditRow && passwordDisplayRow) {
+                passwordEditBtn.addEventListener('click', function() {
+                    passwordDisplayRow.style.display = 'none';
+                    passwordEditRow.style.display = 'block';
+                    const input = passwordEditRow.querySelector('input[name="senha_atual"]');
+                    if (input) input.focus();
+                });
+            }
+            if (passwordCancelBtn && passwordDisplayRow) {
+                passwordCancelBtn.addEventListener('click', function() {
+                    passwordEditRow.style.display = 'none';
+                    passwordDisplayRow.style.display = 'block';
+                });
+            }
+            // Perfil de Investidor
+            const perfilEditBtn = document.querySelector('.edit-btn[data-edit="perfil"]');
+            const perfilEditRow = document.getElementById('perfil-edit-row');
+            const perfilDisplayRow = document.getElementById('perfil-display-row');
+            const perfilCancelBtn = document.getElementById('account-perfil-cancel');
+            if (perfilEditBtn && perfilEditRow && perfilDisplayRow) {
+                perfilEditBtn.addEventListener('click', function() {
+                    perfilDisplayRow.style.display = 'none';
+                    perfilEditRow.style.display = 'flex';
+                });
+            }
+            if (perfilCancelBtn && perfilDisplayRow) {
+                perfilCancelBtn.addEventListener('click', function() {
+                    perfilEditRow.style.display = 'none';
+                    perfilDisplayRow.style.display = 'flex';
                 });
             }
         });

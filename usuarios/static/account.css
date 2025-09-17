@@ -79,7 +79,7 @@ button {
 }
 
 #account-container {
-    margin-top: 100px;
+    margin-top: 70px;
     margin-bottom: 40px;
     margin-left: auto;
     margin-right: auto;
@@ -129,7 +129,7 @@ button {
     background: #c82333;
 }
 
-#user-edit {
+.edit-btn {
     align-content: right;
     float:right;
     cursor: pointer;
@@ -143,7 +143,7 @@ button {
 
 #account-feedback {
     margin-bottom: 10px;
-    color:black;
+    color:white;
 }
 .account-message {
     padding: 10px;

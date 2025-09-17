@@ -25,6 +25,10 @@ def cadastro(request):
         if not username or not email or not senha:
             return render(request, 'cadastro.html', {'mensagem': 'Preencha todos os campos!'})
 
+        # Verifica tamanho mínimo da senha
+        if len(senha) < 8:
+            return render(request, 'cadastro.html', {'mensagem': 'A senha deve ter pelo menos 8 caracteres!'})
+
         # Verifica se já existe um usuário com esse username
         user = User.objects.filter(username=username).first()
 
@@ -75,16 +79,49 @@ def account(request):
             if not novo_email:
                 mensagem = 'Informe um email válido.'
             else:
-                # Verifica se já existe outro usuário com este email (case-insensitive)
                 existe = User.objects.filter(email__iexact=novo_email).exclude(pk=request.user.pk).exists()
                 if existe:
-                    mensagem = '*Este email já está em uso por outro usuário.'
+                    mensagem = 'Este email já está em uso por outro usuário.'
                 else:
                     request.user.email = novo_email
                     request.user.save()
-                    mensagem = '*Email atualizado com sucesso!'
+                    mensagem = 'Email atualizado com sucesso!'
+        elif action == 'update_password':
+            senha_atual = request.POST.get('senha_atual')
+            nova_senha = request.POST.get('nova_senha')
+            confirma_senha = request.POST.get('confirma_senha')
+            if not senha_atual or not nova_senha or not confirma_senha:
+                mensagem = 'Preencha todos os campos da senha.'
+            elif not request.user.check_password(senha_atual):
+                mensagem = 'Senha atual incorreta.'
+            elif nova_senha != confirma_senha:
+                mensagem = 'A nova senha e a confirmação não coincidem.'
+            elif len(nova_senha) < 8:
+                mensagem = 'A nova senha deve ter pelo menos 8 caracteres.'
+            else:
+                request.user.set_password(nova_senha)
+                request.user.save()
+                mensagem = 'Senha atualizada com sucesso!'
+                # Reautentica o usuário após troca de senha
+                from django.contrib.auth import update_session_auth_hash
+                update_session_auth_hash(request, request.user)
+        elif action == 'update_perfil_investidor':
+            novo_perfil = request.POST.get('perfil_investidor')
+            if novo_perfil not in ['CONSERVADOR', 'MODERADO', 'AGRESSIVO']:
+                mensagem = 'Selecione um perfil válido.'
+            else:
+                perfil_usuario, _ = PerfilUsuario.objects.get_or_create(user=request.user)
+                perfil_usuario.perfil_investidor = novo_perfil
+                perfil_usuario.save()
+                mensagem = 'Perfil de investidor atualizado com sucesso!'
 
-    return render(request, 'account.html', {'mensagem': mensagem})
+    # Adiciona perfilusuario ao contexto
+    perfilusuario = None
+    try:
+        perfilusuario = PerfilUsuario.objects.get(user=request.user)
+    except PerfilUsuario.DoesNotExist:
+        perfilusuario = None
+    return render(request, 'account.html', {'mensagem': mensagem, 'user': request.user, 'perfilusuario': perfilusuario})
 
 @login_required(login_url="/auth/login/")
 def questionario_perfil(request):
@@ -94,11 +131,7 @@ def questionario_perfil(request):
         return redirect("chatbot") # Redireciona para o chatbot se o questionário já foi preenchido
 
     if request.method == "POST":
-        # Lógica para processar as respostas do questionário
-        # As respostas virão do frontend via AJAX ou formulário
-        # Por enquanto, vamos simular a pontuação e o perfil
         pontuacao = 0
-        # Exemplo de como as respostas poderiam ser processadas (ajustar conforme o frontend)
         for i in range(1, 11):
             resposta = request.POST.get(f'pergunta_{i}')
             if resposta == 'A':
