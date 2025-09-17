@@ -1,3 +1,17 @@
+.account-info#perfil-display-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.account-info#perfil-display-row span {
+    flex: 1;
+    margin-right: 8px;
+}
+.account-info#perfil-display-row .edit-btn {
+    float: none;
+    align-self: center;
+    margin-left: 0;
+}
 * {
     text-align: center;
     justify-content: center;
@@ -159,13 +173,17 @@ button {
     color: #842029;
 }
 
-/* Ajustes responsivos */
 .account-info form {
     flex-wrap: wrap;
 }
 .account-info form input[type="email"] {
     width: 100%;
     max-width: 100%;
+}
+
+select {
+    border-radius: 8px;
+    border: 1px solid #ccc;
 }
 
 @media (max-width: 768px) {
