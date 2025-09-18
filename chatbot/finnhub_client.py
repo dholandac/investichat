@@ -1,8 +1,3 @@
-"""
-Módulo para interação com a API do Finnhub.
-Mantém interface similar ao cliente do Alpha Vantage para facilitar a troca.
-"""
-
 from typing import Dict, List, Optional
 from datetime import datetime
 import requests
@@ -133,7 +128,7 @@ class FinnhubAPIClient:
             data = self._get('/quote', {'symbol': symbol})
             if data and not (data.get('c') in (None, 0) and data.get('pc') in (None, 0)):
                 return StockQuote(symbol, data)
-        except requests.HTTPError as http_err:
+        except requests.HTTPError:
             # Tentar resolução de símbolo em caso de 401/403/404
             pass
         except Exception:
@@ -302,14 +297,3 @@ class FinnhubAPIClient:
 
         ts_list.sort(key=lambda x: x.timestamp, reverse=True)
         return ts_list
-
-    def get_top_gainers_losers(self) -> Dict:
-        """
-        Finnhub (plano gratuito) não fornece um endpoint direto equivalente ao
-        TOP_GAINERS_LOSERS do Alpha Vantage. Retornar estrutura vazia compatível.
-        """
-        return {
-            'top_gainers': [],
-            'top_losers': [],
-            'most_actively_traded': []
-        }

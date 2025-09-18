@@ -49,7 +49,6 @@ def get_investment_data(request):
             # Mantemos alguns globais com boa chance de cobertura.
             'AAPL',      # Apple (NASDAQ)
             'MSFT',      # Microsoft (NASDAQ)
-            # 'BTC-USD',   # Bitcoin (removido por enquanto)
             'TSLA',      # Tesla
             # Você pode reintroduzir PETR4.SA/VALE3.SA/ITUB4.SA/BBDC4.SA caso seu token tenha cobertura B3
             # 'PETR4.SA', 'VALE3.SA', 'ITUB4.SA', 'BBDC4.SA'
