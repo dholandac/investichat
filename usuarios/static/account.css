@@ -195,7 +195,7 @@ button {
 }
 
 #account-container h1,h2,h3,strong,span {
-    text-align: start;
+    text-align: left;
     color:black;
     margin: 0px;
 }
@@ -279,11 +279,65 @@ select {
     border: 1px solid #ccc;
 }
 
+/* Reusable helpers for sections and flex rows */
+.section-separator {
+    margin: 20px 0;
+    opacity: 0.3;
+}
+
+.clear-history-btn {
+    background: #c62828;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.clear-history-btn:hover {
+    background: #b71c1c;
+}
+
+.account-info.clear-history {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.account-info.clear-history #clear-chat-form {
+    margin-left: auto;
+}
+
+/* Ensure the left text block is compact like other rows */
+.account-info.clear-history > div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+}
+
+.account-info.clear-history strong,
+.account-info.clear-history span {
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+}
+
+.account-info.clear-history form {
+    margin: 0 0 0 auto;
+}
+
 @media (max-width: 768px) {
     #account-container {
         margin-top: 80px;
         padding: 16px 18px;
         width: calc(100% - 24px);
+    }
+    /* Allow wrapping on medium screens */
+    .account-info.clear-history {
+        flex-wrap: wrap;
     }
 }
 
@@ -297,5 +351,22 @@ select {
         float: none;
         display: inline-block;
         margin-bottom: 10px;
+    }
+    /* Stack the clear history section vertically on small screens */
+    .account-info.clear-history {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    .account-info.clear-history > div {
+        width: 100%;
+    }
+    .account-info.clear-history #clear-chat-form {
+        width: 100%;
+        margin-left: 0;
+    }
+    .account-info.clear-history .clear-history-btn {
+        width: 100%;
+        text-align: center;
     }
 }

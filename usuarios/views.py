@@ -9,6 +9,7 @@ from django.contrib.auth import login as login_django
 from django.contrib.auth import logout as logout_django
 from django.contrib.auth.decorators import login_required
 from .models import PerfilUsuario
+from chatbot.models import Conversation
 
 # Lógica de cadastro
 def cadastro(request):
@@ -114,6 +115,10 @@ def account(request):
                 perfil_usuario.perfil_investidor = novo_perfil
                 perfil_usuario.save()
                 mensagem = 'Perfil de investidor atualizado com sucesso!'
+        elif action == 'clear_chat_history':
+            # Limpa todo o histórico de chat do usuário (conversas e mensagens)
+            Conversation.objects.filter(user=request.user).delete()
+            mensagem = 'Histórico de chat apagado com sucesso!'
 
     # Adiciona perfilusuario ao contexto
     perfilusuario = None
