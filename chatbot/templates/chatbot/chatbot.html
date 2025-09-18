@@ -45,11 +45,25 @@
                     {% endif %}
                 </div>
                 <div id="chatbot-container">
-                    <div id="chat-messages">
-                        <div class="message bot-message">
-                            <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong>
-                            <br>Olá! Sou seu assistente de investimentos. Como posso ajudá-lo hoje?
-                        </div>
+                    <div id="chat-messages" data-conversation-id="{{ conversation_id }}">
+                        {% if history and history|length %}
+                            {% for m in history %}
+                                {% if m.role == 'bot' %}
+                                    <div class="message bot-message">
+                                        <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>{{ m.content|linebreaksbr }}
+                                    </div>
+                                {% else %}
+                                    <div class="message user-message" style="background-color:#e3f2fd; text-align:right;">
+                                        <strong>Você:</strong> {{ m.content|linebreaksbr }}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <div class="message bot-message">
+                                <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong>
+                                <br>Olá! Sou seu assistente de investimentos. Como posso ajudá-lo hoje?
+                            </div>
+                        {% endif %}
                     </div>
                     
                     <div id="chatbot-container-msg">
@@ -191,6 +205,10 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
+        // Identificador da conversa atual
+        const chatBox = document.getElementById('chat-messages');
+        let conversationId = chatBox && chatBox.dataset && chatBox.dataset.conversationId ? parseInt(chatBox.dataset.conversationId) : null;
+
         function sendMessage() {
             const message = userInput.value.trim();
             if (!message) return;
@@ -211,12 +229,16 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ message: message })
+                body: JSON.stringify({ message: message, conversation_id: conversationId })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
                     addMessage(data.response);
+                    if (data.conversation_id) {
+                        conversationId = data.conversation_id;
+                        if (chatBox) chatBox.dataset.conversationId = conversationId;
+                    }
                 } else {
                     addMessage('Erro: ' + (data.error || 'Erro desconhecido'));
                 }

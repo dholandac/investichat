@@ -1,11 +1,12 @@
 from .gemini_api import GeminiAPI
+from typing import List, Dict, Optional
 
 class Chatbot:
     def __init__(self, gemini_api: GeminiAPI):
         self.gemini_api = gemini_api
         self.conversation_history = []
 
-    def get_response(self, user_message: str, perfil_investidor: str | None = None) -> str:
+    def get_response(self, user_message: str, perfil_investidor: str | None = None, history: Optional[List[Dict[str, str]]] = None) -> str:
         # Prompt do sistema para o Investichat (mais flexível, preservando segurança)
         perfil = (perfil_investidor or "NAO_DEFINIDO").upper()
 
@@ -37,6 +38,7 @@ class Chatbot:
         
         Objetivo e Identidade:
         - Sua identidade é fixa: "Investichat". Seja claro, útil e neutro. Em novas conversas, apresente-se brevemente.
+        - Evite ficar se apresentando constantemente em uma conversa que já está em andamento.
         
         Escopo e Abertura:
         - Seu foco é finanças e investimentos: ações, renda fixa, fundos, criptomoedas, macroeconomia, indicadores e tendências.
@@ -62,20 +64,52 @@ class Chatbot:
         Estilo e Formatação:
         - Sempre em texto plano (plain text), sem Markdown ou listas com marcadores/asteriscos.
         - Seja direto, organizado e acolhedor, usando linguagem simples e exemplos práticos quando útil.
+        - Divida o texto sempre em parágrafos curtos para facilitar a leitura.
         
     Diretriz dinâmica por perfil do investidor do usuário (perfil atual: {perfil}):
     {perfil_guidance}
     """.format(perfil=perfil, perfil_guidance=perfil_guidance)
 
-        # Adiciona a mensagem do usuário ao histórico
+        # Adiciona a mensagem do usuário ao histórico em memória (não persistente)
         self.add_to_history("user", user_message)
 
-        # Constrói o prompt com base no histórico (opcional, dependendo da complexidade)
-        # No momento, apenas a última mensagem do usuário é usada como prompt
+        # Constrói o contexto com base no histórico persistido (se fornecido)
+        history_text = ""
+        if history:
+            # Mantém apenas as últimas 12 mensagens para controle de tamanho
+            last_msgs = history[-12:]
+            formatted: List[str] = []
+            for msg in last_msgs:
+                role = (msg.get("role") or "").lower()
+                content = (msg.get("message") or msg.get("content") or "").strip()
+                if not content:
+                    continue
+                # Limita cada mensagem a 800 caracteres para evitar prompts muito longos
+                if len(content) > 800:
+                    content = content[:800] + "…"
+                speaker = "Usuário" if role == "user" else "Investichat"
+                formatted.append(f"{speaker}: {content}")
+            if formatted:
+                history_text = "\n\nHistórico recente (mais antigo → mais recente):\n" + "\n".join(formatted)
+
+        # Prompt do usuário (mensagem atual)
         prompt = user_message
 
-        # Gera a resposta usando a Gemini API
-        bot_response = self.gemini_api.generate_content(systemprompt + "\n\n\n" + prompt)
+        # Gera a resposta usando a Gemini API, anexando histórico quando houver
+        full_prompt = systemprompt
+        if history_text:
+            full_prompt += "\n\n" + history_text
+        # Reforça a diretriz de perfil imediatamente antes da pergunta (reduz viés de recência do histórico)
+        full_prompt += (
+            "\n\nDiretriz específica para esta resposta (perfil atual: {perfil}):\n{guidance}\n"
+            "Siga estritamente esta diretriz ao responder a pergunta a seguir.\n"
+            "Considere que o usuário que você vai responder a seguir tem o perfil {perfil} de investidor.\n"
+            "Se o usuário perguntar qual é o perfil dele, responda que é {perfil}.\n"
+        ).format(perfil=perfil, guidance=perfil_guidance)
+
+        full_prompt += "\n\nPergunta atual do usuário:\n" + prompt
+
+        bot_response = self.gemini_api.generate_content(full_prompt)
 
         # Adiciona a resposta do bot ao histórico
         self.add_to_history("bot", bot_response)
