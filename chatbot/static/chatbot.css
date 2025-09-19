@@ -146,14 +146,6 @@ h1 {
     font-weight: 500;
 }
 
-#chatbot-container {
-    margin-top: 10px; 
-    padding: 20px; 
-    border: 1px solid #ddd; 
-    border-radius: 8px; 
-    background: #f9f9f9;
-}
-
 #chatbot-textarea {
     width: 100%;
     height: 100px;
@@ -164,9 +156,10 @@ h1 {
 }
 
 #chat-messages {
-    height: 240px; 
+    height: 316px; 
     overflow-y: auto; border: 1px solid #ccc; 
     padding: 10px; 
+    border-radius: 4px;
     margin-bottom: 10px; 
     background-color: #f9f9f9;
 }
@@ -198,23 +191,30 @@ h1 {
     font-family: "Poppins", sans-serif;
 }
 
+.chat-input-wrapper {
+    position: relative;
+}
+
 #send-button {
     background: #007bff; 
     color: white; 
-    padding: 10px 20px; 
+    padding: 5px 15px; 
     border: none; 
     border-radius: 4px; 
     cursor: pointer;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    margin-bottom: 10px;
 }
 
-#clear-button {
-    background: #6c757d; 
-    color: white; 
-    padding: 10px 20px; 
-    border: none; 
-    border-radius: 4px; 
-    cursor: pointer; 
-    margin-left: 10px;
+#send-button:hover {
+    background: #0056b3;
+    transition: background 0.2s ease;
+}
+
+#send-button img {
+    filter: invert(1) brightness(100);
 }
 
 .bot-message {
@@ -228,6 +228,29 @@ h1 {
 .message {
     overflow-wrap: anywhere;
     word-break: break-word;
+}
+
+@keyframes message-in {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-appear {
+    animation: message-in 180ms ease-out;
+    will-change: transform, opacity;
+    transform-origin: top;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .message-appear {
+        animation: none;
+    }
 }
 
 #user-icon {
@@ -469,8 +492,7 @@ h1 {
 }
 
 @media (max-width: 900px) {
-    .chatbot-section,
-    .investment-sidebar {
+    .chatbot-section {
         min-width: 0;
         width: 100%;
     }
@@ -497,17 +519,18 @@ h1 {
         overscroll-behavior-y: contain;
     }
     #user-input {
-        height: 90px;
+        height: 100px;
     }
-    #send-button,
-    #clear-button {
-        width: 100%;
-        margin-left: 0;
-        margin-top: 10px;
+    .chat-input-wrapper #send-button,
+    .chat-input-wrapper #clear-button {
+        position: absolute;
+        bottom: 10px;
     }
+    .chat-input-wrapper #send-button { right: 10px; }
+    .chat-input-wrapper #clear-button { right: 100px; }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 520px) {
     #chatbot-logo {
         width: 120px;
     }

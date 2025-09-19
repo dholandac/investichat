@@ -47,17 +47,19 @@
                 <div id="chatbot-container">
                     <div id="chat-messages" data-conversation-id="{{ conversation_id }}">
                         {% if history and history|length %}
+                        <!-- Exibe o histórico de mensagens -->
                             {% for m in history %}
                                 {% if m.role == 'bot' %}
                                     <div class="message bot-message">
-                                        <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>{{ m.content|linebreaksbr }}
+                                        <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom:10px;" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>{{ m.content|linebreaksbr }}
                                     </div>
                                 {% else %}
-                                    <div class="message user-message" style="background-color:#e3f2fd; text-align:right;">
+                                    <div class="message user-message" style="background-color:#e3f2fd; text-align:right; margin-bottom:10px; padding:8px;">
                                         <strong>Você:</strong> {{ m.content|linebreaksbr }}
                                     </div>
                                 {% endif %}
                             {% endfor %}
+                            <!-- Mensagem inicial padrão se não houver histórico -->
                         {% else %}
                             <div class="message bot-message">
                                 <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong>
@@ -66,11 +68,9 @@
                         {% endif %}
                     </div>
                     
-                    <div id="chatbot-container-msg">
+                    <div id="chatbot-container-msg" class="chat-input-wrapper">
                         <textarea id="user-input" placeholder="Digite sua mensagem aqui..."></textarea>
-                        <br><br>
-                        <button id="send-button">Enviar</button>
-                        <button id="clear-button">Limpar</button>
+                        <button id="send-button" title="Enviar mensagem"><img class="edit-btn" width="20" height="20" src="{% static 'images/send.png' %}" alt="Enviar mensagem" title="Enviar mensagem"/></button>
                     </div>
                 </div>
             </div>
@@ -177,8 +177,13 @@
         const chatMessages = document.getElementById("chat-messages");
         const userInput = document.getElementById("user-input");
         const sendButton = document.getElementById("send-button");
-        const clearButton = document.getElementById("clear-button");
         const investmentData = document.getElementById("investment-data");
+
+        // Garante que o chat comece no fim (última mensagem visível)
+        function scrollChatToBottom() {
+            if (!chatMessages) return;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
 
         // Função para adicionar mensagem ao chat
         function addMessage(message, isUser = false) {
@@ -188,6 +193,8 @@
             } else {
                 messageDiv.className = "message bot-message";
             }
+
+            messageDiv.classList.add('message-appear');
             messageDiv.style.marginBottom = "10px";
             messageDiv.style.padding = "8px";
             messageDiv.style.borderRadius = "5px";
@@ -221,7 +228,6 @@
             
             // Desabilita o botão durante o envio
             sendButton.disabled = true;
-            sendButton.textContent = 'Enviando...';
 
             // Envia para o backend
             fetch('/chatbot/chat/', {
@@ -249,12 +255,7 @@
             })
             .finally(() => {
                 sendButton.disabled = false;
-                sendButton.textContent = 'Enviar';
             });
-        }
-
-        function clearChat() {
-            chatMessages.innerHTML = `<div class="message bot-message"><img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>Olá! Sou seu assistente de investimentos. Como posso ajudá-lo hoje?</div>`;
         }
 
         // Funções auxiliares para o painel de investimentos
@@ -352,7 +353,6 @@
 
         // Event listeners
         sendButton.addEventListener('click', sendMessage);
-        clearButton.addEventListener('click', clearChat);
         userInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -363,6 +363,10 @@
         // Carrega dados de investimento inicialmente e atualiza a cada 30s
         updateInvestmentData();
         setInterval(updateInvestmentData, 30000);
+
+        // Rola para o final ao carregar a página (com histórico já renderizado)
+        requestAnimationFrame(scrollChatToBottom);
+        window.addEventListener('load', scrollChatToBottom);
 
         // Lógica do questionário (executa apenas se o modal estiver visível)
         const questionnaireForm = document.getElementById("questionarioForm");

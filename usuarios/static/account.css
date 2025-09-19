@@ -335,7 +335,7 @@ select {
         padding: 16px 18px;
         width: calc(100% - 24px);
     }
-    /* Allow wrapping on medium screens */
+
     .account-info.clear-history {
         flex-wrap: wrap;
     }
@@ -347,24 +347,28 @@ select {
         padding: 12px 14px;
         width: calc(100% - 16px);
     }
+
     .logout-btn {
         float: none;
         display: inline-block;
         margin-bottom: 10px;
     }
-    /* Stack the clear history section vertically on small screens */
+
     .account-info.clear-history {
         flex-direction: column;
         align-items: stretch;
         gap: 8px;
     }
+
     .account-info.clear-history > div {
         width: 100%;
     }
+
     .account-info.clear-history #clear-chat-form {
         width: 100%;
         margin-left: 0;
     }
+    
     .account-info.clear-history .clear-history-btn {
         width: 100%;
         text-align: center;
