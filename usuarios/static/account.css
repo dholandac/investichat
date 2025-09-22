@@ -1,3 +1,36 @@
+* {
+    text-align: center;
+    justify-content: center;
+    font-family: 'Poppins', Arial;
+}
+
+body {
+    margin:0;
+}
+
+html {
+    background-color: rgb(26, 26, 26);
+    background-image: url("images/background.jpg");
+}
+
+h1,h2,h3,span,p {
+    color: white;
+}
+
+input, button {
+    border-radius:8px;
+    border: 1px solid #ccc;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+    text-align: center;
+}
+
 #sidebar-toggle.hide-when-sidebar {
     display: none !important;
 }
@@ -100,34 +133,6 @@ a {
     margin-left: 0;
 }
 
-* {
-    text-align: center;
-    justify-content: center;
-    font-family: 'Poppins', Arial;
-}
-
-body {
-    margin:0;
-}
-
-html {
-    background-color: rgb(26, 26, 26);
-    background-image: url("images/background.jpg");
-}
-
-h1,h2,h3,span,p {
-    color: white;
-}
-
-input, button {
-    border-radius:8px;
-    border: 1px solid #ccc;
-}
-
-button {
-    cursor: pointer;
-}
-
 #account-form {
     display: flex;
     flex-direction: column;
@@ -182,7 +187,7 @@ button {
 
 #account-container {
     margin-top: 70px;
-    margin-bottom: 40px;
+    margin-bottom: 131px;
     margin-left: auto;
     margin-right: auto;
     width: calc(100% - 32px);
@@ -279,7 +284,6 @@ select {
     border: 1px solid #ccc;
 }
 
-/* Reusable helpers for sections and flex rows */
 .section-separator {
     margin: 20px 0;
     opacity: 0.3;
@@ -308,7 +312,6 @@ select {
     margin-left: auto;
 }
 
-/* Ensure the left text block is compact like other rows */
 .account-info.clear-history > div {
     display: flex;
     align-items: center;
@@ -327,6 +330,35 @@ select {
 
 .account-info.clear-history form {
     margin: 0 0 0 auto;
+}
+
+.footer-contato {
+    user-select:none;
+    font-weight: bolder;
+    text-align: center;
+    margin: 10px auto 10px auto;
+    color: rgb(170, 170, 170);
+    transform-origin: center;
+    display: block;
+}
+
+.footer-contato p {
+    color: rgb(170, 170, 170);
+}
+
+.footer-contato a {
+    text-decoration: none;
+    color:rgb(117, 117, 117);
+}
+
+.footer-contato span {
+    margin:5px;
+    text-decoration: underline;
+    color:rgb(117, 117, 117);
+}
+
+.footer-contato p {
+    margin:0;
 }
 
 @media (max-width: 768px) {

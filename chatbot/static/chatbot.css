@@ -101,7 +101,7 @@ body {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    margin-top:40px;
+    margin-top:10px;
 }
 
 h1 {
@@ -265,6 +265,7 @@ h1 {
     max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
+    padding-bottom: 0px;
 }
 
 .chatbot-section {
@@ -281,7 +282,7 @@ h1 {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     max-height: none;
     overflow: visible;
-    margin-top:40px;
+    margin-top:10px;
 }
 
 .investment-sidebar h2 {
@@ -467,6 +468,31 @@ h1 {
     color: red;
     text-align: center;
     margin-top: 10px;
+}
+
+.footer-contato {
+    user-select:none;
+    font-weight: bolder;
+    text-align: center;
+    margin: 10px auto 10px auto;
+    color: rgb(170, 170, 170);
+    transform-origin: center;
+    display: block;
+}
+
+.footer-contato a {
+    text-decoration: none;
+    color:rgb(117, 117, 117);
+}
+
+.footer-contato span {
+    margin:5px;
+    text-decoration: underline;
+    color:rgb(117, 117, 117);
+}
+
+.footer-contato p {
+    margin:0;
 }
 
 @media (max-width: 1024px) {

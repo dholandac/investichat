@@ -85,6 +85,35 @@ input {
     text-decoration: underline;
 }
 
+.footer-contato {
+    user-select:none;
+    font-weight: bolder;
+    text-align: center;
+    margin: 10px auto 10px auto;
+    color: rgb(170, 170, 170);
+    transform-origin: center;
+    display: block;
+}
+
+.footer-contato p {
+    color: rgb(170, 170, 170);
+}
+
+.footer-contato a {
+    text-decoration: none;
+    color:rgb(117, 117, 117);
+}
+
+.footer-contato span {
+    margin:5px;
+    text-decoration: underline;
+    color:rgb(117, 117, 117);
+}
+
+.footer-contato p {
+    margin:0;
+}
+
 @keyframes aparecer {
     from {
         margin-top:-30px;

@@ -33,25 +33,6 @@
         </div>
     </header>
     <body>
-        <script>
-            const sidebar = document.getElementById('sidebar');
-            const sidebarToggle = document.getElementById('sidebar-toggle');
-            const sidebarClose = document.querySelector('.sidebar-close');
-
-            sidebarToggle.classList.remove('hide-when-sidebar');
-
-            sidebarToggle.addEventListener('click', function() {
-                sidebar.classList.remove('sidebar-hidden');
-                sidebar.classList.add('sidebar-visible');
-                sidebarToggle.classList.add('hide-when-sidebar');
-            });
-
-            sidebarClose.addEventListener('click', function() {
-                sidebar.classList.remove('sidebar-visible');
-                sidebar.classList.add('sidebar-hidden');
-                sidebarToggle.classList.remove('hide-when-sidebar');
-            });
-        </script>
         <div id="account-container">
             {% if user.is_authenticated %}
                 <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
@@ -147,7 +128,6 @@
                     </div>
                 </form>
             </div>
-            </div>
             {% if mensagem %}
             <p id="account-feedback">{{ mensagem }}</p>
             <script>
@@ -161,8 +141,33 @@
             </script>
             {% endif %}
         </div>
+        <div class="footer-contato">
+            <p>Site feito por Daniel Holanda</p>
+            <span><a target="_blank" href="https://linkedin.com/in/daniel-holanda-campos/">LinkedIn</a></span>
+            <span>|</span>
+            <span><a target="_blank" href="https://github.com/dholandac/">Github</a></span>
+        </div>
     </body>
     <script>
+        // Script para controle da sidebar
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarClose = document.querySelector('.sidebar-close');
+
+        sidebarToggle.classList.remove('hide-when-sidebar');
+
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.remove('sidebar-hidden');
+            sidebar.classList.add('sidebar-visible');
+            sidebarToggle.classList.add('hide-when-sidebar');
+        });
+
+        sidebarClose.addEventListener('click', function() {
+            sidebar.classList.remove('sidebar-visible');
+            sidebar.classList.add('sidebar-hidden');
+            sidebarToggle.classList.remove('hide-when-sidebar');
+        });
+
         // Script para alternar entre exibição e edição dos campos
         document.addEventListener('DOMContentLoaded', function() {
             // Email
