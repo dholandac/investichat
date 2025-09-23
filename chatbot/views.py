@@ -87,7 +87,59 @@ def chat_message(request):
             # Loga o perfil atual para depuração
             logger.debug("chat_message perfil_investidor=%s user=%s", perfil_investidor, request.user.username)
 
-            # Gera resposta usando o chatbot, passando o perfil e histórico recente da conversa
+
+            # --- CONTEXTO DINÂMICO PARA O CHATBOT ---
+            # 1. Lista de ações disponíveis (do dropdown)
+            all_stocks = [
+                {"symbol": "AAPL", "name": "Apple"},
+                {"symbol": "MSFT", "name": "Microsoft"},
+                {"symbol": "TSLA", "name": "Tesla"},
+                {"symbol": "GOOG", "name": "Alphabet"},
+                {"symbol": "AMZN", "name": "Amazon"},
+                {"symbol": "META", "name": "Meta"},
+                {"symbol": "NFLX", "name": "Netflix"},
+                {"symbol": "NVDA", "name": "Nvidia"},
+                {"symbol": "BRK.B", "name": "Berkshire Hathaway"},
+                {"symbol": "JPM", "name": "JPMorgan Chase"},
+                {"symbol": "V", "name": "Visa"},
+                {"symbol": "DIS", "name": "Disney"},
+                {"symbol": "PYPL", "name": "PayPal"},
+                {"symbol": "INTC", "name": "Intel"},
+                {"symbol": "ADBE", "name": "Adobe"},
+                {"symbol": "ORCL", "name": "Oracle"},
+                {"symbol": "CSCO", "name": "Cisco"},
+                {"symbol": "PEP", "name": "PepsiCo"},
+                {"symbol": "KO", "name": "Coca-Cola"},
+                {"symbol": "MCD", "name": "McDonald's"},
+            ]
+
+            # 2. Seleção do usuário (do banco)
+            try:
+                selection = UserStockSelection.objects.get(user=request.user)
+                user_stocks = selection.get_stock_list()
+            except UserStockSelection.DoesNotExist:
+                user_stocks = []
+
+            # 3. Resumo de mercado (variação das ações selecionadas)
+            from .finnhub_client import FinnhubAPIClient
+            market_info = None
+            try:
+                api_key = os.getenv('FINNHUB_API_KEY') or os.getenv('FINNHUB_KEY')
+                if api_key and user_stocks:
+                    finnhub = FinnhubAPIClient(api_key)
+                    quotes = []
+                    for symbol in user_stocks:
+                        quote = finnhub.get_global_quote(symbol)
+                        if quote:
+                            quotes.append(quote)
+                    if quotes:
+                        market_info = "; ".join([
+                            f"{q.symbol}: {q.current_price:.2f} ({q.change:+.2f}, {q.change_percent})" for q in quotes
+                        ])
+            except Exception as e:
+                logger.warning(f"Erro ao obter market_info: {e}")
+
+            # 4. Histórico recente
             recent_history = [
                 { 'role': m.role, 'content': m.content }
                 for m in conversation.messages.all().order_by('-created_at')[:12]
@@ -95,10 +147,14 @@ def chat_message(request):
             recent_history.reverse()  # Garantir ordem cronológica do mais antigo ao mais recente
             logger.debug("chat_message history_count=%d conversation_id=%s", len(recent_history), conversation.id)
 
+            # 5. Chamada do chatbot com contexto
             bot_response = chatbot_instance.get_response(
                 user_message,
                 perfil_investidor,
-                history=recent_history
+                history=recent_history,
+                user_stocks=user_stocks,
+                all_stocks=all_stocks,
+                market_info=market_info
             )
 
             # Persiste a resposta do bot
