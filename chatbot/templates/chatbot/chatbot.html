@@ -570,6 +570,27 @@
                 });
             });
         }
+        // Desativa sidebar e botão quando o modal do questionário está ativo
+        function toggleSidebarDisabled(disabled) {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            if (sidebar) {
+                if (disabled) sidebar.classList.add('sidebar-disabled');
+                else sidebar.classList.remove('sidebar-disabled');
+            }
+            if (sidebarToggle) {
+                if (disabled) sidebarToggle.classList.add('sidebar-disabled');
+                else sidebarToggle.classList.remove('sidebar-disabled');
+            }
+        }
+        const questionnaireModal = document.getElementById('questionnaireModal');
+        if (questionnaireModal) {
+            toggleSidebarDisabled(true);
+            // Se o modal for fechado, reabilita a sidebar
+            questionnaireModal.addEventListener('transitionend', function() {
+                if (questionnaireModal.style.display === 'none') toggleSidebarDisabled(false);
+            });
+        }
     </script>
 </body>
 </html>

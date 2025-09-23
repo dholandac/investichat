@@ -517,6 +517,12 @@ h1 {
     overscroll-behavior-y: contain;
 }
 
+.sidebar-disabled, .sidebar-disabled * {
+    pointer-events: none !important;
+    opacity: 0.5 !important;
+    filter: grayscale(0.7);
+}
+
 body {
   --sb-track-color: #163b93;
   --sb-thumb-color: #ededed;
