@@ -103,7 +103,6 @@ class Chatbot:
         full_prompt += (
             "\n\nDiretriz específica para esta resposta (perfil atual: {perfil}):\n{guidance}\n"
             "Siga estritamente esta diretriz ao responder a pergunta a seguir.\n"
-            "Considere que o usuário que você vai responder a seguir tem o perfil {perfil} de investidor.\n"
             "Se o usuário perguntar qual é o perfil dele, responda que é {perfil}.\n"
         ).format(perfil=perfil, guidance=perfil_guidance)
 
