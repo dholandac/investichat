@@ -213,17 +213,6 @@ a {
     text-align: left;
 }
 
-@keyframes aparecer {
-    from {
-        margin-top:-30px;
-        opacity:0;
-    }
-    to {
-        margin-top:15px;
-        opacity:1;
-    }
-}
-
 .logout-btn {
     float: right;
     background: rgb(9, 55, 164);
@@ -252,6 +241,10 @@ a {
 #account-feedback {
     margin-bottom: 10px;
     color:white;
+}
+
+#account-feedback {
+    animation: aparecer 0.5s;
 }
 
 .account-message {
@@ -359,6 +352,45 @@ select {
 
 .footer-contato p {
     margin:0;
+}
+
+body {
+  --sb-track-color: #163b93;
+  --sb-thumb-color: #ededed;
+  --sb-size: 14px;
+}
+
+body::-webkit-scrollbar {
+  width: var(--sb-size)
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 3px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 3px;
+  
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  body {
+    scrollbar-color: var(--sb-thumb-color)
+                     var(--sb-track-color);
+  }
+}
+
+@keyframes aparecer {
+    from {
+        margin-top:-30px;
+        opacity:0;
+    }
+    to {
+        margin-top:15px;
+        opacity:1;
+    }
 }
 
 @media (max-width: 768px) {

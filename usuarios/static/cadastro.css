@@ -114,6 +114,39 @@ input {
     margin:0;
 }
 
+#user-icon {
+    float:right;
+    margin-left:5px;
+    filter: invert(1);
+}
+
+body {
+  --sb-track-color: #163b93;
+  --sb-thumb-color: #ededed;
+  --sb-size: 14px;
+}
+
+body::-webkit-scrollbar {
+  width: var(--sb-size)
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 3px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 3px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  body {
+    scrollbar-color: var(--sb-thumb-color)
+                     var(--sb-track-color);
+  }
+}
+
 @keyframes aparecer {
     from {
         margin-top:-30px;
@@ -123,10 +156,4 @@ input {
         margin-top:15px;
         opacity:1;
     }
-}
-
-#user-icon {
-    float:right;
-    margin-left:5px;
-    filter: invert(1);
 }

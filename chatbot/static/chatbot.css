@@ -495,6 +495,55 @@ h1 {
     margin:0;
 }
 
+#investment-header {
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+#investment-header h2 {
+    margin: 0;
+}
+
+#investment-dropdown {
+    margin-left: 10px; 
+    position: relative; 
+    min-width: 180px;
+}
+
+#chat-messages {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+}
+
+body {
+  --sb-track-color: #163b93;
+  --sb-thumb-color: #ededed;
+  --sb-size: 14px;
+}
+
+body::-webkit-scrollbar {
+  width: var(--sb-size)
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 3px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 3px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  body {
+    scrollbar-color: var(--sb-thumb-color)
+                     var(--sb-track-color);
+  }
+}
+
 @media (max-width: 1024px) {
     .main-container {
         flex-direction: column;
@@ -569,9 +618,4 @@ h1 {
     .investment-sidebar h2 {
         font-size: 1.25em;
     }
-}
-
-#chat-messages {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
 }

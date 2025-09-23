@@ -1,3 +1,5 @@
+from .models import UserStockSelection
+from django.views.decorators.http import require_POST
 from django.shortcuts import render
 import logging
 from django.contrib.auth.decorators import login_required
@@ -117,3 +119,29 @@ def chat_message(request):
             return JsonResponse({'error': f'Erro interno: {str(e)}'}, status=500)
     
     return JsonResponse({'error': 'Método não permitido'}, status=405)
+
+# Endpoint para salvar seleção de ações do usuário
+@csrf_exempt
+@login_required(login_url="/auth/login/")
+@require_POST
+def save_stock_selection(request):
+    try:
+        data = json.loads(request.body)
+        stocks = data.get('stocks', [])
+        if not isinstance(stocks, list):
+            return JsonResponse({'error': 'Formato inválido'}, status=400)
+        selection, _ = UserStockSelection.objects.get_or_create(user=request.user)
+        selection.set_stock_list(stocks)
+        return JsonResponse({'status': 'success'})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+# Endpoint para retornar seleção de ações salva do usuário
+@csrf_exempt
+@login_required(login_url="/auth/login/")
+def get_stock_selection(request):
+    try:
+        selection, _ = UserStockSelection.objects.get_or_create(user=request.user)
+        return JsonResponse({'stocks': selection.get_stock_list()})
+    except Exception as e:
+        return JsonResponse({'stocks': [], 'error': str(e)}, status=500)

@@ -20,7 +20,7 @@
         </div>
     </header>
     <body>
-        <form action="{% url 'login' %}" method="POST" id="login-form">{% csrf_token %}
+        <form id="login-form" action="{% url 'login' %}" method="POST">{% csrf_token %}
             <h1 id="login-title">Login</h1>
             <span>Usuário:</span><input type="text" name="username"/>
             <br>
@@ -30,7 +30,9 @@
             <br>
             <a href="{% url 'cadastro' %}"><span id="login-sugestao">Não tem conta? Cadastre-se aqui!</span></a>
             {% if mensagem %}
-            <p id="login-feedback">{{ mensagem }}</p>
+            <div style="position: relative; height: 0;">
+                <p id="login-feedback" style="position: absolute; top: 0px; left: 50%; transform: translateX(-50%); max-width: 90vw; min-width: 200px; width: max-content; background: #ffe0e0; color: #b00; padding: 6px 16px; border-radius: 6px; z-index: 10; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">{{ mensagem }}</p>
+            </div>
             <script>
                 setTimeout(function() {
                 document.getElementById('login-feedback').style.display = 'none';
