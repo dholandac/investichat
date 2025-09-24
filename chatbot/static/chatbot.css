@@ -85,8 +85,8 @@ a {
 }
 
 html {
-    background-color: rgb(26, 26, 26);
-    background-image: url("images/background.jpg");
+    background: #002066;
+    background: linear-gradient(90deg, rgba(0, 32, 102, 1) 0%, rgba(0, 21, 59, 1) 35%, rgba(0, 50, 82, 1) 100%);
 }
 
 body {
