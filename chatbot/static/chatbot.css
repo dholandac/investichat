@@ -523,6 +523,14 @@ h1 {
     filter: grayscale(0.7);
 }
 
+#img-dropdown {
+    cursor: pointer;
+    margin-top: -37px;
+    float: right;
+    margin-right:10px;
+    pointer-events: none;
+}
+
 body {
   --sb-track-color: #163b93;
   --sb-thumb-color: #ededed;
@@ -624,4 +632,16 @@ body::-webkit-scrollbar-thumb {
     .investment-sidebar h2 {
         font-size: 1.25em;
     }
+}
+
+.dropdown-selected {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    cursor: pointer;
+    min-width: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }

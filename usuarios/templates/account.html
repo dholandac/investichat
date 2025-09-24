@@ -112,22 +112,6 @@
                     <button type="submit" class="clear-history-btn">Limpar</button>
                 </form>
             </div>
-            <div class="account-info" id="password-edit-row" style="display:none;">
-                <form method="post" style="display:flex; flex-direction:column; gap:10px; width:100%;">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="update_password" />
-                    <label>Senha atual:</label>
-                    <input type="password" name="senha_atual" placeholder="Senha atual" required />
-                    <label>Nova senha:</label>
-                    <input type="password" name="nova_senha" placeholder="Nova senha" required />
-                    <label>Confirme a nova senha:</label>
-                    <input type="password" name="confirma_senha" placeholder="Confirme a nova senha" required />
-                    <div style="display:flex; gap:10px;">
-                        <button type="submit">Salvar</button>
-                        <button id="account-password-cancel" type="button">Cancelar</button>
-                    </div>
-                </form>
-            </div>
             {% if mensagem %}
             <div style="position: relative; height: 0;">
                 <p id="account-feedback" style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); max-width: 90vw; min-width: 200px; width: max-content; background: #ffe0e0; color: #b00; padding: 6px 16px; border-radius: 6px; z-index: 10; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">{{ mensagem }}</p>
