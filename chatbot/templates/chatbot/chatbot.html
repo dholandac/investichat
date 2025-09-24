@@ -51,7 +51,7 @@
                             {% for m in history %}
                                 {% if m.role == 'bot' %}
                                     <div class="message bot-message">
-                                        <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom:10px;" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>{{ m.content|linebreaks }}
+                                        <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom:10px;" src="{% static 'images/bot.png' %}"><strong>InvestiChat:</strong><br>{{ m.content|linebreaks }}
                                     </div>
                                 {% else %}
                                     <div class="message user-message" style="background-color:#e3f2fd; text-align:right; margin-bottom:10px; padding:8px;">
@@ -62,7 +62,7 @@
                             <!-- Mensagem inicial padrão se não houver histórico -->
                         {% else %}
                             <div class="message bot-message">
-                                <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong>
+                                <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/bot.png' %}"><strong>InvestiChat:</strong>
                                 <br>Olá! Sou seu assistente de investimentos. Como posso ajudá-lo hoje?
                             </div>
                         {% endif %}
@@ -245,7 +245,7 @@
                     .replace(/\n{2,}/g, '</p><p>')
                     .replace(/\n/g, '<br>');
                 formatted = `<p>${formatted}</p>`;
-                messageDiv.innerHTML = `<img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>${formatted}`;
+                messageDiv.innerHTML = `<img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/bot.png' %}"><strong>InvestiChat:</strong><br>${formatted}`;
             }
             
             chatMessages.appendChild(messageDiv);
@@ -256,20 +256,28 @@
         const chatBox = document.getElementById('chat-messages');
         let conversationId = chatBox && chatBox.dataset && chatBox.dataset.conversationId ? parseInt(chatBox.dataset.conversationId) : null;
 
+        function showBotLoading() {
+            if (document.getElementById('bot-loading-msg')) return;
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot-message';
+            loadingDiv.id = 'bot-loading-msg';
+            loadingDiv.innerHTML = `<img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/bot.png' %}"><strong>InvestiChat:</strong><br><img src="{% static 'images/loading.svg' %}" alt="Carregando..." style="width:32px;vertical-align:middle;"> <span style="color:#888;">Escrevendo...</span>`;
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeBotLoading() {
+            const old = document.getElementById('bot-loading-msg');
+            if (old) old.remove();
+        }
+
         function sendMessage() {
             const message = userInput.value.trim();
             if (!message) return;
-
-            // Adiciona mensagem do usuário
             addMessage(message, true);
-            
-            // Limpa o input
             userInput.value = '';
-            
-            // Desabilita o botão durante o envio
             sendButton.disabled = true;
-
-            // Envia para o backend
+            showBotLoading();
             fetch('/chatbot/chat/', {
                 method: 'POST',
                 headers: {
@@ -279,6 +287,7 @@
             })
             .then(response => response.json())
             .then(data => {
+                removeBotLoading();
                 if (data.status === 'success') {
                     addMessage(data.response);
                     if (data.conversation_id) {
@@ -290,6 +299,7 @@
                 }
             })
             .catch(error => {
+                removeBotLoading();
                 console.error('Erro:', error);
                 addMessage('Erro de conexão. Tente novamente.');
             })
