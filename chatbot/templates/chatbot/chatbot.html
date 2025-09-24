@@ -51,7 +51,7 @@
                             {% for m in history %}
                                 {% if m.role == 'bot' %}
                                     <div class="message bot-message">
-                                        <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom:10px;" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>{{ m.content|linebreaksbr }}
+                                        <img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom:10px;" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>{{ m.content|linebreaks }}
                                     </div>
                                 {% else %}
                                     <div class="message user-message" style="background-color:#e3f2fd; text-align:right; margin-bottom:10px; padding:8px;">
@@ -81,7 +81,7 @@
                 <h2>Mercado</h2>
                 <div id="investment-dropdown">
                     <div id="custom-dropdown" class="custom-dropdown">
-                        <div class="dropdown-selected" id="dropdown-selected">Alterar ações</div><img id="img-dropdown" src="{% static 'images/arrowdown.png' %}" alt="Mercado" width="32" height="32">
+                        <div class="dropdown-selected" id="dropdown-selected">Alterar ações</div><img id="img-dropdown" src="{% static 'images/arrowdown.png' %}" alt="Mercado" width="26" height="26">
                         <div class="dropdown-list" id="dropdown-list" style="display:none;">
                             <label><input type="checkbox" value="AAPL" checked> Apple (AAPL)</label>
                             <label><input type="checkbox" value="MSFT" checked> Microsoft (MSFT)</label>
@@ -239,7 +239,13 @@
                 messageDiv.innerHTML = `<strong>Você:</strong> ${message}`;
             } else {
                 messageDiv.style.backgroundColor = "#f1f8e9";
-                messageDiv.innerHTML = `<img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>${message}`;
+                // Converte \n\n ou <br> duplos em parágrafos
+                let formatted = message
+                    .replace(/\r\n/g, '\n')
+                    .replace(/\n{2,}/g, '</p><p>')
+                    .replace(/\n/g, '<br>');
+                formatted = `<p>${formatted}</p>`;
+                messageDiv.innerHTML = `<img width="35" height="35" style="vertical-align: middle; margin-right: 8px; margin-bottom: 7px" src="{% static 'images/moneybot.png' %}"><strong>InvestiChat:</strong><br>${formatted}`;
             }
             
             chatMessages.appendChild(messageDiv);
@@ -592,6 +598,12 @@
             });
         }
     </script>
+    <style>
+        .bot-message p {
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+    </style>
 </body>
 </html>
 
