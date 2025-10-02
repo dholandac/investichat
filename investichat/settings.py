@@ -15,6 +15,11 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
+# CSRF trusted origins para produção Railway
+CSRF_TRUSTED_ORIGINS = [
+    'https://investichat-production.up.railway.app',
+]
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
