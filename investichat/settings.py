@@ -17,7 +17,7 @@ load_dotenv()
 
 # CSRF trusted origins para produção Railway
 CSRF_TRUSTED_ORIGINS = [
-    'https://investichat-production.up.railway.app',
+    'https://investichat.up.railway.app',
 ]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,7 +35,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'investichat-production.up.railway.app',
+    'investichat.up.railway.app',
 ]
 
 
