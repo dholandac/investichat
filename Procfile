@@ -1,0 +1,1 @@
+web: gunicorn investichat.wsgi --log-file -
