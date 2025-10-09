@@ -1,7 +1,3 @@
-"""
-Views para lidar com dados de investimento usando a API do Finnhub.
-"""
-
 import os
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -13,19 +9,11 @@ from .finnhub_client import FinnhubAPIClient
 
 
 def get_api_key():
-    """
-    Obtém a chave da API do Finnhub das variáveis de ambiente.
-    Para demonstração, usa uma chave limitada se não estiver configurada.
-    """
     # Tenta obter a chave das variáveis de ambiente
     api_key = os.getenv('FINNHUB_API_KEY')
     
     # Se não encontrar, usa a chave demo (limitada)
     if not api_key:
-        # Aviso: token público de demonstração do Finnhub não existe como no Alpha Vantage.
-        # Deixar vazio resultará em erro 401. Para evitar quebra total em dev,
-        # retornamos uma string placeholder que o backend vai tentar usar e logar erro; 
-        # oriente configurar FINNHUB_API_KEY no .env.
         api_key = 'YOUR_FINNHUB_TOKEN_HERE'
     
     return api_key
@@ -45,13 +33,9 @@ def get_investment_data(request):
         
         # Lista de ativos relevantes para brasileiros
         symbols = [
-            # Observação: alguns símbolos locais podem exigir planos/feeds específicos no Finnhub.
-            # Mantemos alguns globais com boa chance de cobertura.
             'AAPL',      # Apple (NASDAQ)
             'MSFT',      # Microsoft (NASDAQ)
             'TSLA',      # Tesla
-            # Você pode reintroduzir PETR4.SA/VALE3.SA/ITUB4.SA/BBDC4.SA caso seu token tenha cobertura B3
-            # 'PETR4.SA', 'VALE3.SA', 'ITUB4.SA', 'BBDC4.SA'
         ]
         
         investment_data = {
