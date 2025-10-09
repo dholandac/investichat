@@ -4,9 +4,7 @@ import requests
 
 
 class StockQuote:
-    """
-    Representa uma cotação de ativo individual (mapeada a partir do Finnhub /quote).
-    """
+    # Representa uma cotação de ativo individual (mapeada a partir do Finnhub /quote).
 
     def __init__(self, symbol: str, data: Dict):
         self.symbol = symbol or ''
@@ -121,9 +119,7 @@ class FinnhubAPIClient:
             return None
 
     def get_global_quote(self, symbol: str) -> Optional[StockQuote]:
-        """
-        Tenta obter cotação direto; em caso de erro 4xx/zeros, tenta resolver símbolo via /search.
-        """
+        # Tenta obter cotação direto; em caso de erro 4xx/zeros, tenta resolver símbolo via /search.
         try:
             data = self._get('/quote', {'symbol': symbol})
             if data and not (data.get('c') in (None, 0) and data.get('pc') in (None, 0)):
@@ -234,7 +230,6 @@ class FinnhubAPIClient:
         return uniq
 
     def get_time_series_intraday(self, symbol: str, interval: str = '5min') -> List[TimeSeriesData]:
-        # Mapear intervalo do padrão Alpha Vantage para resolução Finnhub
         mapping = {
             '1min': '1',
             '5min': '5',
