@@ -1,1 +1,1 @@
-web: gunicorn investichat.wsgi --log-file -
+web: python manage.py collectstatic --noinput && gunicorn core.wsgi --log-file -
