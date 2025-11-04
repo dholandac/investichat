@@ -41,10 +41,17 @@ class UserStockSelection(models.Model):
 	updated_at = models.DateTimeField(auto_now=True)
 
 	def get_stock_list(self):
-		return [s for s in self.selected_stocks.split(',') if s]
+		"""Retorna lista de símbolos de ações"""
+		if not self.selected_stocks:
+			return []
+		return [s.strip() for s in self.selected_stocks.split(',') if s.strip()]
 
 	def set_stock_list(self, stock_list):
-		self.selected_stocks = ','.join(stock_list)
+		"""Define lista de símbolos de ações"""
+		if isinstance(stock_list, list):
+			self.selected_stocks = ','.join([s.strip() for s in stock_list if s.strip()])
+		else:
+			self.selected_stocks = ''
 		self.save()
 
 	def __str__(self):

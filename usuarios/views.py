@@ -130,33 +130,28 @@ def account(request):
 
 @login_required(login_url="/auth/login/")
 def questionario_perfil(request):
+    from chatbot.forms import QuestionarioPerfil
+    
     user_profile, created = PerfilUsuario.objects.get_or_create(user=request.user)
 
     if user_profile.questionario_completo:
-        return redirect("chatbot") # Redireciona para o chatbot se o questionário já foi preenchido
+        return redirect("chatbot")  # Redireciona para o chatbot se o questionário já foi preenchido
 
     if request.method == "POST":
-        pontuacao = 0
-        for i in range(1, 11):
-            resposta = request.POST.get(f'pergunta_{i}')
-            if resposta == 'A':
-                pontuacao += 1
-            elif resposta == 'B':
-                pontuacao += 2
-            elif resposta == 'C':
-                pontuacao += 3
+        form = QuestionarioPerfil(request.POST)
         
-        if 10 <= pontuacao <= 16:
-            perfil = 'CONSERVADOR'
-        elif 17 <= pontuacao <= 23:
-            perfil = 'MODERADO'
+        if form.is_valid():
+            perfil = form.calcular_perfil()
+            
+            if perfil:
+                user_profile.perfil_investidor = perfil.upper()
+                user_profile.questionario_completo = True
+                user_profile.save()
+                
+                return JsonResponse({"success": True, "perfil": perfil})
+            else:
+                return JsonResponse({"success": False, "error": "Erro ao calcular perfil"}, status=400)
         else:
-            perfil = 'AGRESSIVO'
-
-        user_profile.perfil_investidor = perfil
-        user_profile.questionario_completo = True
-        user_profile.save()
-
-        return JsonResponse({"success": True, "perfil": perfil})
+            return JsonResponse({"success": False, "error": "Formulário inválido"}, status=400)
 
     return render(request, "usuarios/questionario_perfil.html")

@@ -1,0 +1,26 @@
+{% load static chatbot_filters %}
+
+<div id="investment-header">
+    <h2>Mercado</h2>
+    <div id="investment-dropdown">
+        {% load chatbot_tags %}
+        {% stock_dropdown %}
+    </div>
+</div>
+
+<div id="investment-data">
+    {% if investment_quotes %}
+        {% for quote in investment_quotes %}
+        <div class="investment-card">
+            <h3>{{ quote.symbol|get_symbol_name }} ({{ quote.symbol }})</h3>
+            <div class="price-info">
+                <span class="current-price">R$ {{ quote.current_price|format_price }}</span>
+                {{ quote.change|format_change:quote.change_percent|safe }}
+            </div>
+            <small>Último: {{ quote.latest_trading_day }}</small>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="loading">Carregando dados de investimento...</div>
+    {% endif %}
+</div>

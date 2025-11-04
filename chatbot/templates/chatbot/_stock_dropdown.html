@@ -1,0 +1,52 @@
+{% load static %}
+<div id="custom-dropdown" class="custom-dropdown">
+    <div class="dropdown-selected" id="dropdown-selected">Alterar ações</div>
+    <img id="img-dropdown" src="{% static 'images/arrowdown.png' %}" alt="Mercado" width="26" height="26">
+    <div class="dropdown-list" id="dropdown-list" style="display:none;">
+        {% for stock in all_stocks %}
+        <label>
+            <input type="checkbox" 
+                   value="{{ stock.value }}" 
+                   {% if stock.value in selected_stocks %}checked{% endif %}>
+            {{ stock.name }}
+        </label>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.custom-dropdown { position: relative; user-select: none; }
+.dropdown-selected { 
+    background: #fff; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    padding: 8px; 
+    cursor: pointer; 
+    min-width: 160px; 
+}
+.dropdown-list { 
+    display: none; 
+    position: absolute; 
+    top: 110%; 
+    left: 0; 
+    background: #fff; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12); 
+    z-index: 1000; 
+    min-width: 180px; 
+    max-height: 220px; 
+    overflow-y: auto; 
+}
+.dropdown-list label { 
+    display: block; 
+    padding: 6px 12px; 
+    cursor: pointer; 
+}
+.dropdown-list label:hover { 
+    background: #f0f4ff; 
+}
+.dropdown-list input[type=checkbox] { 
+    margin-right: 8px; 
+}
+</style>

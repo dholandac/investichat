@@ -1,0 +1,18 @@
+{% load chatbot_filters %}
+{% if investment_quotes %}
+    {% for quote in investment_quotes %}
+    <div class="investment-card">
+        <h3>{{ quote.symbol|get_symbol_name }} ({{ quote.symbol }})</h3>
+        <div class="price-info">
+            <span class="current-price">R$ {{ quote.current_price|format_price }}</span>
+            {{ quote.change|format_change:quote.change_percent|safe }}
+        </div>
+        <small>Último: {{ quote.latest_trading_day }}</small>
+    </div>
+    {% endfor %}
+    {% if last_updated %}
+    <div class="last-updated">Atualizado: {{ last_updated }}</div>
+    {% endif %}
+{% else %}
+    <div class="error">Nenhum dado disponível no momento.</div>
+{% endif %}

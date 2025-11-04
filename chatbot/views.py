@@ -32,6 +32,7 @@ from usuarios.models import PerfilUsuario
 def chatbot(request):
     user_profile, created = PerfilUsuario.objects.get_or_create(user=request.user)
     show_questionnaire = not user_profile.questionario_completo
+    
     # Busca ou cria a conversa mais recente do usuário
     conversation = Conversation.objects.filter(user=request.user).order_by('-updated_at').first()
     if not conversation:
@@ -39,11 +40,41 @@ def chatbot(request):
 
     # Carrega últimas 50 mensagens para exibir no template
     messages = list(conversation.messages.all().order_by('created_at')[:50])
+    
+    # Busca cotações das ações selecionadas
+    investment_quotes = []
+    try:
+        selection = UserStockSelection.objects.get(user=request.user)
+        user_stocks = selection.get_stock_list()
+        
+        from .finnhub_client import FinnhubAPIClient
+        api_key = os.getenv('FINNHUB_API_KEY') or os.getenv('FINNHUB_KEY')
+        
+        if api_key and user_stocks:
+            finnhub = FinnhubAPIClient(api_key)
+            for symbol in user_stocks:
+                try:
+                    quote = finnhub.get_global_quote(symbol)
+                    if quote:
+                        investment_quotes.append({
+                            'symbol': quote.symbol,
+                            'current_price': quote.current_price,
+                            'change': quote.change,
+                            'change_percent': quote.change_percent,
+                            'latest_trading_day': quote.latest_trading_day,
+                        })
+                except Exception as e:
+                    logger.warning(f"Erro ao buscar cotação para {symbol}: {e}")
+    except UserStockSelection.DoesNotExist:
+        pass
 
+    from datetime import datetime
     return render(request, 'chatbot/chatbot.html', {
         'show_questionnaire': show_questionnaire,
         'conversation_id': conversation.id,
         'history': messages,
+        'investment_quotes': investment_quotes,
+        'last_updated': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
     })
 
 # Rota para processar mensagens do usuário e retornar respostas do chatbot
@@ -201,3 +232,69 @@ def get_stock_selection(request):
         return JsonResponse({'stocks': selection.get_stock_list()})
     except Exception as e:
         return JsonResponse({'stocks': [], 'error': str(e)}, status=500)
+
+
+@login_required(login_url="/auth/login/")
+def refresh_investment_panel(request):
+    """
+    View HTMX para atualizar o painel de investimentos sem recarregar a página
+    Retorna apenas o HTML do painel de investimentos
+    """
+    investment_quotes = []
+    try:
+        selection = UserStockSelection.objects.get(user=request.user)
+        user_stocks = selection.get_stock_list()
+        
+        from .finnhub_client import FinnhubAPIClient
+        api_key = os.getenv('FINNHUB_API_KEY') or os.getenv('FINNHUB_KEY')
+        
+        if api_key and user_stocks:
+            finnhub = FinnhubAPIClient(api_key)
+            for symbol in user_stocks:
+                try:
+                    quote = finnhub.get_global_quote(symbol)
+                    if quote:
+                        investment_quotes.append({
+                            'symbol': quote.symbol,
+                            'current_price': quote.current_price,
+                            'change': quote.change,
+                            'change_percent': quote.change_percent,
+                            'latest_trading_day': quote.latest_trading_day,
+                        })
+                except Exception as e:
+                    logger.warning(f"Erro ao buscar cotação para {symbol}: {e}")
+    except UserStockSelection.DoesNotExist:
+        # Se não houver seleção, usa valores padrão
+        user_stocks = ['AAPL', 'MSFT', 'TSLA']
+        from .finnhub_client import FinnhubAPIClient
+        api_key = os.getenv('FINNHUB_API_KEY') or os.getenv('FINNHUB_KEY')
+        
+        if api_key:
+            finnhub = FinnhubAPIClient(api_key)
+            for symbol in user_stocks:
+                try:
+                    quote = finnhub.get_global_quote(symbol)
+                    if quote:
+                        investment_quotes.append({
+                            'symbol': quote.symbol,
+                            'current_price': quote.current_price,
+                            'change': quote.change,
+                            'change_percent': quote.change_percent,
+                            'latest_trading_day': quote.latest_trading_day,
+                        })
+                except Exception as e:
+                    logger.warning(f"Erro ao buscar cotação para {symbol}: {e}")
+    
+    # Se for requisição HTMX ou tiver o header HX-Request, retorna HTML
+    if request.headers.get('HX-Request') or request.headers.get('Hx-Request'):
+        from datetime import datetime
+        return render(request, 'chatbot/_investment_quotes.html', {
+            'investment_quotes': investment_quotes,
+            'last_updated': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+        })
+    
+    # Senão retorna JSON (compatibilidade)
+    return JsonResponse({
+        'status': 'success',
+        'investment_quotes': investment_quotes,
+    })

@@ -10,5 +10,6 @@ urlpatterns = [
     path('time-series/<str:symbol>/', investment_views.get_time_series, name='time_series'),
     path('save-stock-selection/', views.save_stock_selection, name='save_stock_selection'),
     path('get-stock-selection/', views.get_stock_selection, name='get_stock_selection'),
+    path('refresh-investment/', views.refresh_investment_panel, name='refresh_investment_panel'),
 ]
 

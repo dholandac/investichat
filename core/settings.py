@@ -18,6 +18,8 @@ load_dotenv()
 # CSRF trusted origins para produção Railway
 CSRF_TRUSTED_ORIGINS = [
     'https://investichat.up.railway.app',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
 ]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,10 +34,13 @@ import os
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'investichat.up.railway.app',
+    'localhost',
+    '127.0.0.1',
+    '[::1]',
 ]
 
 
@@ -75,6 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'chatbot.context_processors.stock_choices',  # Context processor personalizado
             ],
         },
     },
