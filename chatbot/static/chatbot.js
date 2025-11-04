@@ -36,6 +36,27 @@
         : null;
 
     // ========================================
+    // NOTIFICAÇÕES TOAST
+    // ========================================
+    
+    function showNotification(message, type = 'error') {
+        const container = document.getElementById('notification-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `notification-toast ${type}`;
+        toast.textContent = message;
+        
+        container.appendChild(toast);
+        
+        // Remove após 3 segundos
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // ========================================
     // CHAT: FUNÇÕES PRINCIPAIS
     // ========================================
     
@@ -117,12 +138,14 @@
                     }
                 }
             } else {
-                addMessage('Erro: ' + (data.error || 'Erro desconhecido'));
+                // Mostra notificação ao invés de adicionar ao chat
+                showNotification(data.error || 'Erro ao processar mensagem', 'error');
             }
         } catch (error) {
             removeBotLoading();
             console.error('Erro:', error);
-            addMessage('Erro de conexão. Tente novamente.');
+            // Mostra notificação ao invés de adicionar ao chat
+            showNotification('Erro de conexão. Tente novamente.', 'error');
         } finally {
             elements.sendButton.disabled = false;
         }

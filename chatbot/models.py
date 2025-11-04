@@ -12,6 +12,10 @@ class Conversation(models.Model):
 
 	class Meta:
 		ordering = ['-updated_at']
+		indexes = [
+			models.Index(fields=['user', '-updated_at']),  # Query mais comum: buscar conversas do usuário
+			models.Index(fields=['-created_at']),
+		]
 
 	def __str__(self) -> str:
 		return self.title or f"Conversa de {self.user.username} em {self.created_at:%Y-%m-%d %H:%M}"
@@ -30,6 +34,10 @@ class Message(models.Model):
 
 	class Meta:
 		ordering = ['created_at']
+		indexes = [
+			models.Index(fields=['conversation', 'created_at']),  # Buscar mensagens de uma conversa
+			models.Index(fields=['conversation', '-created_at']),  # Ordem reversa
+		]
 
 	def __str__(self) -> str:
 		return f"{self.role}: {self.content[:40]}"

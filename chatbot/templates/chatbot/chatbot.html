@@ -36,6 +36,9 @@
         </div>
     </header>
     
+    <!-- Container para notificações toast -->
+    <div id="notification-container"></div>
+    
     <div class="main-container">
         <div class="chatbot-section">
             <div class="container">
@@ -78,6 +81,9 @@
     {% if show_questionnaire %}
         {% include 'chatbot/_questionnaire_modal.html' %}
     {% endif %}
+    
+    <!-- CSRF Token para JavaScript -->
+    {% csrf_token %}
     
     <div class="footer-contato">
         <p>Site feito por Daniel Holanda</p>

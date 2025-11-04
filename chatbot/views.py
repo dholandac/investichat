@@ -4,7 +4,8 @@ from django.shortcuts import render
 import logging
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.core.cache import cache
+from django.views.decorators.csrf import ensure_csrf_cookie
 import json
 import os
 from dotenv import load_dotenv
@@ -17,6 +18,43 @@ load_dotenv()
 # Logger para depuração
 logger = logging.getLogger(__name__)
 
+# Função para buscar cotação com cache (60s)
+def get_stock_quote_cached(symbol, api_key):
+    """
+    Busca cotação com cache de 60 segundos.
+    O JavaScript atualiza a cada 30s, então teremos:
+    - 0s: API call (1-2s)
+    - 30s: Cache hit (50ms) 
+    - 60s: Cache expirado, nova API call
+    Economiza ~66% das chamadas à API!
+    """
+    cache_key = f'stock_quote_{symbol}'
+    quote_data = cache.get(cache_key)
+    
+    if quote_data is None:
+        # Cache miss - busca da API
+        from .finnhub_client import FinnhubAPIClient
+        finnhub = FinnhubAPIClient(api_key)
+        quote = finnhub.get_global_quote(symbol)
+        
+        if quote:
+            quote_data = {
+                'symbol': quote.symbol,
+                'current_price': quote.current_price,
+                'change': quote.change,
+                'change_percent': quote.change_percent,
+                'latest_trading_day': quote.latest_trading_day,
+            }
+            # Armazena no cache por 60 segundos
+            cache.set(cache_key, quote_data, timeout=60)
+            logger.debug(f"Cache MISS para {symbol} - buscado da API")
+        else:
+            return None
+    else:
+        logger.debug(f"Cache HIT para {symbol} - retornado do cache")
+    
+    return quote_data
+
 # Instância global do chatbot (pode ser melhorada com cache ou sessão)
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 if GEMINI_API_KEY:
@@ -28,41 +66,37 @@ else:
 # Bloqueia o acesso do usuário caso ele não esteja logado, o enviando de volta para a página de login
 from usuarios.models import PerfilUsuario
 
+@ensure_csrf_cookie
 @login_required(login_url="/auth/login/")
 def chatbot(request):
     user_profile, created = PerfilUsuario.objects.get_or_create(user=request.user)
     show_questionnaire = not user_profile.questionario_completo
     
-    # Busca ou cria a conversa mais recente do usuário
-    conversation = Conversation.objects.filter(user=request.user).order_by('-updated_at').first()
+    # Busca ou cria a conversa mais recente do usuário (COM PREFETCH!)
+    conversation = Conversation.objects.filter(
+        user=request.user
+    ).prefetch_related('messages').order_by('-updated_at').first()
+    
     if not conversation:
         conversation = Conversation.objects.create(user=request.user, title='Conversa atual')
 
-    # Carrega últimas 50 mensagens para exibir no template
+    # Carrega últimas 50 mensagens (já foram carregadas com prefetch_related)
     messages = list(conversation.messages.all().order_by('created_at')[:50])
     
-    # Busca cotações das ações selecionadas
+    # Busca cotações das ações selecionadas COM CACHE
     investment_quotes = []
     try:
         selection = UserStockSelection.objects.get(user=request.user)
         user_stocks = selection.get_stock_list()
         
-        from .finnhub_client import FinnhubAPIClient
         api_key = os.getenv('FINNHUB_API_KEY') or os.getenv('FINNHUB_KEY')
         
         if api_key and user_stocks:
-            finnhub = FinnhubAPIClient(api_key)
             for symbol in user_stocks:
                 try:
-                    quote = finnhub.get_global_quote(symbol)
-                    if quote:
-                        investment_quotes.append({
-                            'symbol': quote.symbol,
-                            'current_price': quote.current_price,
-                            'change': quote.change,
-                            'change_percent': quote.change_percent,
-                            'latest_trading_day': quote.latest_trading_day,
-                        })
+                    quote_data = get_stock_quote_cached(symbol, api_key)
+                    if quote_data:
+                        investment_quotes.append(quote_data)
                 except Exception as e:
                     logger.warning(f"Erro ao buscar cotação para {symbol}: {e}")
     except UserStockSelection.DoesNotExist:
@@ -78,7 +112,6 @@ def chatbot(request):
     })
 
 # Rota para processar mensagens do usuário e retornar respostas do chatbot
-@csrf_exempt
 @login_required(login_url="/auth/login/")
 def chat_message(request):
     if request.method == 'POST':
@@ -179,14 +212,19 @@ def chat_message(request):
             logger.debug("chat_message history_count=%d conversation_id=%s", len(recent_history), conversation.id)
 
             # 5. Chamada do chatbot com contexto
-            bot_response = chatbot_instance.get_response(
-                user_message,
-                perfil_investidor,
-                history=recent_history,
-                user_stocks=user_stocks,
-                all_stocks=all_stocks,
-                market_info=market_info
-            )
+            try:
+                bot_response = chatbot_instance.get_response(
+                    user_message,
+                    perfil_investidor,
+                    history=recent_history,
+                    user_stocks=user_stocks,
+                    all_stocks=all_stocks,
+                    market_info=market_info
+                )
+            except Exception as e:
+                # Erro da API Gemini - retorna mensagem simplificada
+                logger.error(f"Erro ao gerar resposta do chatbot: {e}")
+                return JsonResponse({'error': str(e)}, status=503)
 
             # Persiste a resposta do bot
             Message.objects.create(conversation=conversation, role='bot', content=bot_response)
@@ -208,23 +246,25 @@ def chat_message(request):
     return JsonResponse({'error': 'Método não permitido'}, status=405)
 
 # Endpoint para salvar seleção de ações do usuário
-@csrf_exempt
 @login_required(login_url="/auth/login/")
 @require_POST
 def save_stock_selection(request):
     try:
+        logger.debug(f"save_stock_selection - Method: {request.method}, CSRF: {request.META.get('HTTP_X_CSRFTOKEN', 'NOT FOUND')}")
         data = json.loads(request.body)
         stocks = data.get('stocks', [])
+        logger.debug(f"save_stock_selection - Stocks: {stocks}")
         if not isinstance(stocks, list):
             return JsonResponse({'error': 'Formato inválido'}, status=400)
         selection, _ = UserStockSelection.objects.get_or_create(user=request.user)
         selection.set_stock_list(stocks)
+        logger.debug(f"save_stock_selection - Success")
         return JsonResponse({'status': 'success'})
     except Exception as e:
+        logger.error(f"save_stock_selection - Error: {str(e)}")
         return JsonResponse({'error': str(e)}, status=500)
     
 # Endpoint para retornar seleção de ações salva do usuário
-@csrf_exempt
 @login_required(login_url="/auth/login/")
 def get_stock_selection(request):
     try:
@@ -239,49 +279,34 @@ def refresh_investment_panel(request):
     """
     View HTMX para atualizar o painel de investimentos sem recarregar a página
     Retorna apenas o HTML do painel de investimentos
+    USA CACHE para economizar chamadas à API!
     """
     investment_quotes = []
     try:
         selection = UserStockSelection.objects.get(user=request.user)
         user_stocks = selection.get_stock_list()
         
-        from .finnhub_client import FinnhubAPIClient
         api_key = os.getenv('FINNHUB_API_KEY') or os.getenv('FINNHUB_KEY')
         
         if api_key and user_stocks:
-            finnhub = FinnhubAPIClient(api_key)
             for symbol in user_stocks:
                 try:
-                    quote = finnhub.get_global_quote(symbol)
-                    if quote:
-                        investment_quotes.append({
-                            'symbol': quote.symbol,
-                            'current_price': quote.current_price,
-                            'change': quote.change,
-                            'change_percent': quote.change_percent,
-                            'latest_trading_day': quote.latest_trading_day,
-                        })
+                    quote_data = get_stock_quote_cached(symbol, api_key)
+                    if quote_data:
+                        investment_quotes.append(quote_data)
                 except Exception as e:
                     logger.warning(f"Erro ao buscar cotação para {symbol}: {e}")
     except UserStockSelection.DoesNotExist:
         # Se não houver seleção, usa valores padrão
         user_stocks = ['AAPL', 'MSFT', 'TSLA']
-        from .finnhub_client import FinnhubAPIClient
         api_key = os.getenv('FINNHUB_API_KEY') or os.getenv('FINNHUB_KEY')
         
         if api_key:
-            finnhub = FinnhubAPIClient(api_key)
             for symbol in user_stocks:
                 try:
-                    quote = finnhub.get_global_quote(symbol)
-                    if quote:
-                        investment_quotes.append({
-                            'symbol': quote.symbol,
-                            'current_price': quote.current_price,
-                            'change': quote.change,
-                            'change_percent': quote.change_percent,
-                            'latest_trading_day': quote.latest_trading_day,
-                        })
+                    quote_data = get_stock_quote_cached(symbol, api_key)
+                    if quote_data:
+                        investment_quotes.append(quote_data)
                 except Exception as e:
                     logger.warning(f"Erro ao buscar cotação para {symbol}: {e}")
     
