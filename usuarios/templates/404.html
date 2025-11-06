@@ -4,62 +4,11 @@
 {% block title %}404 - Página não encontrada | Investichat{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'account.css' %}">
-<style>
-    #account-container {
-        text-align: center;
-    }
-    #account-container h1 {
-        font-size: 120px;
-        margin-bottom: 10px;
-        color: #002066;
-        font-weight: 700;
-        line-height: 1;
-        text-align: center !important;
-    }
-    #account-container h2 {
-        margin-bottom: 20px;
-        color: #002066;
-        font-size: 28px;
-        font-weight: 600;
-        text-align: center !important;
-    }
-    #account-container p {
-        color: #666;
-        margin-bottom: 40px;
-        font-size: 16px;
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
-        text-align: center;
-    }
-    .error-404-buttons {
-        display: flex;
-        gap: 15px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    .error-404-button {
-        background: rgb(9, 55, 164);
-        color: white;
-        padding: 12px 24px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: transform 0.3s;
-        display: inline-block;
-    }
-    .error-404-button:hover {
-        transform: scale(1.05);
-    }
-    .error-404-button-secondary {
-        background: rgb(32, 99, 255);
-    }
-</style>
+<link rel="stylesheet" href="{% static '404.css' %}">
 {% endblock %}
 
 {% block content %}
-<div id="account-container" style="text-align: center;">
+<div id="account-container">
     <h1>404</h1>
     <h2>Página não encontrada</h2>
     <p>
