@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Painel de Administração - Investichat{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'account.css' %}">
+<link rel="stylesheet" href="{% static 'admin_panel.css' %}">
+{% endblock %}
+
+{% block content %}
+<div id="account-container" class="admin-panel-container">
+    <h1>Painel de Administração</h1>
+    
+    {% if mensagem %}
+    <div class="admin-message {% if 'sucesso' in mensagem %}success{% else %}error{% endif %}">
+        {{ mensagem }}
+    </div>
+    {% endif %}
+    
+    <div class="admin-stats">
+        <p><strong>Total de usuários:</strong> {{ users_data|length }}</p>
+    </div>
+    
+    <div class="admin-table-container">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Usuário</th>
+                    <th>Email</th>
+                    <th>Mensagens</th>
+                    <th>Data de Cadastro</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user_data in users_data %}
+                <tr>
+                    <td>{{ user_data.user.username }}</td>
+                    <td>{{ user_data.email|default:"Não informado" }}</td>
+                    <td>{{ user_data.message_count }}</td>
+                    <td>{{ user_data.date_joined|date:"d/m/Y H:i" }}</td>
+                    <td class="admin-actions">
+                        <form method="post" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja excluir o histórico de chat do usuário {{ user_data.user.username }}? Esta ação não pode ser desfeita.');">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delete_history">
+                            <input type="hidden" name="user_id" value="{{ user_data.user.id }}">
+                            <button type="submit" class="admin-btn admin-btn-warning">Excluir Histórico</button>
+                        </form>
+                        <form method="post" style="display: inline;" onsubmit="return confirm('ATENÇÃO: Tem certeza que deseja excluir o usuário {{ user_data.user.username }} e TODOS os seus dados? Esta ação é IRREVERSÍVEL!');">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delete_user">
+                            <input type="hidden" name="user_id" value="{{ user_data.user.id }}">
+                            <button type="submit" class="admin-btn admin-btn-danger">Excluir Usuário</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 20px;">
+                        Nenhum usuário cadastrado.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

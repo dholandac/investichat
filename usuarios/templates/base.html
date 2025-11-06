@@ -45,6 +45,9 @@
             <div class="sidebar-content">
                 <a class="sidebar-btn" href="{% url 'account' %}">Conta</a>
                 <a class="sidebar-btn" href="{% url 'chatbot' %}">Chatbot</a>
+                {% if user.is_staff %}
+                <a class="sidebar-btn" href="{% url 'admin_panel' %}">Painel Admin</a>
+                {% endif %}
                 <a class="sidebar-btn">Contato</a>
             </div>
         </div>

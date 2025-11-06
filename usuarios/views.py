@@ -9,7 +9,7 @@ from django.contrib.auth import login as login_django
 from django.contrib.auth import logout as logout_django
 from django.contrib.auth.decorators import login_required
 from .models import PerfilUsuario
-from chatbot.models import Conversation
+from chatbot.models import Conversation, Message
 import re
 
 
@@ -271,3 +271,59 @@ def questionario_perfil(request):
             return JsonResponse({"success": False, "error": "Formulário inválido"}, status=400)
 
     return render(request, "usuarios/questionario_perfil.html")
+
+@login_required(login_url="/auth/login/")
+def admin_panel(request):
+    """Página de administração - apenas para usuários com is_staff=True"""
+    # Verifica se o usuário tem permissão de administrador
+    if not request.user.is_staff:
+        return redirect('account')
+    
+    mensagem = None
+    
+    # Processa ações POST
+    if request.method == "POST":
+        action = request.POST.get('action')
+        user_id = request.POST.get('user_id')
+        
+        try:
+            target_user = User.objects.get(id=user_id)
+            
+            if action == 'delete_history':
+                # Deleta todas as conversas e mensagens do usuário
+                conversations = Conversation.objects.filter(user=target_user)
+                message_count = Message.objects.filter(conversation__user=target_user).count()
+                conversations.delete()  # CASCADE deleta as mensagens automaticamente
+                mensagem = f'Histórico do usuário {target_user.username} excluído com sucesso! ({message_count} mensagens removidas)'
+            
+            elif action == 'delete_user':
+                # Deleta o usuário e todos os dados relacionados (CASCADE)
+                username = target_user.username
+                target_user.delete()  # CASCADE deleta PerfilUsuario, Conversation, Message, etc.
+                mensagem = f'Usuário {username} e todos os seus dados foram excluídos com sucesso!'
+        
+        except User.DoesNotExist:
+            mensagem = 'Usuário não encontrado!'
+        except Exception as e:
+            mensagem = f'Erro ao processar ação: {str(e)}'
+    
+    # Busca todos os usuários com suas informações
+    users = User.objects.all().order_by('date_joined')
+    users_data = []
+    
+    for user in users:
+        # Conta mensagens do usuário
+        message_count = Message.objects.filter(conversation__user=user).count()
+        
+        users_data.append({
+            'user': user,
+            'email': user.email,
+            'message_count': message_count,
+            'date_joined': user.date_joined,
+        })
+    
+    return render(request, 'admin_panel.html', {
+        'users_data': users_data,
+        'mensagem': mensagem,
+        'show_sidebar': True
+    })

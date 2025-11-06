@@ -1,0 +1,246 @@
+/* Estilos específicos para admin_panel.html */
+
+#account-container {
+    overflow-x: hidden;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#account-container.admin-panel-container {
+    width: calc(100% - 32px);
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.admin-stats {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: rgb(231, 231, 231);
+    border-radius: 8px;
+    text-align: left;
+}
+
+.admin-stats p {
+    margin: 0;
+    color: black;
+    font-size: 16px;
+}
+
+.admin-table-container {
+    margin-top: 20px;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.admin-table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    table-layout: auto;
+}
+
+.admin-table thead {
+    background-color: rgb(32, 99, 255);
+    color: white;
+}
+
+.admin-table th {
+    padding: 10px 8px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.admin-table th:nth-child(1) {
+    min-width: 100px;
+    max-width: 150px;
+}
+
+.admin-table th:nth-child(2) {
+    min-width: 150px;
+    max-width: 200px;
+}
+
+.admin-table th:nth-child(3) {
+    min-width: 80px;
+    max-width: 100px;
+}
+
+.admin-table th:nth-child(4) {
+    min-width: 120px;
+    max-width: 150px;
+}
+
+.admin-table th:nth-child(5) {
+    min-width: 200px;
+}
+
+.admin-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #ddd;
+    color: black;
+    text-align: left;
+    font-size: 13px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.admin-table td:nth-child(1) {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.admin-table td:nth-child(2) {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.admin-table td:nth-child(3) {
+    text-align: center;
+    max-width: 100px;
+}
+
+.admin-table td:nth-child(4) {
+    font-size: 12px;
+    max-width: 150px;
+    white-space: nowrap;
+}
+
+.admin-table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.admin-table tbody tr:nth-child(even):hover {
+    background-color: #f0f0f0;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    min-width: 200px;
+}
+
+.admin-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 90px;
+}
+
+.admin-btn-warning {
+    background-color: #ff9800;
+    color: white;
+}
+
+.admin-btn-warning:hover {
+    background-color: #f57c00;
+    transform: scale(1.05);
+}
+
+.admin-btn-danger {
+    background-color: #f44336;
+    color: white;
+}
+
+.admin-btn-danger:hover {
+    background-color: #d32f2f;
+    transform: scale(1.05);
+}
+
+.admin-message {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.admin-message.success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+}
+
+.admin-message.error {
+    background-color: #f8d7da;
+    color: #842029;
+    border: 1px solid #f5c2c7;
+}
+
+@media (max-width: 1024px) {
+    .admin-table th,
+    .admin-table td {
+        padding: 8px 6px;
+        font-size: 12px;
+    }
+    
+    .admin-table th:nth-child(4),
+    .admin-table td:nth-child(4) {
+        font-size: 11px;
+    }
+    
+    .admin-btn {
+        font-size: 10px;
+        padding: 4px 8px;
+        min-width: 80px;
+    }
+}
+
+@media (max-width: 768px) {
+    #account-container {
+        width: calc(100% - 16px);
+        padding: 12px 8px;
+    }
+    
+    .admin-table {
+        font-size: 11px;
+        min-width: 500px;
+    }
+    
+    .admin-table th,
+    .admin-table td {
+        padding: 6px 4px;
+        font-size: 11px;
+    }
+    
+    .admin-table th:nth-child(4),
+    .admin-table td:nth-child(4) {
+        font-size: 10px;
+    }
+    
+    .admin-actions {
+        flex-direction: column;
+        gap: 4px;
+        min-width: 150px;
+    }
+    
+    .admin-btn {
+        width: 100%;
+        font-size: 10px;
+        padding: 6px 8px;
+    }
+}
+

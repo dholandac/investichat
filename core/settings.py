@@ -57,7 +57,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.gzip.GZipMiddleware',  # Compressão de resposta
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -83,7 +83,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'chatbot.context_processors.stock_choices',  # Context processor personalizado
+                'chatbot.context_processors.stock_choices',
             ],
         },
     },
@@ -164,7 +164,7 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'investichat-cache',
-        'TIMEOUT': 60,  # 60 segundos - cache expira ANTES do refresh automático do JS (30s)
+        'TIMEOUT': 60,
         'OPTIONS': {
             'MAX_ENTRIES': 1000
         }
