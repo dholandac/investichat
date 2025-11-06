@@ -12,6 +12,43 @@ from .models import PerfilUsuario
 from chatbot.models import Conversation
 import re
 
+
+def handler404(request, exception):
+    """Handler customizado para erro 404"""
+    return render(request, '404.html', {'show_sidebar': True}, status=404)
+
+
+def traduzir_erro_senha(mensagem):
+    """Traduz mensagens de erro de senha do Django para português"""
+    traducoes = {
+        'This password is too short. It must contain at least 8 characters.': 
+            'Esta senha é muito curta. Ela deve conter pelo menos 8 caracteres.',
+        'This password is too common.': 
+            'Esta senha é muito comum. Escolha uma senha mais segura.',
+        'This password is entirely numeric.': 
+            'Esta senha é inteiramente numérica. Use letras e números.',
+        'The password is too similar to the username.': 
+            'A senha é muito similar ao nome de usuário.',
+        'The password is too similar to the email address.': 
+            'A senha é muito similar ao endereço de email.',
+    }
+    # Verifica tradução exata
+    if mensagem in traducoes:
+        return traducoes[mensagem]
+    # Verifica se contém palavras-chave para tradução parcial
+    if 'too short' in mensagem.lower() or 'must contain at least' in mensagem.lower():
+        return 'Esta senha é muito curta. Ela deve conter pelo menos 8 caracteres.'
+    if 'too common' in mensagem.lower():
+        return 'Esta senha é muito comum. Escolha uma senha mais segura.'
+    if 'entirely numeric' in mensagem.lower():
+        return 'Esta senha é inteiramente numérica. Use letras e números.'
+    if 'too similar to the username' in mensagem.lower():
+        return 'A senha é muito similar ao nome de usuário.'
+    if 'too similar to the email' in mensagem.lower():
+        return 'A senha é muito similar ao endereço de email.'
+    # Retorna a mensagem original se não encontrar tradução
+    return mensagem
+
 # Lógica de cadastro
 def cadastro(request):
     # Se o usuário apenas está acessando, exiba a página
@@ -33,7 +70,7 @@ def cadastro(request):
         
         # Tamanho mínimo e máximo
         if len(username) < 4:
-            return render(request, 'cadastro.html', {'mensagem': 'O nome de usuário deve ter pelo menos 5 caracteres!'})
+            return render(request, 'cadastro.html', {'mensagem': 'O nome de usuário deve ter pelo menos 4 caracteres!'})
         
         if len(username) > 15:
             return render(request, 'cadastro.html', {'mensagem': 'O nome de usuário deve ter no máximo 15 caracteres!'})
@@ -52,14 +89,22 @@ def cadastro(request):
 
         # Verifica se as senhas coincidem
         if senha != confirma_senha:
-            return render(request, 'cadastro.html', {'mensagem': 'As senhas não coincidem!'})
+            return render(request, 'cadastro.html', {
+                'mensagem': 'As senhas não coincidem!',
+                'username': username,
+                'email': email
+            })
 
         # Verifica se já existe um usuário com esse username
         user = User.objects.filter(username=username).first()
 
         # Envia uma mensagem para o html caso o usuário já exista
         if user:
-            return render(request, 'cadastro.html', {'mensagem': 'Já existe um usuário com esse nome de usuário!'})
+            return render(request, 'cadastro.html', {
+                'mensagem': 'Já existe um usuário com esse nome de usuário!',
+                'username': username,
+                'email': email
+            })
         
         # Valida a senha usando os validadores do Django
         from django.contrib.auth.password_validation import validate_password
@@ -68,13 +113,40 @@ def cadastro(request):
         try:
             validate_password(senha, User(username=username, email=email))
         except ValidationError as e:
-            # Retorna a primeira mensagem de erro
-            mensagem_erro = '; '.join(e.messages)
-            return render(request, 'cadastro.html', {'mensagem': mensagem_erro})
+            # Traduz as mensagens de erro para português
+            mensagens_traduzidas = [traduzir_erro_senha(msg) for msg in e.messages]
+            mensagem_erro = '; '.join(mensagens_traduzidas)
+            return render(request, 'cadastro.html', {
+                'mensagem': mensagem_erro,
+                'username': username,
+                'email': email
+            })
         
         # Cria o usuário e o salva
-        user = User.objects.create_user(username=username, email=email, password=senha)
-        user.save()
+        try:
+            user = User.objects.create_user(username=username, email=email, password=senha)
+            user.save()
+        except Exception as e:
+            # Trata exceções do Django que podem ter mensagens em inglês
+            from django.db import IntegrityError
+            
+            mensagem_erro = str(e)
+            
+            # Traduz mensagens de erro comuns
+            if 'username' in mensagem_erro.lower() and ('unique' in mensagem_erro.lower() or 'already exists' in mensagem_erro.lower()):
+                mensagem_erro = 'Já existe um usuário com esse nome de usuário!'
+            elif 'email' in mensagem_erro.lower() and ('unique' in mensagem_erro.lower() or 'already exists' in mensagem_erro.lower()):
+                mensagem_erro = 'Este email já está em uso por outro usuário!'
+            elif isinstance(e, IntegrityError):
+                mensagem_erro = 'Erro ao criar usuário. Verifique se o nome de usuário ou email já estão em uso.'
+            else:
+                mensagem_erro = 'Erro ao criar usuário. Por favor, tente novamente.'
+            
+            return render(request, 'cadastro.html', {
+                'mensagem': mensagem_erro,
+                'username': username,
+                'email': email
+            })
 
         return redirect('login')
 
@@ -140,8 +212,9 @@ def account(request):
                 try:
                     validate_password(nova_senha, request.user)
                 except ValidationError as e:
-                    # Retorna a primeira mensagem de erro
-                    mensagem = '; '.join(e.messages)
+                    # Traduz as mensagens de erro para português
+                    mensagens_traduzidas = [traduzir_erro_senha(msg) for msg in e.messages]
+                    mensagem = '; '.join(mensagens_traduzidas)
                 else:
                     request.user.set_password(nova_senha)
                     request.user.save()
@@ -169,7 +242,7 @@ def account(request):
         perfilusuario = PerfilUsuario.objects.get(user=request.user)
     except PerfilUsuario.DoesNotExist:
         perfilusuario = None
-    return render(request, 'account.html', {'mensagem': mensagem, 'user': request.user, 'perfilusuario': perfilusuario})
+    return render(request, 'account.html', {'mensagem': mensagem, 'user': request.user, 'perfilusuario': perfilusuario, 'show_sidebar': True})
 
 @login_required(login_url="/auth/login/")
 def questionario_perfil(request):

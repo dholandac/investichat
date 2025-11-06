@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Investichat{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/investichaticon.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% block header %}
+    <header>
+        <div id="{% block header_id %}account-header{% endblock %}">
+            {% block sidebar_toggle %}
+            {% if show_sidebar|default:False %}
+            <button id="sidebar-toggle" style="background:none; border:none; cursor:pointer; margin-right:12px; vertical-align:middle;">
+                <img id="menu-icon" src="{% static 'images/menu.png' %}" alt="Menu" width="32" height="32" />
+            </button>
+            {% endif %}
+            {% endblock %}
+            <a href="{% url 'chatbot' %}">
+                <img id="{% block logo_id %}account-logo{% endblock %}" src="{% static 'images/investichattransparent.png' %}" alt="Investichat">
+            </a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'account' %}">
+                <span>Bem-vindo, {{ user.username }}<img id="user-icon" width="25" height="25" src="{% static 'images/user.png' %}"/></span>
+            </a>
+            {% else %}
+            <a href="{% url 'login' %}">
+                <span>Faça seu login</span>
+            </a>
+            {% endif %}
+        </div>
+        {% block sidebar %}
+        {% if show_sidebar|default:False %}
+        <div id="sidebar" class="sidebar-hidden">
+            <button class="sidebar-close" style="background:none; border:none; cursor:pointer; margin-left:15px; margin-top:20px; display:flex; align-items:center;">
+                <img id="close-menu-icon" src="{% static 'images/menu.png' %}" alt="Fechar" width="32" height="32" style="filter: invert(1) brightness(100);" />
+            </button>
+            <div class="sidebar-content">
+                <a class="sidebar-btn" href="{% url 'account' %}">Conta</a>
+                <a class="sidebar-btn" href="{% url 'chatbot' %}">Chatbot</a>
+                <a class="sidebar-btn">Contato</a>
+            </div>
+        </div>
+        {% endif %}
+        {% endblock %}
+    </header>
+    {% endblock %}
+    
+    {% block content %}{% endblock %}
+    
+    {% block footer %}
+    {% endblock %}
+    
+    {% block sidebar_script %}
+    {% if show_sidebar|default:False %}
+    <script>
+        // Script para controle da sidebar
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarClose = document.querySelector('.sidebar-close');
+
+        if (sidebarToggle) {
+            sidebarToggle.classList.remove('hide-when-sidebar');
+
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.remove('sidebar-hidden');
+                sidebar.classList.add('sidebar-visible');
+                sidebarToggle.classList.add('hide-when-sidebar');
+            });
+        }
+
+        if (sidebarClose) {
+            sidebarClose.addEventListener('click', function() {
+                sidebar.classList.remove('sidebar-visible');
+                sidebar.classList.add('sidebar-hidden');
+                if (sidebarToggle) {
+                    sidebarToggle.classList.remove('hide-when-sidebar');
+                }
+            });
+        }
+    </script>
+    {% endif %}
+    {% endblock %}
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+

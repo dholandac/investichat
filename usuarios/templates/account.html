@@ -1,251 +1,207 @@
-<html>
-    <head>
-        {% load static %}
-        <title>Investichat</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="{% static 'images/investichaticon.png' %}" type="image/x-icon">
-        <link rel="stylesheet" href="{% static 'account.css' %}">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    </head>
-    <header>
-        <div id="account-header">
-            <button id="sidebar-toggle" style="background:none; border:none; cursor:pointer; margin-right:12px; vertical-align:middle;">
-            <img id="menu-icon" src="{% static 'images/menu.png' %}" alt="Menu" width="32" height="32" />
-            </button>
-            <a href="{% url 'chatbot' %}"><img id="account-logo" src="{% static 'images/investichattransparent.png' %}"></a>
-            {% if user.is_authenticated %}
-            <a href="{% url 'account' %}"><span>Bem-vindo, {{ user.username }}<img id="user-icon" width="25" height="25" src="{% static 'images/user.png' %}"/></span></a>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Conta - Investichat{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'account.css' %}">
+{% endblock %}
+
+{% block content %}
+<div id="account-container">
+    {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+    {% endif %}
+    <h1>Conta</h1>
+    <br>
+    <div class="account-info">
+        <strong>Usuário: </strong><span>{{ user.username }}</span>
+    </div>
+    <div class="account-info">
+        <strong>Email: </strong>
+        <span id="email-text">{{ user.email|default:"Não informado" }}</span>
+        <img class="edit-btn" data-edit="email" width="20" height="20" src="{% static 'images/edit.png' %}" alt="Editar email" title="Editar email"/>
+    </div>
+    <div class="account-info" id="email-edit-row">
+        <form method="post" style="display:flex; gap:10px; align-items:center; width:100%;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_email" />
+            <strong>Email: </strong>
+            <input type="email" name="email" value="{{ user.email }}" placeholder="Seu email" style="flex:1; max-width:380px;" required />
+            <button id="account-email-submit" type="submit">Salvar</button>
+            <button id="account-email-cancel" type="button">Cancelar</button>
+        </form>
+    </div>
+    <div class="account-info" id="password-display-row">
+        <strong>Senha: </strong><span>******** </span><img class="edit-btn" data-edit="password" width="20" height="20" src="{% static 'images/edit.png' %}" alt="Editar senha" title="Editar senha"/>
+    </div>
+    <div class="account-info" id="password-edit-row">
+        <form method="post" style="display:flex; flex-direction:column; gap:10px; width:100%;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_password" />
+            <label><strong>Senha atual:</strong></label>
+            <div class="password-input-wrapper">
+                <input type="password" name="senha_atual" id="senha_atual_account" class="password-input" placeholder="Senha atual" required />
+                <button type="button" class="toggle-password" onclick="togglePassword('senha_atual_account', 'toggle-senha-atual')" aria-label="Mostrar senha">
+                    <img id="toggle-senha-atual" src="{% static 'images/view.png' %}" alt="Mostrar senha" width="20" height="20">
+                </button>
+            </div>
+            <label><strong>Nova senha:</strong></label>
+            <div class="password-input-wrapper">
+                <input type="password" name="nova_senha" id="nova_senha_account" class="password-input" placeholder="Nova senha" required />
+                <button type="button" class="toggle-password" onclick="togglePassword('nova_senha_account', 'toggle-nova-senha')" aria-label="Mostrar senha">
+                    <img id="toggle-nova-senha" src="{% static 'images/view.png' %}" alt="Mostrar senha" width="20" height="20">
+                </button>
+            </div>
+            <label><strong>Confirme a nova senha:</strong></label>
+            <div class="password-input-wrapper">
+                <input type="password" name="confirma_senha" id="confirma_senha_account" class="password-input" placeholder="Confirme a nova senha" required />
+                <button type="button" class="toggle-password" onclick="togglePassword('confirma_senha_account', 'toggle-confirma-senha-account')" aria-label="Mostrar senha">
+                    <img id="toggle-confirma-senha-account" src="{% static 'images/view.png' %}" alt="Mostrar senha" width="20" height="20">
+                </button>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button type="submit">Salvar</button>
+                <button id="account-password-cancel" type="button">Cancelar</button>
+            </div>
+        </form>
+    </div>
+    <div class="account-info" id="perfil-display-row">
+        <strong>Perfil de Investidor: </strong>
+        <span>
+            {% if user.perfilusuario %}
+                {{ user.perfilusuario.get_perfil_investidor_display }}
             {% else %}
-            <a href="{% url 'login' %}"><span>Faça seu login</span></a>
+                Não definido
             {% endif %}
+        </span>
+        <img class="edit-btn" data-edit="perfil" width="20" height="20" src="{% static 'images/edit.png' %}" alt="Editar perfil" title="Editar perfil"/>
+    </div>
+    <div class="account-info" id="perfil-edit-row">
+        <form method="post" style="display:flex; gap:10px; align-items:center; width:100%;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_perfil_investidor" />
+            <strong>Perfil de Investidor: </strong>
+            <select name="perfil_investidor" required style="flex:1; max-width:250px;">
+                <option value="CONSERVADOR" {% if user.perfilusuario and user.perfilusuario.perfil_investidor == 'CONSERVADOR' %}selected{% endif %}>Conservador</option>
+                <option value="MODERADO" {% if user.perfilusuario and user.perfilusuario.perfil_investidor == 'MODERADO' %}selected{% endif %}>Moderado</option>
+                <option value="AGRESSIVO" {% if user.perfilusuario and user.perfilusuario.perfil_investidor == 'AGRESSIVO' %}selected{% endif %}>Agressivo</option>
+            </select>
+            <button type="submit">Salvar</button>
+            <button id="account-perfil-cancel" type="button">Cancelar</button>
+        </form>
+    </div>
+    <div class="account-info clear-history">
+        <div>
+            <strong>Histórico do Chat:</strong>
+            <span>Apague o histórico desta conta.</span>
         </div>
-        <div id="sidebar" class="sidebar-hidden">
-            <button class="sidebar-close" style="background:none; border:none; cursor:pointer; margin-left:15px; margin-top:20px; display:flex; align-items:center;">
-                <img id="close-menu-icon" src="{% static 'images/menu.png' %}" alt="Fechar" width="32" height="32" style="filter: invert(1) brightness(100);" />
-            </button>
-            <div class="sidebar-content">
-                <a class="sidebar-btn" href="{% url 'account' %}">Conta</a>
-                <a class="sidebar-btn" href="{% url 'chatbot' %}">Chatbot</a>
-                <a class="sidebar-btn">Contato</a>
-            </div>
-        </div>
-    </header>
-    <body>
-        <div id="account-container">
-            {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
-            {% endif %}
-            <h1>Conta</h1>
-            <br>
-            <div class="account-info">
-                <strong>Usuário: </strong><span>{{ user.username }}</span>
-            </div>
-            <div class="account-info">
-                <strong>Email: </strong>
-                <span id="email-text">{{ user.email|default:"Não informado" }}</span>
-                <img class="edit-btn" data-edit="email" width="20" height="20" src="{% static 'images/edit.png' %}" alt="Editar email" title="Editar email"/>
-            </div>
-            <div class="account-info" id="email-edit-row" style="display:none;">
-                <form method="post" style="display:flex; gap:10px; align-items:center; width:100%;">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="update_email" />
-                    <strong>Email: </strong>
-                    <input type="email" name="email" value="{{ user.email }}" placeholder="Seu email" style="flex:1; max-width:380px;" required />
-                    <button id="account-email-submit" type="submit">Salvar</button>
-                    <button id="account-email-cancel" type="button">Cancelar</button>
-                </form>
-            </div>
-            <div class="account-info" id="password-display-row">
-                <strong>Senha: </strong><span>******** </span><img class="edit-btn" data-edit="password" width="20" height="20" src="{% static 'images/edit.png' %}" alt="Editar senha" title="Editar senha"/>
-            </div>
-            <div class="account-info" id="password-edit-row" style="display:none;">
-                <form method="post" style="display:flex; flex-direction:column; gap:10px; width:100%;">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="update_password" />
-                    <label><strong>Senha atual:</strong></label>
-                    <div class="password-input-wrapper">
-                        <input type="password" name="senha_atual" id="senha_atual_account" class="password-input" placeholder="Senha atual" required />
-                        <button type="button" class="toggle-password" onclick="togglePassword('senha_atual_account', 'toggle-senha-atual')" aria-label="Mostrar senha">
-                            <img id="toggle-senha-atual" src="{% static 'images/view.png' %}" alt="Mostrar senha" width="20" height="20">
-                        </button>
-                    </div>
-                    <label><strong>Nova senha:</strong></label>
-                    <div class="password-input-wrapper">
-                        <input type="password" name="nova_senha" id="nova_senha_account" class="password-input" placeholder="Nova senha" required />
-                        <button type="button" class="toggle-password" onclick="togglePassword('nova_senha_account', 'toggle-nova-senha')" aria-label="Mostrar senha">
-                            <img id="toggle-nova-senha" src="{% static 'images/view.png' %}" alt="Mostrar senha" width="20" height="20">
-                        </button>
-                    </div>
-                    <label><strong>Confirme a nova senha:</strong></label>
-                    <div class="password-input-wrapper">
-                        <input type="password" name="confirma_senha" id="confirma_senha_account" class="password-input" placeholder="Confirme a nova senha" required />
-                        <button type="button" class="toggle-password" onclick="togglePassword('confirma_senha_account', 'toggle-confirma-senha-account')" aria-label="Mostrar senha">
-                            <img id="toggle-confirma-senha-account" src="{% static 'images/view.png' %}" alt="Mostrar senha" width="20" height="20">
-                        </button>
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                        <button type="submit">Salvar</button>
-                        <button id="account-password-cancel" type="button">Cancelar</button>
-                    </div>
-                </form>
-            </div>
-            <div class="account-info" id="perfil-display-row">
-                <strong>Perfil de Investidor: </strong>
-                <span>
-                    {% if user.perfilusuario %}
-                        {{ user.perfilusuario.get_perfil_investidor_display }}
-                    {% else %}
-                        Não definido
-                    {% endif %}
-                </span>
-                <img class="edit-btn" data-edit="perfil" width="20" height="20" src="{% static 'images/edit.png' %}" alt="Editar perfil" title="Editar perfil"/>
-            </div>
-            <div class="account-info" id="perfil-edit-row" style="display:none;">
-                <form method="post" style="display:flex; gap:10px; align-items:center; width:100%;">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="update_perfil_investidor" />
-                    <strong>Perfil de Investidor: </strong>
-                    <select name="perfil_investidor" required style="flex:1; max-width:250px;">
-                        <option value="CONSERVADOR" {% if user.perfilusuario and user.perfilusuario.perfil_investidor == 'CONSERVADOR' %}selected{% endif %}>Conservador</option>
-                        <option value="MODERADO" {% if user.perfilusuario and user.perfilusuario.perfil_investidor == 'MODERADO' %}selected{% endif %}>Moderado</option>
-                        <option value="AGRESSIVO" {% if user.perfilusuario and user.perfilusuario.perfil_investidor == 'AGRESSIVO' %}selected{% endif %}>Agressivo</option>
-                    </select>
-                    <button type="submit">Salvar</button>
-                    <button id="account-perfil-cancel" type="button">Cancelar</button>
-                </form>
-            </div>
-            <div class="account-info clear-history">
-                <div>
-                    <strong>Histórico do Chat:</strong>
-                    <span>Apague o histórico desta conta.</span>
-                </div>
-                <form id="clear-chat-form" method="post" onsubmit="return confirm('Tem certeza que deseja apagar todo o histórico de chat? Esta ação não pode ser desfeita.');">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="clear_chat_history" />
-                    <button type="submit" class="clear-history-btn">Limpar</button>
-                </form>
-            </div>
-            {% if mensagem %}
-            <div style="position: relative; height: 0;">
-                <p id="account-feedback" style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); max-width: 90vw; min-width: 200px; width: max-content; background: #ffe0e0; color: #b00; padding: 6px 16px; border-radius: 6px; z-index: 10; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">{{ mensagem }}</p>
-            </div>
-            <script>
-                setTimeout(function() {
-                    var el = document.getElementById('account-feedback');
-                    if (el) {
-                        el.style.display = 'none';
-                        el.style.color = 'white';
-                    }
-                }, 3000);
-            </script>
-            {% endif %}
-        </div>
-        <div class="footer-contato">
-            <p>Site feito por Daniel Holanda</p>
-            <span><a target="_blank" href="https://linkedin.com/in/daniel-holanda-campos/">LinkedIn</a></span>
-            <span>|</span>
-            <span><a target="_blank" href="https://github.com/dholandac/">Github</a></span>
-        </div>
-    </body>
+        <form id="clear-chat-form" method="post" onsubmit="return confirm('Tem certeza que deseja apagar todo o histórico de chat? Esta ação não pode ser desfeita.');">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="clear_chat_history" />
+            <button type="submit" class="clear-history-btn">Limpar</button>
+        </form>
+    </div>
+    {% if mensagem %}
+    <div style="position: relative; height: 0;">
+        <p id="account-feedback" style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); max-width: 90vw; min-width: 200px; width: max-content; background: #ffe0e0; color: #b00; padding: 6px 16px; border-radius: 6px; z-index: 10; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">{{ mensagem }}</p>
+    </div>
     <script>
-        // Script para controle da sidebar
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        const sidebarClose = document.querySelector('.sidebar-close');
+        setTimeout(function() {
+            var el = document.getElementById('account-feedback');
+            if (el) {
+                el.style.display = 'none';
+                el.style.color = 'white';
+            }
+        }, 3000);
+    </script>
+    {% endif %}
+</div>
+{% endblock %}
 
-        sidebarToggle.classList.remove('hide-when-sidebar');
-
-        sidebarToggle.addEventListener('click', function() {
-            sidebar.classList.remove('sidebar-hidden');
-            sidebar.classList.add('sidebar-visible');
-            sidebarToggle.classList.add('hide-when-sidebar');
-        });
-
-        sidebarClose.addEventListener('click', function() {
-            sidebar.classList.remove('sidebar-visible');
-            sidebar.classList.add('sidebar-hidden');
-            sidebarToggle.classList.remove('hide-when-sidebar');
-        });
-
-        // Script para alternar entre exibição e edição dos campos
-        document.addEventListener('DOMContentLoaded', function() {
-            // Email
-            const emailEditBtn = document.querySelector('.edit-btn[data-edit="email"]');
-            const emailEditRow = document.getElementById('email-edit-row');
-            const emailDisplayRow = emailEditBtn ? emailEditBtn.closest('.account-info') : null;
-            const emailCancelBtn = document.getElementById('account-email-cancel');
-            if (emailEditBtn && emailEditRow && emailDisplayRow) {
-                emailEditBtn.addEventListener('click', function() {
-                    emailDisplayRow.style.display = 'none';
-                    emailEditRow.style.display = 'block';
+{% block extra_js %}
+<script>
+    // Script para alternar entre exibição e edição dos campos
+    document.addEventListener('DOMContentLoaded', function() {
+        // Email
+        const emailEditBtn = document.querySelector('.edit-btn[data-edit="email"]');
+        const emailEditRow = document.getElementById('email-edit-row');
+        const emailDisplayRow = emailEditBtn ? emailEditBtn.closest('.account-info') : null;
+        const emailCancelBtn = document.getElementById('account-email-cancel');
+        if (emailEditBtn && emailEditRow && emailDisplayRow) {
+            emailEditBtn.addEventListener('click', function() {
+                emailDisplayRow.classList.add('hidden');
+                emailEditRow.classList.add('visible');
+                setTimeout(function() {
                     const input = emailEditRow.querySelector('input[name="email"]');
                     if (input) input.focus();
-                });
-            }
-            if (emailCancelBtn && emailDisplayRow) {
-                emailCancelBtn.addEventListener('click', function() {
-                    emailEditRow.style.display = 'none';
-                    emailDisplayRow.style.display = 'block';
-                });
-            }
+                }, 300);
+            });
+        }
+        if (emailCancelBtn && emailDisplayRow) {
+            emailCancelBtn.addEventListener('click', function() {
+                emailEditRow.classList.remove('visible');
+                emailDisplayRow.classList.remove('hidden');
+            });
+        }
 
-            // Senha
-            const passwordEditBtn = document.querySelector('.edit-btn[data-edit="password"]');
-            const passwordEditRow = document.getElementById('password-edit-row');
-            const passwordDisplayRow = document.getElementById('password-display-row');
-            const passwordCancelBtn = document.getElementById('account-password-cancel');
-            if (passwordEditBtn && passwordEditRow && passwordDisplayRow) {
-                passwordEditBtn.addEventListener('click', function() {
-                    passwordDisplayRow.style.display = 'none';
-                    passwordEditRow.style.display = 'block';
+        // Senha
+        const passwordEditBtn = document.querySelector('.edit-btn[data-edit="password"]');
+        const passwordEditRow = document.getElementById('password-edit-row');
+        const passwordDisplayRow = document.getElementById('password-display-row');
+        const passwordCancelBtn = document.getElementById('account-password-cancel');
+        if (passwordEditBtn && passwordEditRow && passwordDisplayRow) {
+            passwordEditBtn.addEventListener('click', function() {
+                passwordDisplayRow.classList.add('hidden');
+                passwordEditRow.classList.add('visible');
+                setTimeout(function() {
                     const input = passwordEditRow.querySelector('input[name="senha_atual"]');
                     if (input) input.focus();
-                });
-            }
-            if (passwordCancelBtn && passwordDisplayRow) {
-                passwordCancelBtn.addEventListener('click', function() {
-                    passwordEditRow.style.display = 'none';
-                    passwordDisplayRow.style.display = 'block';
-                });
-            }
-            // Perfil de Investidor
-            const perfilEditBtn = document.querySelector('.edit-btn[data-edit="perfil"]');
-            const perfilEditRow = document.getElementById('perfil-edit-row');
-            const perfilDisplayRow = document.getElementById('perfil-display-row');
-            const perfilCancelBtn = document.getElementById('account-perfil-cancel');
-            if (perfilEditBtn && perfilEditRow && perfilDisplayRow) {
-                perfilEditBtn.addEventListener('click', function() {
-                    perfilDisplayRow.style.display = 'none';
-                    perfilEditRow.style.display = 'flex';
-                });
-            }
-            if (perfilCancelBtn && perfilDisplayRow) {
-                perfilCancelBtn.addEventListener('click', function() {
-                    perfilEditRow.style.display = 'none';
-                    perfilDisplayRow.style.display = 'flex';
-                });
-            }
-        });
+                }, 300);
+            });
+        }
+        if (passwordCancelBtn && passwordDisplayRow) {
+            passwordCancelBtn.addEventListener('click', function() {
+                passwordEditRow.classList.remove('visible');
+                passwordDisplayRow.classList.remove('hidden');
+            });
+        }
+        // Perfil de Investidor
+        const perfilEditBtn = document.querySelector('.edit-btn[data-edit="perfil"]');
+        const perfilEditRow = document.getElementById('perfil-edit-row');
+        const perfilDisplayRow = document.getElementById('perfil-display-row');
+        const perfilCancelBtn = document.getElementById('account-perfil-cancel');
+        if (perfilEditBtn && perfilEditRow && perfilDisplayRow) {
+            perfilEditBtn.addEventListener('click', function() {
+                perfilDisplayRow.classList.add('hidden');
+                perfilEditRow.classList.add('visible');
+            });
+        }
+        if (perfilCancelBtn && perfilDisplayRow) {
+            perfilCancelBtn.addEventListener('click', function() {
+                perfilEditRow.classList.remove('visible');
+                perfilDisplayRow.classList.remove('hidden');
+            });
+        }
+    });
+    
+    // Função para toggle de senha
+    const viewIcon = "{% static 'images/view.png' %}";
+    const hideIcon = "{% static 'images/hide.png' %}";
+    
+    function togglePassword(inputId, toggleId) {
+        const input = document.getElementById(inputId);
+        const toggle = document.getElementById(toggleId);
         
-        // Função para toggle de senha
-        const viewIcon = "{% static 'images/view.png' %}";
-        const hideIcon = "{% static 'images/hide.png' %}";
-        
-        function togglePassword(inputId, toggleId) {
-            const input = document.getElementById(inputId);
-            const toggle = document.getElementById(toggleId);
-            
-            if (input && toggle) {
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    toggle.src = hideIcon;
-                } else {
-                    input.type = 'password';
-                    toggle.src = viewIcon;
-                }
+        if (input && toggle) {
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.src = hideIcon;
+            } else {
+                input.type = 'password';
+                toggle.src = viewIcon;
             }
         }
-    </script>
-</html>
+    }
+</script>
+{% endblock %}

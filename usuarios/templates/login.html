@@ -1,75 +1,71 @@
-<html>
-    <head>
-        {% load static %}
-        <title>Investichat</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="{% static 'images/investichaticon.png' %}" type="image/x-icon">
-        <link rel="stylesheet" href="{% static 'login.css' %}">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    </head>
-    <header>
-        <div id="login-header">
-            <a href="{% url 'chatbot' %}"><img id="login-logo" src="{% static 'images/investichattransparent.png' %}"></a>
-            {% if user.is_authenticated %}
-            <a href="{% url 'account' %}"><span>Bem-vindo, {{ user.username }}<img id="user-icon" width="25" height="25" src="{% static 'images/user.png' %}"/></span></a>
-            {% else %}
-            <a href="{% url 'login' %}"><span>Faça seu login</span></a>
-            {% endif %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - Investichat{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'login.css' %}">
+{% endblock %}
+
+{% block header_id %}login-header{% endblock %}
+{% block logo_id %}login-logo{% endblock %}
+
+{% block content %}
+<form id="login-form" action="{% url 'login' %}" method="POST">{% csrf_token %}
+    <h1 id="login-title">Login</h1>
+    <span>Usuário:</span><input type="text" name="username"/>
+    <br>
+    <div class="password-field-container">
+        <span>Senha:</span>
+        <div class="password-input-wrapper">
+            <input type="password" name="senha" id="senha-login" class="password-input"/>
+            <button type="button" class="toggle-password" onclick="togglePassword('senha-login', 'toggle-senha-login')" aria-label="Mostrar senha">
+                <img id="toggle-senha-login" src="{% static 'images/view.png' %}" alt="Mostrar senha" width="20" height="20">
+            </button>
         </div>
-    </header>
-    <body>
-        <form id="login-form" action="{% url 'login' %}" method="POST">{% csrf_token %}
-            <h1 id="login-title">Login</h1>
-            <span>Usuário:</span><input type="text" name="username"/>
-            <br>
-            <div class="password-field-container">
-                <span>Senha:</span>
-                <div class="password-input-wrapper">
-                    <input type="password" name="senha" id="senha-login" class="password-input"/>
-                    <button type="button" class="toggle-password" onclick="togglePassword('senha-login', 'toggle-senha-login')" aria-label="Mostrar senha">
-                        <img id="toggle-senha-login" src="{% static 'images/view.png' %}" alt="Mostrar senha" width="20" height="20">
-                    </button>
-                </div>
-            </div>
-            <br>
-            <input type="submit" value="Logar" id="login-submit">
-            <br>
-            <a href="{% url 'cadastro' %}"><span id="login-sugestao">Não tem conta? Cadastre-se aqui!</span></a>
-            {% if mensagem %}
-            <div style="position: relative; height: 0;">
-                <p id="login-feedback" style="position: absolute; top: 0px; left: 50%; transform: translateX(-50%); max-width: 90vw; min-width: 200px; width: max-content; background: #ffe0e0; color: #b00; padding: 6px 16px; border-radius: 6px; z-index: 10; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">{{ mensagem }}</p>
-            </div>
-            <script>
-                setTimeout(function() {
-                document.getElementById('login-feedback').style.display = 'none';
-                }, 3000);
-            </script>
-            {% endif %}
-        </form>
-        <script>
-            const viewIcon = "{% static 'images/view.png' %}";
-            const hideIcon = "{% static 'images/hide.png' %}";
-            
-            function togglePassword(inputId, toggleId) {
-                const input = document.getElementById(inputId);
-                const toggle = document.getElementById(toggleId);
-                
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    toggle.src = hideIcon;
-                } else {
-                    input.type = 'password';
-                    toggle.src = viewIcon;
-                }
-            }
-        </script>
-        <div class="footer-contato">
-            <p>Site feito por Daniel Holanda</p>
-            <span><a target="_blank" href="https://linkedin.com/in/daniel-holanda-campos/">LinkedIn</a></span>
-            <span>|</span>
-            <span><a target="_blank" href="https://github.com/dholandac/">Github</a></span>
-        </div>
-    </body>
-</html>
+    </div>
+    <br>
+    <input type="submit" value="Logar" id="login-submit">
+    <br>
+    <a href="{% url 'cadastro' %}"><span id="login-sugestao">Não tem conta? Cadastre-se aqui!</span></a>
+    {% if mensagem %}
+    <div style="position: relative; height: 0;">
+        <p id="login-feedback" style="position: absolute; top: 0px; left: 50%; transform: translateX(-50%); max-width: 90vw; min-width: 200px; width: max-content; background: #ffe0e0; color: #b00; padding: 6px 16px; border-radius: 6px; z-index: 10; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">{{ mensagem }}</p>
+    </div>
+    <script>
+        setTimeout(function() {
+        document.getElementById('login-feedback').style.display = 'none';
+        }, 3000);
+    </script>
+    {% endif %}
+</form>
+{% endblock %}
+
+{% block footer %}
+<div class="footer-contato">
+    <p>Site feito por Daniel Holanda</p>
+    <span><a target="_blank" href="https://linkedin.com/in/daniel-holanda-campos/">LinkedIn</a></span>
+    <span>|</span>
+    <span><a target="_blank" href="https://github.com/dholandac/">Github</a></span>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const viewIcon = "{% static 'images/view.png' %}";
+    const hideIcon = "{% static 'images/hide.png' %}";
+    
+    function togglePassword(inputId, toggleId) {
+        const input = document.getElementById(inputId);
+        const toggle = document.getElementById(toggleId);
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            toggle.src = hideIcon;
+        } else {
+            input.type = 'password';
+            toggle.src = viewIcon;
+        }
+    }
+</script>
+{% endblock %}

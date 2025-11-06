@@ -1,120 +1,4 @@
-* {
-    text-align: center;
-    justify-content: center;
-    font-family: 'Poppins', Arial;
-}
-
-body {
-    margin:0;
-}
-
-html {
-    background: #002066;
-    background: linear-gradient(90deg, rgba(0, 32, 102, 1) 0%, rgba(0, 21, 59, 1) 35%, rgba(0, 50, 82, 1) 100%);
-}
-
-h1,h2,h3,span,p {
-    color: white;
-}
-
-input, button {
-    border-radius:8px;
-    border: 1px solid #ccc;
-}
-
-button {
-    cursor: pointer;
-}
-
-a {
-    text-decoration: none;
-    text-align: center;
-}
-
-#sidebar-toggle.hide-when-sidebar {
-    display: none !important;
-}
-
-#sidebar-toggle {
-    position: absolute;
-    left: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10001;
-}
-
-#menu-icon {
-    filter: invert(1) brightness(100);
-    display: block;
-}
-
-#sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 260px;
-    height: 100vh;
-    background: #1a2332;
-    color: #fff;
-    z-index: 9999;
-    box-shadow: 2px 0 12px rgba(0,0,0,0.18);
-    transition: transform 0.3s ease;
-    display: block;
-    padding-top: 16px;
-}
-
-.sidebar-hidden {
-    transform: translateX(-100%);
-    pointer-events: none;
-}
-
-.sidebar-visible {
-    transform: translateX(0);
-    pointer-events: auto;
-}
-
-.sidebar-content {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    margin-top: 40px;
-    padding: 0 18px;
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-.sidebar-btn {
-    border-radius: 0px;
-    background: none;
-    color: #fff;
-    border: none;
-    padding: 12px 0;
-    font-size: 1.1em;
-    cursor: pointer;
-    margin-bottom: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: background 0.2s;
-    border-bottom:#007bff solid 2px;
-}
-
-.sidebar-btn:hover {
-    background: #1749b1;
-}
-
-.sidebar-close {
-    color: #fff;
-    font-weight: bold;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 28px;
-    margin-right: 8px;
-    margin-top: 4px;
-}
-
-a {
-    text-decoration: none;
-}
+/* Estilos específicos para account.html */
 
 .account-info#perfil-display-row {
     display: flex;
@@ -143,8 +27,8 @@ a {
 }
 
 #account-title {
-    margin:0;
-    margin-bottom:15px;
+    margin: 0;
+    margin-bottom: 15px;
 }
 
 #account-submit {
@@ -155,34 +39,6 @@ a {
 #account-submit:hover {
     cursor: pointer;
     transform: scale(1.1);
-}
-
-#account-logo {
-    width:200px;
-    margin:10px;
-    user-select: none;
-}
-
-#account-header {
-    background-color: rgb(32, 99, 255);
-    width: 100%;
-    text-align: center;
-    justify-content: center;
-    position: relative;
-}
-
-#account-header span {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: white;
-    font-weight: 500;
-}
-
-#user-icon {
-    float:right;
-    margin-left:5px;
 }
 
 #account-container {
@@ -199,18 +55,62 @@ a {
     box-sizing: border-box;
 }
 
-#account-container h1,h2,h3,strong,span {
+#account-container h1, h2, h3, strong, span {
     text-align: left;
-    color:black;
+    color: black;
     margin: 0px;
 }
 
 .account-info {
     padding: 10px;
     border-radius: 8px;
-    background-color:rgb(231, 231, 231);
-    margin-bottom:10px;
+    background-color: rgb(231, 231, 231);
+    margin-bottom: 10px;
     text-align: left;
+    transition: opacity 0.5s ease, max-height 0.5s ease, margin 0.5s ease;
+    overflow: hidden;
+}
+
+.account-info.hidden {
+    opacity: 0;
+    max-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+}
+
+#password-edit-row,
+#email-edit-row,
+#perfil-edit-row {
+    opacity: 0;
+    max-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+    transition: opacity 0.5s ease, max-height 0.6s ease, margin 0.5s ease, padding 0.5s ease;
+    display: block;
+}
+
+#password-edit-row.visible,
+#email-edit-row.visible {
+    opacity: 1;
+    max-height: 1000px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow: visible;
+}
+
+#perfil-edit-row.visible {
+    opacity: 1;
+    max-height: 1000px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow: visible;
+    display: flex;
 }
 
 .logout-btn {
@@ -228,22 +128,13 @@ a {
 
 .edit-btn {
     align-content: right;
-    float:right;
+    float: right;
     cursor: pointer;
-}
-
-#user-icon {
-    float:right;
-    margin-left:5px;
-    filter: invert(1);
 }
 
 #account-feedback {
     margin-bottom: 10px;
-    color:white;
-}
-
-#account-feedback {
+    color: white;
     animation: aparecer 0.5s;
 }
 
@@ -272,10 +163,11 @@ a {
     max-width: 100%;
 }
 
-/* Estilos para campos de senha com toggle */
+/* Password fields específicos para account */
 .password-input-wrapper {
-    position: relative;
-    display: inline-block;
+    width: auto;
+    min-width: 250px;
+    max-width: 100%;
 }
 
 .password-input {
@@ -288,34 +180,10 @@ a {
 }
 
 .toggle-password {
-    position: absolute;
-    right: 25%;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    transition: opacity 0.2s;
-}
-
-.toggle-password:hover {
-    opacity: 0.8;
-}
-
-.toggle-password:active {
-    opacity: 0.6;
+    right: 2px;
 }
 
 .toggle-password img {
-    user-select: none;
-    pointer-events: none;
-    display: block;
     filter: brightness(0);
     opacity: 0.7;
 }
@@ -371,74 +239,6 @@ select {
 
 .account-info.clear-history form {
     margin: 0 0 0 auto;
-}
-
-.footer-contato {
-    user-select:none;
-    font-weight: bolder;
-    text-align: center;
-    margin: 10px auto 10px auto;
-    color: rgb(170, 170, 170);
-    transform-origin: center;
-    display: block;
-}
-
-.footer-contato p {
-    color: rgb(170, 170, 170);
-}
-
-.footer-contato a {
-    text-decoration: none;
-    color:rgb(117, 117, 117);
-}
-
-.footer-contato span {
-    margin:5px;
-    text-decoration: underline;
-    color:rgb(117, 117, 117);
-}
-
-.footer-contato p {
-    margin:0;
-}
-
-body {
-  --sb-track-color: #163b93;
-  --sb-thumb-color: #ededed;
-  --sb-size: 14px;
-}
-
-body::-webkit-scrollbar {
-  width: var(--sb-size)
-}
-
-body::-webkit-scrollbar-track {
-  background: var(--sb-track-color);
-  border-radius: 3px;
-}
-
-body::-webkit-scrollbar-thumb {
-  background: var(--sb-thumb-color);
-  border-radius: 3px;
-  
-}
-
-@supports not selector(::-webkit-scrollbar) {
-  body {
-    scrollbar-color: var(--sb-thumb-color)
-                     var(--sb-track-color);
-  }
-}
-
-@keyframes aparecer {
-    from {
-        margin-top:-30px;
-        opacity:0;
-    }
-    to {
-        margin-top:15px;
-        opacity:1;
-    }
 }
 
 @media (max-width: 768px) {

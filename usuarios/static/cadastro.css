@@ -1,21 +1,4 @@
-* {
-    text-align: center;
-    justify-content: center;
-    font-family: 'Poppins', Arial;
-}
-
-body {
-    margin:0;
-}
-
-html {
-    background: #002066;
-    background: linear-gradient(90deg, rgba(0, 32, 102, 1) 0%, rgba(0, 21, 59, 1) 35%, rgba(0, 50, 82, 1) 100%);
-}
-
-h1,h2,h3,span,p {
-    color: white;
-}
+/* Estilos específicos para cadastro.html */
 
 input {
     box-shadow: 0px 2px 5px black;
@@ -38,8 +21,8 @@ input {
 }
 
 #cadastro-title {
-    margin:0;
-    margin-bottom:15px;
+    margin: 0;
+    margin-bottom: 15px;
 }
 
 #cadastro-submit {
@@ -52,123 +35,18 @@ input {
     transform: scale(1.1);
 }
 
-#cadastro-logo {
-    width:200px;
-    margin:10px;
-    user-select: none;
-}
-
-#cadastro-header {
-    background-color: rgb(32, 99, 255);
-    width: 100%;
-    text-align: center;
-    justify-content: center;
-    position: relative;
-}
-
-#cadastro-header span {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: white;
-    font-weight: 500;
-}
-
 #cadastro-feedback {
     animation: aparecer 0.5s;
 }
 
 #cadastro-sugestao {
-    font-size:12px;
-    color:rgb(92, 141, 255);
+    font-size: 12px;
+    color: rgb(92, 141, 255);
     text-decoration: underline;
 }
 
-.footer-contato {
-    user-select:none;
-    font-weight: bolder;
-    text-align: center;
-    margin: 10px auto 10px auto;
-    color: rgb(170, 170, 170);
-    transform-origin: center;
-    display: block;
-}
-
-.footer-contato p {
-    color: rgb(170, 170, 170);
-}
-
-.footer-contato a {
-    text-decoration: none;
-    color:rgb(117, 117, 117);
-}
-
-.footer-contato span {
-    margin:5px;
-    text-decoration: underline;
-    color:rgb(117, 117, 117);
-}
-
-.footer-contato p {
-    margin:0;
-}
-
-#user-icon {
-    float:right;
-    margin-left:5px;
-    filter: invert(1);
-}
-
-body {
-  --sb-track-color: #163b93;
-  --sb-thumb-color: #ededed;
-  --sb-size: 14px;
-}
-
-body::-webkit-scrollbar {
-  width: var(--sb-size)
-}
-
-body::-webkit-scrollbar-track {
-  background: var(--sb-track-color);
-  border-radius: 3px;
-}
-
-body::-webkit-scrollbar-thumb {
-  background: var(--sb-thumb-color);
-  border-radius: 3px;
-}
-
-@supports not selector(::-webkit-scrollbar) {
-  body {
-    scrollbar-color: var(--sb-thumb-color)
-                     var(--sb-track-color);
-  }
-}
-
-@keyframes aparecer {
-    from {
-        margin-top:-30px;
-        opacity:0;
-    }
-    to {
-        margin-top:15px;
-        opacity:1;
-    }
-}
-
-.password-field-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 5px;
-    width: 100%;
-}
-
+/* Password fields específicos para cadastro */
 .password-input-wrapper {
-    position: relative;
-    display: inline-block;
     width: 200px;
 }
 
@@ -180,33 +58,9 @@ body::-webkit-scrollbar-thumb {
 }
 
 .toggle-password {
-    position: absolute;
     right: -38px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    transition: opacity 0.2s;
-}
-
-.toggle-password:hover {
-    opacity: 0.8;
-}
-
-.toggle-password:active {
-    opacity: 0.6;
 }
 
 .toggle-password img {
-    user-select: none;
-    pointer-events: none;
-    display: block;
     filter: brightness(0) invert(1);
 }
