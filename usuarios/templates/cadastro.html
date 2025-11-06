@@ -26,7 +26,25 @@
             <br>
             <span>Email:</span><input type="email" name="email"/>
             <br>
-            <span>Senha:</span><input type="password" name="senha"/>
+            <div class="password-field-container">
+                <span>Senha:</span>
+                <div class="password-input-wrapper">
+                    <input type="password" name="senha" id="senha" class="password-input"/>
+                    <button type="button" class="toggle-password" onclick="togglePassword('senha', 'toggle-senha')" aria-label="Mostrar senha">
+                        <img id="toggle-senha" src="{% static 'images/view.png' %}" alt="Mostrar senha" width="20" height="20">
+                    </button>
+                </div>
+            </div>
+            <br>
+            <div class="password-field-container">
+                <span>Confirmar Senha:</span>
+                <div class="password-input-wrapper">
+                    <input type="password" name="confirma_senha" id="confirma_senha" class="password-input"/>
+                    <button type="button" class="toggle-password" onclick="togglePassword('confirma_senha', 'toggle-confirma-senha')" aria-label="Mostrar senha">
+                        <img id="toggle-confirma-senha" src="{% static 'images/view.png' %}" alt="Mostrar senha" width="20" height="20">
+                    </button>
+                </div>
+            </div>
             <br>
             <input type="submit" value="Cadastrar" id="cadastro-submit">
             <br>
@@ -42,6 +60,23 @@
             </script>
             {% endif %}
         </form>
+        <script>
+            const viewIcon = "{% static 'images/view.png' %}";
+            const hideIcon = "{% static 'images/hide.png' %}";
+            
+            function togglePassword(inputId, toggleId) {
+                const input = document.getElementById(inputId);
+                const toggle = document.getElementById(toggleId);
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    toggle.src = hideIcon;
+                } else {
+                    input.type = 'password';
+                    toggle.src = viewIcon;
+                }
+            }
+        </script>
         <div class="footer-contato">
             <p>Site feito por Daniel Holanda</p>
             <span><a target="_blank" href="https://linkedin.com/in/daniel-holanda-campos/">LinkedIn</a></span>

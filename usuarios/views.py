@@ -10,6 +10,7 @@ from django.contrib.auth import logout as logout_django
 from django.contrib.auth.decorators import login_required
 from .models import PerfilUsuario
 from chatbot.models import Conversation
+import re
 
 # Lógica de cadastro
 def cadastro(request):
@@ -21,21 +22,55 @@ def cadastro(request):
         username = request.POST.get('username')
         email = request.POST.get('email')
         senha = request.POST.get('senha')
+        confirma_senha = request.POST.get('confirma_senha')
 
         # Verifica se todos os campos foram preenchidos
-        if not username or not email or not senha:
+        if not username or not email or not senha or not confirma_senha:
             return render(request, 'cadastro.html', {'mensagem': 'Preencha todos os campos!'})
 
-        # Verifica tamanho mínimo da senha
-        if len(senha) < 8:
-            return render(request, 'cadastro.html', {'mensagem': 'A senha deve ter pelo menos 8 caracteres!'})
+        # Valida o nome de usuário
+        username = username.strip()
+        
+        # Tamanho mínimo e máximo
+        if len(username) < 4:
+            return render(request, 'cadastro.html', {'mensagem': 'O nome de usuário deve ter pelo menos 5 caracteres!'})
+        
+        if len(username) > 15:
+            return render(request, 'cadastro.html', {'mensagem': 'O nome de usuário deve ter no máximo 15 caracteres!'})
+        
+        # Apenas letras, números, underscore e hífen são permitidos
+        if not re.match(r'^[a-zA-Z0-9_-]+$', username):
+            return render(request, 'cadastro.html', {'mensagem': 'O nome de usuário pode conter apenas letras, números, underscore (_) e hífen (-)!'})
+        
+        # Não pode começar ou terminar com underscore ou hífen
+        if username.startswith('_') or username.startswith('-') or username.endswith('_') or username.endswith('-'):
+            return render(request, 'cadastro.html', {'mensagem': 'O nome de usuário não pode começar ou terminar com underscore (_) ou hífen (-)!'})
+        
+        # Não pode ter caracteres especiais consecutivos
+        if re.search(r'[_-]{2,}', username):
+            return render(request, 'cadastro.html', {'mensagem': 'O nome de usuário não pode ter underscore (_) ou hífen (-) consecutivos!'})
+
+        # Verifica se as senhas coincidem
+        if senha != confirma_senha:
+            return render(request, 'cadastro.html', {'mensagem': 'As senhas não coincidem!'})
 
         # Verifica se já existe um usuário com esse username
         user = User.objects.filter(username=username).first()
 
-        # Envia uma mensagem para o html caso a mensagem já exista
+        # Envia uma mensagem para o html caso o usuário já exista
         if user:
             return render(request, 'cadastro.html', {'mensagem': 'Já existe um usuário com esse nome de usuário!'})
+        
+        # Valida a senha usando os validadores do Django
+        from django.contrib.auth.password_validation import validate_password
+        from django.core.exceptions import ValidationError
+        
+        try:
+            validate_password(senha, User(username=username, email=email))
+        except ValidationError as e:
+            # Retorna a primeira mensagem de erro
+            mensagem_erro = '; '.join(e.messages)
+            return render(request, 'cadastro.html', {'mensagem': mensagem_erro})
         
         # Cria o usuário e o salva
         user = User.objects.create_user(username=username, email=email, password=senha)
@@ -97,15 +132,23 @@ def account(request):
                 mensagem = 'Senha atual incorreta.'
             elif nova_senha != confirma_senha:
                 mensagem = 'A nova senha e a confirmação não coincidem.'
-            elif len(nova_senha) < 8:
-                mensagem = 'A nova senha deve ter pelo menos 8 caracteres.'
             else:
-                request.user.set_password(nova_senha)
-                request.user.save()
-                mensagem = 'Senha atualizada com sucesso!'
-                # Reautentica o usuário após troca de senha
-                from django.contrib.auth import update_session_auth_hash
-                update_session_auth_hash(request, request.user)
+                # Valida a senha usando os validadores do Django
+                from django.contrib.auth.password_validation import validate_password
+                from django.core.exceptions import ValidationError
+                
+                try:
+                    validate_password(nova_senha, request.user)
+                except ValidationError as e:
+                    # Retorna a primeira mensagem de erro
+                    mensagem = '; '.join(e.messages)
+                else:
+                    request.user.set_password(nova_senha)
+                    request.user.save()
+                    mensagem = 'Senha atualizada com sucesso!'
+                    # Reautentica o usuário após troca de senha
+                    from django.contrib.auth import update_session_auth_hash
+                    update_session_auth_hash(request, request.user)
         elif action == 'update_perfil_investidor':
             novo_perfil = request.POST.get('perfil_investidor')
             if novo_perfil not in ['CONSERVADOR', 'MODERADO', 'AGRESSIVO']:

@@ -65,11 +65,26 @@
                     {% csrf_token %}
                     <input type="hidden" name="action" value="update_password" />
                     <label><strong>Senha atual:</strong></label>
-                    <input type="password" name="senha_atual" placeholder="Senha atual" required />
+                    <div class="password-input-wrapper">
+                        <input type="password" name="senha_atual" id="senha_atual_account" class="password-input" placeholder="Senha atual" required />
+                        <button type="button" class="toggle-password" onclick="togglePassword('senha_atual_account', 'toggle-senha-atual')" aria-label="Mostrar senha">
+                            <img id="toggle-senha-atual" src="{% static 'images/view.png' %}" alt="Mostrar senha" width="20" height="20">
+                        </button>
+                    </div>
                     <label><strong>Nova senha:</strong></label>
-                    <input type="password" name="nova_senha" placeholder="Nova senha" required />
+                    <div class="password-input-wrapper">
+                        <input type="password" name="nova_senha" id="nova_senha_account" class="password-input" placeholder="Nova senha" required />
+                        <button type="button" class="toggle-password" onclick="togglePassword('nova_senha_account', 'toggle-nova-senha')" aria-label="Mostrar senha">
+                            <img id="toggle-nova-senha" src="{% static 'images/view.png' %}" alt="Mostrar senha" width="20" height="20">
+                        </button>
+                    </div>
                     <label><strong>Confirme a nova senha:</strong></label>
-                    <input type="password" name="confirma_senha" placeholder="Confirme a nova senha" required />
+                    <div class="password-input-wrapper">
+                        <input type="password" name="confirma_senha" id="confirma_senha_account" class="password-input" placeholder="Confirme a nova senha" required />
+                        <button type="button" class="toggle-password" onclick="togglePassword('confirma_senha_account', 'toggle-confirma-senha-account')" aria-label="Mostrar senha">
+                            <img id="toggle-confirma-senha-account" src="{% static 'images/view.png' %}" alt="Mostrar senha" width="20" height="20">
+                        </button>
+                    </div>
                     <div style="display:flex; gap:10px;">
                         <button type="submit">Salvar</button>
                         <button id="account-password-cancel" type="button">Cancelar</button>
@@ -213,5 +228,24 @@
                 });
             }
         });
+        
+        // Função para toggle de senha
+        const viewIcon = "{% static 'images/view.png' %}";
+        const hideIcon = "{% static 'images/hide.png' %}";
+        
+        function togglePassword(inputId, toggleId) {
+            const input = document.getElementById(inputId);
+            const toggle = document.getElementById(toggleId);
+            
+            if (input && toggle) {
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    toggle.src = hideIcon;
+                } else {
+                    input.type = 'password';
+                    toggle.src = viewIcon;
+                }
+            }
+        }
     </script>
 </html>

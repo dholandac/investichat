@@ -24,7 +24,15 @@
             <h1 id="login-title">Login</h1>
             <span>Usuário:</span><input type="text" name="username"/>
             <br>
-            <span>Senha:</span><input type="password" name="senha"/>
+            <div class="password-field-container">
+                <span>Senha:</span>
+                <div class="password-input-wrapper">
+                    <input type="password" name="senha" id="senha-login" class="password-input"/>
+                    <button type="button" class="toggle-password" onclick="togglePassword('senha-login', 'toggle-senha-login')" aria-label="Mostrar senha">
+                        <img id="toggle-senha-login" src="{% static 'images/view.png' %}" alt="Mostrar senha" width="20" height="20">
+                    </button>
+                </div>
+            </div>
             <br>
             <input type="submit" value="Logar" id="login-submit">
             <br>
@@ -40,6 +48,23 @@
             </script>
             {% endif %}
         </form>
+        <script>
+            const viewIcon = "{% static 'images/view.png' %}";
+            const hideIcon = "{% static 'images/hide.png' %}";
+            
+            function togglePassword(inputId, toggleId) {
+                const input = document.getElementById(inputId);
+                const toggle = document.getElementById(toggleId);
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    toggle.src = hideIcon;
+                } else {
+                    input.type = 'password';
+                    toggle.src = viewIcon;
+                }
+            }
+        </script>
         <div class="footer-contato">
             <p>Site feito por Daniel Holanda</p>
             <span><a target="_blank" href="https://linkedin.com/in/daniel-holanda-campos/">LinkedIn</a></span>

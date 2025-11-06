@@ -15,8 +15,10 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
-# CSRF trusted origins para produção Railway
+# CSRF trusted origins para desenvolvimento local e produção Railway
 CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
     'https://investichat.up.railway.app'
 ]
 
@@ -32,9 +34,11 @@ import os
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
     'investichat.up.railway.app'
 ]
 
@@ -111,6 +115,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
