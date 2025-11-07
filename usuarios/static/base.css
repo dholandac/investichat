@@ -50,8 +50,8 @@ input, button {
 }
 
 [id$="-logo"] {
-    width: 200px;
-    margin: 10px;
+    width: 170px;
+    margin: 8px;
     user-select: none;
 }
 
