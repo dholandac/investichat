@@ -1,5 +1,3 @@
-/* Estilos específicos para admin_panel.html */
-
 #account-container {
     overflow-x: hidden;
     max-width: 100%;
@@ -7,10 +5,14 @@
 }
 
 #account-container.admin-panel-container {
-    width: calc(100% - 32px);
+    width: calc(60%);
     max-width: 100%;
     margin-left: auto;
     margin-right: auto;
+}
+
+#account-container.admin-panel-container h1 {
+    text-align: center;
 }
 
 .admin-stats {
@@ -80,6 +82,7 @@
 
 .admin-table th:nth-child(5) {
     min-width: 200px;
+    text-align: center;
 }
 
 .admin-table td {
@@ -136,6 +139,7 @@
     gap: 6px;
     flex-wrap: wrap;
     min-width: 200px;
+    justify-content: center;
 }
 
 .admin-btn {

@@ -32,7 +32,6 @@ input, button {
     border: 1px solid #ccc;
 }
 
-/* Header comum - funciona para account-header, login-header, cadastro-header */
 [id$="-header"] {
     background-color: rgb(32, 99, 255);
     width: 100%;
@@ -50,21 +49,18 @@ input, button {
     font-weight: 500;
 }
 
-/* Logo comum - funciona para account-logo, login-logo, cadastro-logo */
 [id$="-logo"] {
     width: 200px;
     margin: 10px;
     user-select: none;
 }
 
-/* User icon */
 #user-icon {
     float: right;
     margin-left: 5px;
     filter: invert(1);
 }
 
-/* Sidebar */
 #sidebar-toggle.hide-when-sidebar {
     display: none !important;
 }
@@ -159,7 +155,6 @@ input, button {
     filter: invert(1) brightness(100);
 }
 
-/* Footer */
 .footer-contato {
     user-select: none;
     font-weight: bolder;
@@ -186,7 +181,6 @@ input, button {
     color: rgb(117, 117, 117);
 }
 
-/* Scrollbar personalizada */
 body {
     --sb-track-color: #163b93;
     --sb-thumb-color: #ededed;
@@ -213,7 +207,6 @@ body::-webkit-scrollbar-thumb {
     }
 }
 
-/* Animações */
 @keyframes aparecer {
     from {
         margin-top: -30px;
@@ -225,7 +218,6 @@ body::-webkit-scrollbar-thumb {
     }
 }
 
-/* Password fields - estilos básicos comuns */
 .password-field-container {
     display: flex;
     flex-direction: column;
