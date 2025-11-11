@@ -204,7 +204,17 @@
             return;
         }
 
-        elements.investmentData.innerHTML = '<div class="loading">Carregando dados de investimento...</div>';
+        const hadContent = elements.investmentData.innerHTML.trim().length > 0;
+        const lastUpdatedElement = elements.investmentData.querySelector('.last-updated');
+        const previousLastUpdatedText = lastUpdatedElement ? lastUpdatedElement.textContent : null;
+
+        if (hadContent && lastUpdatedElement) {
+            lastUpdatedElement.textContent = 'Atualizando dados de investimento...';
+        } else if (!hadContent) {
+            elements.investmentData.innerHTML = '<div class="loading">Carregando dados de investimento...</div>';
+        }
+
+        let updateSucceeded = false;
 
         try {
             // Faz requisição para obter dados atualizados
@@ -217,12 +227,21 @@
             if (response.ok) {
                 const html = await response.text();
                 elements.investmentData.innerHTML = html;
+                updateSucceeded = true;
             } else {
                 throw new Error('Erro na requisição');
             }
         } catch (error) {
             console.error('Erro ao atualizar investimentos:', error);
-            elements.investmentData.innerHTML = '<div class="error">Erro ao carregar dados.</div>';
+            if (hadContent) {
+                showNotification('Erro ao atualizar dados de investimento.', 'error');
+            } else {
+                elements.investmentData.innerHTML = '<div class="error">Erro ao carregar dados.</div>';
+            }
+        } finally {
+            if (!updateSucceeded && hadContent && lastUpdatedElement && previousLastUpdatedText !== null) {
+                lastUpdatedElement.textContent = previousLastUpdatedText;
+            }
         }
     }
 

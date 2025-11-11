@@ -23,4 +23,12 @@
     {% else %}
         <div class="loading">Carregando dados de investimento...</div>
     {% endif %}
+
+    <div class="last-updated">
+        {% if last_updated %}
+            Atualizado: {{ last_updated }}
+        {% else %}
+            Atualizado: --
+        {% endif %}
+    </div>
 </div>

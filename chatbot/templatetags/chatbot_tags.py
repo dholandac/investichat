@@ -59,9 +59,11 @@ def investment_panel(context):
     Usage: {% investment_panel %}
     """
     investment_quotes = context.get('investment_quotes', [])
+    last_updated = context.get('last_updated')
     
     return {
         'investment_quotes': investment_quotes,
+        'last_updated': last_updated,
     }
 
 
