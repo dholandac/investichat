@@ -13,9 +13,11 @@
     <h1>Painel de Administração</h1>
     
     {% if mensagem %}
-    <div class="admin-message {% if 'sucesso' in mensagem %}success{% else %}error{% endif %}">
+    {% with mensagem_lower=mensagem|lower %}
+    <div class="admin-message {% if 'sucesso' in mensagem_lower %}success{% elif 'erro' in mensagem_lower %}error{% elif 'aviso' in mensagem_lower %}info{% endif %}">
         {{ mensagem }}
     </div>
+    {% endwith %}
     {% endif %}
     
     <div class="admin-stats">
@@ -41,18 +43,37 @@
                     <td>{{ user_data.message_count }}</td>
                     <td>{{ user_data.date_joined|date:"d/m/Y H:i" }}</td>
                     <td class="admin-actions">
-                        <form method="post" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja excluir o histórico de chat do usuário {{ user_data.user.username }}? Esta ação não pode ser desfeita.');">
+                        {% if user_data.user.is_staff %}
+                            {% if user_data.user != request.user %}
+                            <form method="post" onsubmit="return confirm('Tem certeza que deseja remover os privilégios de administrador do usuário {{ user_data.user.username }}?');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="remove_admin">
+                                <input type="hidden" name="user_id" value="{{ user_data.user.id }}">
+                                <button type="submit" class="admin-btn admin-btn-secondary">Remover Admin</button>
+                            </form>
+                            {% endif %}
+                        {% else %}
+                        <form method="post" onsubmit="return confirm('Tem certeza que deseja conceder acesso de administrador ao usuário {{ user_data.user.username }}?');">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="make_admin">
+                            <input type="hidden" name="user_id" value="{{ user_data.user.id }}">
+                            <button type="submit" class="admin-btn admin-btn-primary">Tornar Admin</button>
+                        </form>
+                        {% endif %}
+                        <form method="post" onsubmit="return confirm('Tem certeza que deseja excluir o histórico de chat do usuário {{ user_data.user.username }}? Esta ação não pode ser desfeita.');">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="delete_history">
                             <input type="hidden" name="user_id" value="{{ user_data.user.id }}">
                             <button type="submit" class="admin-btn admin-btn-warning">Excluir Histórico</button>
                         </form>
-                        <form method="post" style="display: inline;" onsubmit="return confirm('ATENÇÃO: Tem certeza que deseja excluir o usuário {{ user_data.user.username }} e TODOS os seus dados? Esta ação é IRREVERSÍVEL!');">
+                        {% if user_data.user != request.user %}
+                        <form method="post" onsubmit="return confirm('ATENÇÃO: Tem certeza que deseja excluir o usuário {{ user_data.user.username }} e TODOS os seus dados? Esta ação é IRREVERSÍVEL!');">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="delete_user">
                             <input type="hidden" name="user_id" value="{{ user_data.user.id }}">
                             <button type="submit" class="admin-btn admin-btn-danger">Excluir Usuário</button>
                         </form>
+                        {% endif %}
                     </td>
                 </tr>
                 {% empty %}
@@ -67,4 +88,3 @@
     </div>
 </div>
 {% endblock %}
-

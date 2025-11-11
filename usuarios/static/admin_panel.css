@@ -142,6 +142,17 @@
     justify-content: center;
 }
 
+.admin-actions form,
+.admin-actions > button {
+    flex: 1 1 66px;
+    display: flex;
+}
+
+.admin-actions form > .admin-btn,
+.admin-actions > button.admin-btn {
+    width: 100%;
+}
+
 .admin-btn {
     padding: 5px 10px;
     border: none;
@@ -151,8 +162,27 @@
     font-weight: 500;
     transition: all 0.2s;
     white-space: nowrap;
-    flex: 1;
-    min-width: 90px;
+    min-width: 48px;
+}
+
+.admin-btn-primary {
+    background-color: rgb(9, 55, 164);
+    color: white;
+}
+
+.admin-btn-primary:hover {
+    background-color: rgb(7, 45, 134);
+    transform: scale(1.05);
+}
+
+.admin-btn-secondary {
+    background-color: #1a2332;
+    color: white;
+}
+
+.admin-btn-secondary:hover {
+    background-color: #101624;
+    transform: scale(1.05);
 }
 
 .admin-btn-warning {
@@ -180,6 +210,10 @@
     border-radius: 6px;
     margin-bottom: 20px;
     font-weight: 500;
+    opacity: 1;
+    overflow: hidden;
+    max-height: 200px;
+    animation: adminMessageFadeOut 0.6s ease 5s forwards;
 }
 
 .admin-message.success {
@@ -192,6 +226,22 @@
     background-color: #f8d7da;
     color: #842029;
     border: 1px solid #f5c2c7;
+}
+
+.admin-message.info {
+    background-color: #dbe7ff;
+    color: #0b3d91;
+    border: 1px solid #b6ccff;
+}
+
+@keyframes adminMessageFadeOut {
+    to {
+        opacity: 0;
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-bottom: 0;
+    }
 }
 
 @media (max-width: 1024px) {

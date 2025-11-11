@@ -294,18 +294,39 @@ def admin_panel(request):
                 conversations = Conversation.objects.filter(user=target_user)
                 message_count = Message.objects.filter(conversation__user=target_user).count()
                 conversations.delete()  # CASCADE deleta as mensagens automaticamente
-                mensagem = f'Histórico do usuário {target_user.username} excluído com sucesso! ({message_count} mensagens removidas)'
+                mensagem = f'Sucesso: Histórico do usuário {target_user.username} excluído com sucesso! ({message_count} mensagens removidas)'
             
             elif action == 'delete_user':
                 # Deleta o usuário e todos os dados relacionados (CASCADE)
-                username = target_user.username
-                target_user.delete()  # CASCADE deleta PerfilUsuario, Conversation, Message, etc.
-                mensagem = f'Usuário {username} e todos os seus dados foram excluídos com sucesso!'
+                if target_user == request.user:
+                    mensagem = 'Erro: Você não pode excluir o seu próprio perfil enquanto estiver logado.'
+                else:
+                    username = target_user.username
+                    target_user.delete()  # CASCADE deleta PerfilUsuario, Conversation, Message, etc.
+                    mensagem = f'Sucesso: Usuário {username} e todos os seus dados foram excluídos com sucesso!'
+
+            elif action == 'make_admin':
+                if target_user.is_staff:
+                    mensagem = f'Aviso: O usuário {target_user.username} já possui acesso de administrador.'
+                else:
+                    target_user.is_staff = True
+                    target_user.save(update_fields=['is_staff'])
+                    mensagem = f'Sucesso: Usuário {target_user.username} agora possui acesso de administrador!'
+
+            elif action == 'remove_admin':
+                if target_user == request.user:
+                    mensagem = 'Erro: Você não pode remover seus próprios privilégios de administrador enquanto estiver logado.'
+                elif not target_user.is_staff:
+                    mensagem = f'Aviso: O usuário {target_user.username} já não possui privilégios de administrador.'
+                else:
+                    target_user.is_staff = False
+                    target_user.save(update_fields=['is_staff'])
+                    mensagem = f'Sucesso: Privilégios de administrador removidos do usuário {target_user.username}.'
         
         except User.DoesNotExist:
-            mensagem = 'Usuário não encontrado!'
+            mensagem = 'Erro: Usuário não encontrado!'
         except Exception as e:
-            mensagem = f'Erro ao processar ação: {str(e)}'
+            mensagem = f'Erro: Erro ao processar ação: {str(e)}'
     
     # Busca todos os usuários com suas informações
     users = User.objects.all().order_by('date_joined')
