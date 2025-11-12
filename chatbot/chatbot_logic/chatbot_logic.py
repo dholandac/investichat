@@ -6,7 +6,7 @@ class Chatbot:
         self.gemini_api = gemini_api
         self.conversation_history = []
 
-    def get_response(self, user_message: str, perfil_investidor: str | None = None, history: Optional[List[Dict[str, str]]] = None, user_stocks: Optional[List[str]] = None, all_stocks: Optional[List[Dict[str, str]]] = None, market_info: Optional[str] = None) -> str:
+    def get_response(self, user_message: str, perfil_investidor: str | None = None, history: Optional[List[Dict[str, str]]] = None, user_stocks: Optional[List[str]] = None, all_stocks: Optional[List[Dict[str, str]]] = None, market_info: Optional[str] = None, market_news: Optional[str] = None) -> str:
         # Prompt do sistema para o Investichat (mais flexível, preservando segurança)
         perfil = (perfil_investidor or "NAO_DEFINIDO").upper()
 
@@ -41,6 +41,8 @@ class Chatbot:
             stocks_context += f"\nAções selecionadas pelo usuário: {', '.join(user_stocks)}\n"
         if market_info:
             stocks_context += f"\nResumo de mercado atual: {market_info}\n"
+        if market_news:
+            stocks_context += f"\nNotícias recentes do mercado: {market_news}\n"
 
         systemprompt = f"""
         Prompt de Sistema para o Investichat

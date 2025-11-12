@@ -102,12 +102,39 @@ def chatbot(request):
     except UserStockSelection.DoesNotExist:
         pass
 
+    # Busca notícias do mercado com cache (Marketaux - PT-BR)
+    market_news = []
+    try:
+        marketaux_key = os.getenv('MARKETAUX_API_KEY')
+        if marketaux_key:
+            cache_key = 'market_news_marketaux'
+            market_news = cache.get(cache_key)
+            
+            if market_news is None:
+                from .marketaux_client import MarketauxClient
+                marketaux = MarketauxClient(marketaux_key)
+                # Busca notícias em português do Brasil sobre mercado financeiro
+                market_news = marketaux.get_market_news(
+                    languages='pt',
+                    countries='br',
+                    limit=9,
+                    filter_entities=True
+                )
+                # Armazena no cache por 1 hora para economizar requisições
+                cache.set(cache_key, market_news, timeout=3600)
+                logger.debug("Cache MISS para notícias Marketaux - buscado da API")
+            else:
+                logger.debug("Cache HIT para notícias Marketaux - retornado do cache")
+    except Exception as e:
+        logger.warning(f"Erro ao buscar notícias do Marketaux: {e}")
+
     from datetime import datetime
     return render(request, 'chatbot/chatbot.html', {
         'show_questionnaire': show_questionnaire,
         'conversation_id': conversation.id,
         'history': messages,
         'investment_quotes': investment_quotes,
+        'market_news': market_news,
         'last_updated': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
     })
 
@@ -203,6 +230,37 @@ def chat_message(request):
             except Exception as e:
                 logger.warning(f"Erro ao obter market_info: {e}")
 
+            # 3.5 Notícias do mercado (contexto adicional)
+            market_news_context = None
+            try:
+                marketaux_key = os.getenv('MARKETAUX_API_KEY')
+                if marketaux_key:
+                    cache_key = 'market_news_marketaux'
+                    market_news = cache.get(cache_key)
+                    
+                    if market_news is None:
+                        from .marketaux_client import MarketauxClient
+                        marketaux = MarketauxClient(marketaux_key)
+                        market_news = marketaux.get_market_news(
+                            languages='pt',
+                            countries='br',
+                            limit=9,
+                            filter_entities=True
+                        )
+                        cache.set(cache_key, market_news, timeout=3600)
+                    
+                    if market_news:
+                        # Formata notícias para contexto da IA
+                        news_summaries = []
+                        for news in market_news[:5]:  # Usa as 5 primeiras notícias
+                            news_text = f"{news.get('headline', '')}"
+                            if news.get('summary'):
+                                news_text += f": {news.get('summary')}"
+                            news_summaries.append(news_text)
+                        market_news_context = " | ".join(news_summaries)
+            except Exception as e:
+                logger.warning(f"Erro ao obter notícias para contexto: {e}")
+
             # 4. Histórico recente
             recent_history = [
                 { 'role': m.role, 'content': m.content }
@@ -219,7 +277,8 @@ def chat_message(request):
                     history=recent_history,
                     user_stocks=user_stocks,
                     all_stocks=all_stocks,
-                    market_info=market_info
+                    market_info=market_info,
+                    market_news=market_news_context
                 )
             except Exception as e:
                 # Erro da API Gemini - retorna mensagem simplificada

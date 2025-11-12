@@ -292,3 +292,43 @@ class FinnhubAPIClient:
 
         ts_list.sort(key=lambda x: x.timestamp, reverse=True)
         return ts_list
+
+    def get_market_news(self, category: str = 'general', limit: int = 10) -> List[Dict]:
+        """
+        Busca notícias do mercado financeiro.
+        
+        AVISO: A API do Finnhub retorna notícias apenas em inglês.
+        Não há suporte nativo para notícias em português.
+        
+        Args:
+            category: Categoria de notícias ('general', 'forex', 'crypto', 'merger')
+            limit: Número máximo de notícias a retornar (padrão: 10)
+            
+        Returns:
+            Lista de dicionários contendo as notícias
+        """
+        try:
+            data = self._get('/news', {'category': category})
+            
+            if not data or not isinstance(data, list):
+                return []
+            
+            # Limita o número de resultados e formata as notícias
+            news_list = []
+            for item in data[:limit]:
+                news_item = {
+                    'id': item.get('id'),
+                    'headline': item.get('headline', ''),
+                    'summary': item.get('summary', ''),
+                    'source': item.get('source', ''),
+                    'url': item.get('url', ''),
+                    'image': item.get('image', ''),
+                    'datetime': datetime.utcfromtimestamp(item.get('datetime', 0)).strftime('%d/%m/%Y %H:%M'),
+                    'related': item.get('related', ''),
+                }
+                news_list.append(news_item)
+            
+            return news_list
+        except Exception as e:
+            print(f"Erro ao buscar notícias do Finnhub: {e}")
+            return []

@@ -1,0 +1,38 @@
+{% load static %}
+
+<h2>Notícias do Mercado</h2>
+
+{% if market_news and market_news|length > 0 %}
+    <div class="news-list">
+        {% for news in market_news %}
+            <div class="news-item">
+                {% if news.image %}
+                    <div class="news-image">
+                        <img src="{{ news.image }}" alt="{{ news.headline }}" onerror="this.style.display='none'">
+                    </div>
+                {% endif %}
+                <div class="news-content">
+                    <a href="{{ news.url }}" target="_blank" rel="noopener noreferrer" class="news-headline">
+                        {{ news.headline }}
+                    </a>
+                    {% if news.summary %}
+                        <p class="news-summary">{{ news.summary|truncatewords:20 }}</p>
+                    {% endif %}
+                    <div class="news-meta">
+                        <span class="news-source">{{ news.source }}</span>
+                        <span class="news-date">{{ news.datetime }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="news-empty">
+        <p>Nenhuma notícia disponível no momento.</p>
+        <p class="news-empty-hint">As notícias são atualizadas a cada hora.</p>
+    </div>
+{% endif %}
+
+<div class="news-footer">
+    <small>Fonte: Marketaux | Atualizado em {{ last_updated }}</small>
+</div>

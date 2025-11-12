@@ -74,9 +74,17 @@
             </div>
         </div>
         
-        <!-- Painel de investimentos usando template tag -->
-        <div class="investment-sidebar">
-            {% investment_panel %}
+        <!-- Sidebar direita com dois painéis separados -->
+        <div class="right-sidebar">
+            <!-- Painel de investimentos -->
+            <div class="investment-sidebar">
+                {% investment_panel %}
+            </div>
+            
+            <!-- Painel de notícias separado -->
+            <div class="news-sidebar">
+                {% include 'chatbot/_news_panel.html' %}
+            </div>
         </div>
     </div>
 
