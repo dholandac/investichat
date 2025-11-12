@@ -61,16 +61,13 @@ class MarketauxClient:
                 'limit': min(limit, 100),  # API limita a 100
                 'sort': 'published_at',
             }
-            
-            # Adiciona filtro de idioma se especificado (parâmetro correto é 'language' singular)
+
             if languages:
-                params['language'] = languages  # SINGULAR, não 'languages'
+                params['language'] = languages
             
-            # Adiciona filtro de país se especificado
             if countries:
                 params['countries'] = countries
             
-            # Adiciona filtro para notícias com entidades (ações/empresas)
             if filter_entities:
                 params['filter_entities'] = 'true'
             
@@ -152,7 +149,7 @@ class MarketauxClient:
             if not data or 'data' not in data:
                 return []
             
-            # Formata as notícias (mesmo formato que get_market_news)
+            # Formata as notícias
             news_list = []
             for item in data['data']:
                 published_at = item.get('published_at', '')
