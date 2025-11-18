@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
-from django.shortcuts import redirect
+from usuarios import views as usuarios_views
 
 urlpatterns = [
-    path('', lambda request: redirect('/chatbot/', permanent=False)),
+    path('', usuarios_views.landing, name='landing'),
     path('admin/', admin.site.urls),
     path('auth/', include('usuarios.urls')),
     path('chatbot/', include('chatbot.urls'))

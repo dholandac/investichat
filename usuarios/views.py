@@ -18,6 +18,11 @@ def handler404(request, exception):
     return render(request, '404.html', {'show_sidebar': True}, status=404)
 
 
+def landing(request):
+    """Página inicial (landing page) do Investichat"""
+    return render(request, 'landing.html')
+
+
 def traduzir_erro_senha(mensagem):
     """Traduz mensagens de erro de senha do Django para português"""
     traducoes = {

@@ -23,7 +23,7 @@
             </button>
             {% endif %}
             {% endblock %}
-            <a href="{% url 'chatbot' %}">
+            <a href="{% url 'landing' %}">
                 <img id="{% block logo_id %}account-logo{% endblock %}" src="{% static 'images/investichattransparent.png' %}" alt="Investichat">
             </a>
             {% if user.is_authenticated %}

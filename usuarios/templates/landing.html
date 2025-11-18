@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Investichat - Seu Assistente de Investimentos Inteligente{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing.css' %}">
+{% endblock %}
+
+{% block header_id %}landing-header{% endblock %}
+{% block logo_id %}landing-logo{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Investichat</h1>
+        <p class="hero-subtitle">Seu Assistente de Investimentos Inteligente</p>
+        <p class="hero-description">
+            Converse com nossa IA especializada em investimentos e receba insights personalizados, 
+            análises de mercado e recomendações baseadas no seu perfil de investidor.
+        </p>
+        <div class="hero-buttons">
+            {% if user.is_authenticated %}
+                <a href="{% url 'chatbot' %}" class="btn btn-primary">Acessar Chatbot</a>
+                <a href="{% url 'account' %}" class="btn btn-secondary">Minha Conta</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary">Começar Agora</a>
+                <a href="{% url 'cadastro' %}" class="btn btn-secondary">Criar Conta</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="hero-image">
+        <img src="{% static 'images/bot.png' %}" alt="Chatbot Investichat" class="bot-illustration">
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <h2 class="section-title">Por que escolher o Investichat?</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <img src="{% static 'images/talkbox.png' %}" alt="Chat Inteligente">
+            </div>
+            <h3>Chat Inteligente</h3>
+            <p>Converse naturalmente com nossa IA e obtenha respostas instantâneas sobre investimentos, mercado financeiro e estratégias.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <img src="{% static 'images/graphic.png' %}" alt="Análises em Tempo Real">
+            </div>
+            <h3>Análises em Tempo Real</h3>
+            <p>Acompanhe cotações de ações, índices e notícias do mercado financeiro atualizadas em tempo real.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <img src="{% static 'images/target.png' %}" alt="Perfil Personalizado">
+            </div>
+            <h3>Perfil Personalizado</h3>
+            <p>Receba recomendações personalizadas baseadas no seu perfil de investidor (Conservador, Moderado ou Agressivo).</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <img src="{% static 'images/arrowup.png' %}" alt="Educação Financeira">
+            </div>
+            <h3>Educação Financeira</h3>
+            <p>Aprenda sobre investimentos de forma interativa. Tire dúvidas e expanda seu conhecimento financeiro.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <img src="{% static 'images/lock.png' %}" alt="Seguro e Confiável">
+            </div>
+            <h3>Seguro e Confiável</h3>
+            <p>Seus dados estão protegidos. Sistema seguro com autenticação e histórico de conversas privado.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <img src="{% static 'images/lightning.png' %}" alt="Rápido e Eficiente">
+            </div>
+            <h3>Rápido e Eficiente</h3>
+            <p>Respostas instantâneas 24/7. Acesse quando e onde quiser, sem limites de uso.</p>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works-section">
+    <h2 class="section-title">Como Funciona</h2>
+    <div class="steps-container">
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Crie sua Conta</h3>
+            <p>Cadastre-se gratuitamente e defina seu perfil de investidor através do nosso questionário.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Converse com a IA</h3>
+            <p>Faça perguntas sobre investimentos, peça análises de ações ou tire dúvidas sobre o mercado.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Receba Insights</h3>
+            <p>Obtenha recomendações personalizadas, análises detalhadas e acompanhe o mercado em tempo real.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="cta-content">
+        <h2>Pronto para começar a investir com inteligência?</h2>
+        <p>Junte-se ao Investichat e transforme sua forma de investir</p>
+        <div class="cta-buttons">
+            {% if user.is_authenticated %}
+                <a href="{% url 'chatbot' %}" class="btn btn-primary btn-large">Acessar Chatbot</a>
+            {% else %}
+                <a href="{% url 'cadastro' %}" class="btn btn-primary btn-large">Criar Conta Grátis</a>
+                <a href="{% url 'login' %}" class="btn btn-secondary btn-large">Já tenho conta</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block footer %}
+<div class="footer-contato">
+    <p>Site feito por Daniel Holanda</p>
+    <span><a target="_blank" href="https://linkedin.com/in/daniel-holanda-campos/">LinkedIn</a></span>
+    <span>|</span>
+    <span><a target="_blank" href="https://github.com/dholandac/">Github</a></span>
+</div>
+{% endblock %}
+
