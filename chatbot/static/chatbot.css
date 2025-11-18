@@ -633,6 +633,8 @@ body::-webkit-scrollbar-thumb {
 @media (max-width: 1024px) {
     .main-container {
         flex-direction: column;
+        padding-left: 0;
+        padding-right: 0;
     }
     
     .investment-sidebar {
@@ -642,6 +644,12 @@ body::-webkit-scrollbar-thumb {
     }
     .chatbot-section {
         min-width: 0;
+        width: 100%;
+    }
+    .chatbot-section .container {
+        margin-left: 0;
+        margin-right: 0;
+        max-width: 100%;
     }
     #chat-messages {
         height: 40vh;
@@ -946,10 +954,11 @@ body::-webkit-scrollbar-thumb {
     font-size: 0.7em;
 }
 
-/* Responsividade para o painel de notícias */
 @media (max-width: 1024px) {
     .main-container {
         flex-direction: column;
+        padding-left: 0;
+        padding-right: 0;
     }
     
     .right-sidebar {
@@ -960,6 +969,12 @@ body::-webkit-scrollbar-thumb {
     .chatbot-section {
         width: 100%;
         min-width: auto;
+    }
+    
+    .chatbot-section .container {
+        margin-left: 0;
+        margin-right: 0;
+        max-width: 100%;
     }
 }
 
