@@ -45,6 +45,7 @@
             <div class="sidebar-content">
                 <a class="sidebar-btn" href="{% url 'account' %}">Conta</a>
                 <a class="sidebar-btn" href="{% url 'chatbot' %}">Chatbot</a>
+                <a class="sidebar-btn" href="{% url 'portfolio' %}">Carteira Virtual</a>
                 {% if user.is_staff %}
                 <a class="sidebar-btn" href="{% url 'admin_panel' %}">Painel Admin</a>
                 {% endif %}

@@ -1,0 +1,517 @@
+/* Garantir que o botão da sidebar use as regras do base.css */
+#sidebar-toggle {
+    position: absolute !important;
+    left: 18px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 10001 !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    margin-right: 12px !important;
+    vertical-align: middle !important;
+}
+
+/* Garantir que a sidebar use o layout correto do base.css */
+#sidebar {
+    display: block !important;
+    flex-direction: unset !important;
+    padding-top: 16px !important;
+}
+
+.sidebar-close {
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    margin-left: 15px !important;
+    margin-top: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.sidebar-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 18px !important;
+    margin-top: 40px !important;
+    padding: 0 18px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+}
+
+.portfolio-container {
+    max-width: 1200px;
+    margin: 70px auto 40px auto;
+    padding: 20px;
+    width: calc(100% - 32px);
+    box-sizing: border-box;
+}
+
+.portfolio-container * {
+    color: black;
+}
+
+.portfolio-header {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 24px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.portfolio-header h1,
+.portfolio-header h2,
+.portfolio-header h3,
+.portfolio-header span,
+.portfolio-header p {
+    color: black !important;
+}
+
+.portfolio-header h1 {
+    margin: 0 0 20px 0;
+    font-size: 1.8em;
+    color: black;
+    text-align: left;
+}
+
+.portfolio-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.stat-card {
+    background: rgb(231, 231, 231);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    color: #666 !important;
+}
+
+.stat-label * {
+    color: #666 !important;
+}
+
+.stat-value {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: black !important;
+}
+
+.stat-value * {
+    color: black !important;
+}
+
+.profit {
+    color: #0f5132;
+    font-weight: 600;
+}
+
+.loss {
+    color: #842029;
+    font-weight: 600;
+}
+
+/* Card destacado de Lucro/Prejuízo */
+.profit-loss-highlight {
+    margin: 20px 0;
+    padding: 24px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 2px solid;
+}
+
+.profit-highlight {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    border-color: #10b981;
+}
+
+.loss-highlight {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    border-color: #ef4444;
+}
+
+.highlight-icon {
+    font-size: 3.5em;
+    line-height: 1;
+    display: none; /* Esconde o ícone já que não há mais emojis */
+}
+
+.highlight-content {
+    flex: 1;
+}
+
+.highlight-label {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.highlight-value {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.highlight-amount {
+    font-size: 2.2em;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.highlight-percent {
+    font-size: 1.5em;
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+/* Cards de lucro/prejuízo destacados */
+.profit-loss-card {
+    border: 2px solid;
+    position: relative;
+    overflow: hidden;
+}
+
+.profit-loss-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.profit-card {
+    border-color: #10b981;
+    background: linear-gradient(to bottom, #f0fdf4 0%, rgb(231, 231, 231) 10%);
+}
+
+.profit-card::before {
+    background: #10b981;
+}
+
+.loss-card {
+    border-color: #ef4444;
+    background: linear-gradient(to bottom, #fef2f2 0%, rgb(231, 231, 231) 10%);
+}
+
+.loss-card::before {
+    background: #ef4444;
+}
+
+.add-transaction-btn {
+    background: rgb(9, 55, 164);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: transform 0.3s;
+}
+
+.add-transaction-btn:hover {
+    transform: scale(1.05);
+}
+
+.reset-portfolio-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: transform 0.3s, background 0.3s;
+}
+
+.reset-portfolio-btn:hover {
+    transform: scale(1.05);
+    background: #c82333;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.holdings-section {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.holdings-section h1,
+.holdings-section h2,
+.holdings-section h3,
+.holdings-section span,
+.holdings-section p,
+.holdings-section td,
+.holdings-section th {
+    color: black !important;
+}
+
+.holdings-section h2 {
+    margin-top: 0;
+    color: black;
+    text-align: left;
+}
+
+.holdings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.holdings-table th {
+    text-align: left;
+    padding: 12px;
+    background: rgb(231, 231, 231);
+    color: black;
+    font-weight: 600;
+    border-bottom: 2px solid #ddd;
+}
+
+.holdings-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    color: black;
+}
+
+.holdings-table tr:hover {
+    background: #e7e7e7;
+}
+
+.price-change {
+    text-decoration: none !important;
+    display: inline-block;
+}
+
+.price-change[data-change="positive"] {
+    color: #0f5132;
+}
+
+.price-change[data-change="negative"] {
+    color: #842029;
+}
+
+.transactions-section {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.transactions-section h1,
+.transactions-section h2,
+.transactions-section h3,
+.transactions-section span,
+.transactions-section p {
+    color: black !important;
+}
+
+.transactions-section h2 {
+    margin-top: 0;
+    color: black;
+    text-align: left;
+}
+
+.transaction-item {
+    padding: 15px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transaction-item * {
+    color: black !important;
+}
+
+.transaction-item:last-child {
+    border-bottom: none;
+}
+
+.transaction-type {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.85em;
+}
+
+.transaction-type.buy {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.transaction-type.sell {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.modal-content h1,
+.modal-content h2,
+.modal-content h3,
+.modal-content span,
+.modal-content p,
+.modal-content label {
+    color: black !important;
+}
+
+.modal-content h2 {
+    color: black;
+    text-align: center;
+    margin-top: 0;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: black;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.3s;
+}
+
+.btn-primary {
+    background: rgb(9, 55, 164);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: rgb(7, 45, 140);
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+}
+
+.chart-container {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.chart-container h1,
+.chart-container h2,
+.chart-container h3,
+.chart-container span,
+.chart-container p {
+    color: black !important;
+}
+
+.chart-container h2 {
+    margin-top: 0;
+    color: black;
+    text-align: left;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #666 !important;
+}
+
+.empty-state * {
+    color: #666 !important;
+}
+
+.empty-state p {
+    margin: 10px 0;
+    color: #666;
+}
+

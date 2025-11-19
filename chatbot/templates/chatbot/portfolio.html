@@ -1,0 +1,640 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Carteira Virtual - Investichat{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'chatbot.css' %}">
+<link rel="stylesheet" href="{% static 'portfolio.css' %}">
+{% endblock %}
+
+{% block header_id %}account-header{% endblock %}
+{% block logo_id %}account-logo{% endblock %}
+
+{% block content %}
+<div class="portfolio-container">
+    <div class="portfolio-header">
+        <h1>Minha Carteira Virtual</h1>
+        
+        <!-- Card destacado de Lucro/Prejuízo -->
+        <div class="profit-loss-highlight {% if total_profit_loss >= 0 %}profit-highlight{% else %}loss-highlight{% endif %}">
+            <div class="highlight-icon">
+            </div>
+            <div class="highlight-content">
+                <div class="highlight-label">Resultado Total</div>
+                <div class="highlight-value">
+                    <span class="highlight-amount {% if total_profit_loss >= 0 %}profit{% else %}loss{% endif %}">
+                        {% if total_profit_loss >= 0 %}+{% else %}-{% endif %}$ <span id="highlight-profit-loss">{% if total_profit_loss >= 0 %}{{ total_profit_loss|floatformat:2 }}{% else %}{{ total_profit_loss|floatformat:2|slice:"1:" }}{% endif %}</span>
+                    </span>
+                    <span class="highlight-percent {% if total_profit_loss_percent >= 0 %}profit{% else %}loss{% endif %}">
+                        ({% if total_profit_loss_percent >= 0 %}+{% else %}-{% endif %}<span id="highlight-profit-loss-percent">{% if total_profit_loss_percent >= 0 %}{{ total_profit_loss_percent|floatformat:2 }}{% else %}{{ total_profit_loss_percent|floatformat:2|slice:"1:" }}{% endif %}</span>%)
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="portfolio-stats">
+            <div class="stat-card">
+                <div class="stat-label">Valor Total</div>
+                <div class="stat-value">$ <span id="total-value">{{ total_value|floatformat:2 }}</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Investido</div>
+                <div class="stat-value">$ <span id="total-cost">{{ total_cost|floatformat:2 }}</span></div>
+            </div>
+            <div class="stat-card profit-loss-card {% if total_profit_loss >= 0 %}profit-card{% else %}loss-card{% endif %}">
+                <div class="stat-label">
+                    {% if total_profit_loss >= 0 %}
+                        Lucro
+                    {% else %}
+                        Prejuízo
+                    {% endif %}
+                </div>
+                <div class="stat-value {% if total_profit_loss >= 0 %}profit{% else %}loss{% endif %}">
+                    {% if total_profit_loss >= 0 %}+{% else %}-{% endif %}$ <span id="total-profit-loss">{% if total_profit_loss >= 0 %}{{ total_profit_loss|floatformat:2 }}{% else %}{{ total_profit_loss|floatformat:2|slice:"1:" }}{% endif %}</span>
+                </div>
+            </div>
+            <div class="stat-card profit-loss-card {% if total_profit_loss_percent >= 0 %}profit-card{% else %}loss-card{% endif %}">
+                <div class="stat-label">Rentabilidade</div>
+                <div class="stat-value {% if total_profit_loss_percent >= 0 %}profit{% else %}loss{% endif %}">
+                    {% if total_profit_loss_percent >= 0 %}+{% else %}-{% endif %}<span id="total-profit-loss-percent">{% if total_profit_loss_percent >= 0 %}{{ total_profit_loss_percent|floatformat:2 }}{% else %}{{ total_profit_loss_percent|floatformat:2|slice:"1:" }}{% endif %}</span>%
+                </div>
+            </div>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button class="add-transaction-btn" onclick="openModal()">+ Adicionar Transação</button>
+            <button class="reset-portfolio-btn" onclick="openResetModal()">Resetar Carteira</button>
+        </div>
+    </div>
+    
+    <div class="chart-container">
+        <h2>Evolução da Carteira</h2>
+        <div style="position: relative; height: 400px; width: 100%;">
+            <canvas id="portfolioChart"></canvas>
+        </div>
+    </div>
+    
+    <div class="holdings-section">
+        <h2>Posições Atuais</h2>
+        {% if holdings %}
+        <table class="holdings-table">
+            <thead>
+                <tr>
+                    <th>Ativo</th>
+                    <th>Quantidade</th>
+                    <th>Preço Médio</th>
+                    <th>Preço Atual</th>
+                    <th>Valor Atual</th>
+                    <th>Lucro/Prejuízo</th>
+                    <th>Rentabilidade</th>
+                </tr>
+            </thead>
+            <tbody id="holdings-tbody">
+                {% for holding in holdings %}
+                <tr>
+                    <td><strong>{{ holding.symbol }}</strong></td>
+                    <td>{{ holding.quantity|floatformat:2 }}</td>
+                    <td>$ {{ holding.avg_price|floatformat:2 }}</td>
+                    <td>
+                        $ {{ holding.current_price|floatformat:2 }} 
+                        <span class="price-change" data-change="{% if holding.change_percent|slice:'1' == '-' %}negative{% else %}positive{% endif %}">
+                            ({{ holding.change_percent }})
+                        </span>
+                    </td>
+                    <td>$ {{ holding.current_value|floatformat:2 }}</td>
+                    <td class="{% if holding.profit_loss >= 0 %}profit{% else %}loss{% endif %}">
+                        $ {{ holding.profit_loss|floatformat:2 }}
+                    </td>
+                    <td class="{% if holding.profit_loss_percent >= 0 %}profit{% else %}loss{% endif %}">
+                        {{ holding.profit_loss_percent|floatformat:2 }}%
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <p>Você ainda não possui ativos em sua carteira.</p>
+            <p>Adicione sua primeira transação para começar!</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="transactions-section">
+        <h2>Histórico de Transações</h2>
+        {% if transactions %}
+        <div id="transactions-list">
+            {% for transaction in transactions %}
+            <div class="transaction-item">
+                <div>
+                    <span class="transaction-type {% if transaction.transaction_type == 'BUY' %}buy{% else %}sell{% endif %}">
+                        {{ transaction.get_transaction_type_display }}
+                    </span>
+                    <strong style="margin-left: 10px;">{{ transaction.symbol }}</strong>
+                        <span style="margin-left: 10px;">{{ transaction.quantity|floatformat:2 }} unidades a ${{ transaction.price|floatformat:2 }}</span>
+                    {% if transaction.notes %}
+                    <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 0.9em;">{{ transaction.notes }}</p>
+                    {% endif %}
+                </div>
+                <div style="color: #666; font-size: 0.9em;">
+                    {{ transaction.created_at|date:"d/m/Y H:i" }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p>Nenhuma transação registrada ainda.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal para adicionar transação -->
+<div id="transactionModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Nova Transação</h2>
+        <form id="transactionForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="symbol">Símbolo do Ativo *</label>
+                <input type="text" id="symbol" name="symbol" required placeholder="Ex: AAPL, MSFT, TSLA" style="text-transform: uppercase;">
+            </div>
+            <div class="form-group">
+                <label for="transaction_type">Tipo de Transação *</label>
+                <select id="transaction_type" name="transaction_type" required>
+                    <option value="BUY">Compra</option>
+                    <option value="SELL">Venda</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Quantidade *</label>
+                <input type="number" id="quantity" name="quantity" step="0.01" min="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Preço Unitário (USD) *</label>
+                <input type="number" id="price" name="price" step="0.01" min="0.01" required>
+                <small id="price-hint" style="color: #666; font-size: 0.85em; display: block; margin-top: 5px;">
+                    O preço será preenchido automaticamente quando você inserir o símbolo
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="notes">Notas (opcional)</label>
+                <textarea id="notes" name="notes" placeholder="Adicione observações sobre esta transação..."></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Adicionar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal para confirmar reset da carteira -->
+<div id="resetModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeResetModal()">&times;</span>
+        <h2>Resetar Carteira Virtual</h2>
+        <p style="color: #842029; font-weight: 600; margin: 20px 0; text-align: center;">
+            ⚠️ Atenção: Esta ação não pode ser desfeita!
+        </p>
+        <p style="text-align: center;">
+            Ao resetar sua carteira, todas as transações e histórico serão permanentemente deletados.
+            Você tem certeza que deseja continuar?
+        </p>
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeResetModal()">Cancelar</button>
+            <button type="button" class="btn btn-danger" onclick="confirmReset()">Sim, Resetar Carteira</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+    // Modal functions
+    function openModal() {
+        document.getElementById('transactionModal').style.display = 'block';
+    }
+    
+    function closeModal() {
+        document.getElementById('transactionModal').style.display = 'none';
+        document.getElementById('transactionForm').reset();
+        document.getElementById('price-hint').textContent = 'O preço será preenchido automaticamente quando você inserir o símbolo';
+        document.getElementById('price-hint').style.color = '#666';
+    }
+    
+    // Busca preço automaticamente quando o símbolo é inserido
+    let priceFetchTimeout;
+    
+    document.getElementById('symbol').addEventListener('input', function() {
+        const symbol = this.value.toUpperCase().trim();
+        const priceInput = document.getElementById('price');
+        const priceHint = document.getElementById('price-hint');
+        
+        // Limpa timeout anterior
+        clearTimeout(priceFetchTimeout);
+        
+        // Se o símbolo tem pelo menos 1 caractere, busca o preço após 500ms de inatividade
+        if (symbol.length >= 1) {
+            priceHint.textContent = 'Buscando preço...';
+            priceHint.style.color = '#666';
+            
+            priceFetchTimeout = setTimeout(async function() {
+                try {
+                    // Constrói a URL do endpoint
+                    const url = `/chatbot/portfolio/stock-price/${symbol}/`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        priceInput.value = data.price.toFixed(2);
+                        priceHint.textContent = `Preço atual: $${data.price.toFixed(2)} (${data.change_percent})`;
+                        priceHint.style.color = '#10b981';
+                    } else {
+                        priceInput.value = '';
+                        priceHint.textContent = data.message || 'Símbolo não encontrado';
+                        priceHint.style.color = '#ef4444';
+                    }
+                } catch (error) {
+                    priceInput.value = '';
+                    priceHint.textContent = 'Erro ao buscar preço. Você pode inserir manualmente.';
+                    priceHint.style.color = '#ef4444';
+                }
+            }, 500); // Aguarda 500ms após o usuário parar de digitar
+        } else {
+            priceInput.value = '';
+            priceHint.textContent = 'O preço será preenchido automaticamente quando você inserir o símbolo';
+            priceHint.style.color = '#666';
+        }
+    });
+    
+    function openResetModal() {
+        document.getElementById('resetModal').style.display = 'block';
+    }
+    
+    function closeResetModal() {
+        document.getElementById('resetModal').style.display = 'none';
+    }
+    
+    async function confirmReset() {
+        if (!confirm('Tem certeza absoluta que deseja resetar sua carteira? Esta ação não pode ser desfeita!')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch('{% url "reset_portfolio" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                alert(data.message);
+                closeResetModal();
+                location.reload();
+            } else {
+                alert('Erro: ' + data.message);
+            }
+        } catch (error) {
+            alert('Erro ao resetar carteira: ' + error.message);
+        }
+    }
+    
+    window.onclick = function(event) {
+        const transactionModal = document.getElementById('transactionModal');
+        const resetModal = document.getElementById('resetModal');
+        if (event.target == transactionModal) {
+            closeModal();
+        }
+        if (event.target == resetModal) {
+            closeResetModal();
+        }
+    }
+    
+    // Form submission
+    document.getElementById('transactionForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            symbol: document.getElementById('symbol').value.toUpperCase().trim(),
+            transaction_type: document.getElementById('transaction_type').value,
+            quantity: parseFloat(document.getElementById('quantity').value),
+            price: parseFloat(document.getElementById('price').value),
+            notes: document.getElementById('notes').value
+        };
+        
+        try {
+            const response = await fetch('{% url "add_transaction" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                alert(data.message);
+                closeModal();
+                location.reload();
+            } else {
+                alert('Erro: ' + data.message);
+            }
+        } catch (error) {
+            alert('Erro ao adicionar transação: ' + error.message);
+        }
+    });
+    
+    // Chart initialization
+    let portfolioChart = null;
+    
+    // Função para formatar data
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('pt-BR', { 
+            day: '2-digit', 
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+    
+    // Função para formatar valor monetário
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(value);
+    }
+    
+    async function loadChart() {
+        try {
+            const response = await fetch('{% url "get_portfolio_history" %}');
+            const data = await response.json();
+            
+            console.log('Dados do histórico:', data); // Debug
+            
+            if (data.status === 'success' && data.data && data.data.length > 0) {
+                const ctx = document.getElementById('portfolioChart').getContext('2d');
+                // Os dados já vêm ordenados do mais antigo para o mais recente (order_by('created_at'))
+                const historyData = data.data;
+                
+                const labels = historyData.map(item => formatDate(item.date));
+                const values = historyData.map(item => item.total_value);
+                const costs = historyData.map(item => item.total_cost);
+                const profitLoss = historyData.map(item => item.profit_loss);
+                
+                if (portfolioChart) {
+                    portfolioChart.destroy();
+                }
+                
+                portfolioChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Valor Total',
+                            data: values,
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 3,
+                            pointHoverRadius: 5,
+                            pointBackgroundColor: '#667eea',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
+                        }, {
+                            label: 'Investido',
+                            data: costs,
+                            borderColor: '#6b7280',
+                            backgroundColor: 'rgba(107, 114, 128, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 3,
+                            pointHoverRadius: 5,
+                            pointBackgroundColor: '#6b7280',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
+                        }, {
+                            label: 'Lucro/Prejuízo',
+                            data: profitLoss,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: false,
+                            pointRadius: 3,
+                            pointHoverRadius: 5,
+                            pointBackgroundColor: profitLoss.map(v => v >= 0 ? '#10b981' : '#ef4444'),
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            borderDash: [5, 5]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 15,
+                                    font: {
+                                        size: 12,
+                                        weight: '500'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12,
+                                titleFont: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                bodyFont: {
+                                    size: 13
+                                },
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += formatCurrency(context.parsed.y);
+                                        
+                                        // Adiciona percentual de lucro/prejuízo se disponível
+                                        if (context.dataset.label === 'Lucro/Prejuízo' && context.raw !== null) {
+                                            const index = context.dataIndex;
+                                            const totalCost = costs[index];
+                                            if (totalCost > 0) {
+                                                const percent = ((context.parsed.y / totalCost) * 100).toFixed(2);
+                                                label += ` (${percent >= 0 ? '+' : ''}${percent}%)`;
+                                            }
+                                        }
+                                        
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: true,
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 45,
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            },
+                            y: {
+                                beginAtZero: false,
+                                grid: {
+                                    display: true,
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatCurrency(value);
+                                    },
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeInOutQuart'
+                        }
+                    }
+                });
+            } else {
+                // Se não houver dados, mostra mensagem
+                const ctx = document.getElementById('portfolioChart').getContext('2d');
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                ctx.font = '16px Arial';
+                ctx.fillStyle = '#666';
+                ctx.textAlign = 'center';
+                ctx.fillText('Não há dados históricos disponíveis ainda.', ctx.canvas.width / 2, ctx.canvas.height / 2);
+            }
+        } catch (error) {
+            console.error('Erro ao carregar gráfico:', error);
+            const ctx = document.getElementById('portfolioChart').getContext('2d');
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            ctx.font = '16px Arial';
+            ctx.fillStyle = '#ef4444';
+            ctx.textAlign = 'center';
+            ctx.fillText('Erro ao carregar gráfico. Tente recarregar a página.', ctx.canvas.width / 2, ctx.canvas.height / 2);
+        }
+    }
+    
+    // Auto-refresh portfolio data every 60 seconds
+    setInterval(async function() {
+        try {
+            const response = await fetch('{% url "get_portfolio_data" %}');
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                // Update totals
+                document.getElementById('total-value').textContent = data.data.total_value.toFixed(2);
+                document.getElementById('total-cost').textContent = data.data.total_cost.toFixed(2);
+                
+                // Update profit/loss with sign
+                const profitLoss = data.data.total_profit_loss;
+                const profitLossPercent = data.data.total_profit_loss_percent;
+                
+                document.getElementById('total-profit-loss').textContent = Math.abs(profitLoss).toFixed(2);
+                document.getElementById('total-profit-loss-percent').textContent = Math.abs(profitLossPercent).toFixed(2);
+                
+                // Update highlight card
+                document.getElementById('highlight-profit-loss').textContent = Math.abs(profitLoss).toFixed(2);
+                document.getElementById('highlight-profit-loss-percent').textContent = Math.abs(profitLossPercent).toFixed(2);
+                
+                // Update card classes and icons based on profit/loss
+                const isProfit = profitLoss >= 0;
+                const highlightCard = document.querySelector('.profit-loss-highlight');
+                const profitCards = document.querySelectorAll('.profit-loss-card');
+                
+                if (isProfit) {
+                    highlightCard.className = 'profit-loss-highlight profit-highlight';
+                    highlightCard.querySelector('.highlight-icon').textContent = '';
+                    profitCards.forEach(card => {
+                        card.className = 'stat-card profit-loss-card profit-card';
+                        const label = card.querySelector('.stat-label');
+                        if (label && !label.textContent.includes('Rentabilidade')) {
+                            label.textContent = 'Lucro';
+                        }
+                    });
+                } else {
+                    highlightCard.className = 'profit-loss-highlight loss-highlight';
+                    highlightCard.querySelector('.highlight-icon').textContent = '';
+                    profitCards.forEach(card => {
+                        card.className = 'stat-card profit-loss-card loss-card';
+                        const label = card.querySelector('.stat-label');
+                        if (label && !label.textContent.includes('Rentabilidade')) {
+                            label.textContent = 'Prejuízo';
+                        }
+                    });
+                }
+                
+                // Update holdings table
+                const tbody = document.getElementById('holdings-tbody');
+                if (tbody && data.data.holdings.length > 0) {
+                    tbody.innerHTML = data.data.holdings.map(holding => `
+                        <tr>
+                            <td><strong>${holding.symbol}</strong></td>
+                            <td>${holding.quantity.toFixed(2)}</td>
+                            <td>$ ${holding.avg_price.toFixed(2)}</td>
+                            <td>
+                                $ ${holding.current_price.toFixed(2)} 
+                                <span class="price-change" data-change="${holding.change_percent.startsWith('-') ? 'negative' : 'positive'}">
+                                    (${holding.change_percent})
+                                </span>
+                            </td>
+                            <td>$ ${holding.current_value.toFixed(2)}</td>
+                            <td class="${holding.profit_loss >= 0 ? 'profit' : 'loss'}">
+                                $ ${holding.profit_loss.toFixed(2)}
+                            </td>
+                            <td class="${holding.profit_loss_percent >= 0 ? 'profit' : 'loss'}">
+                                ${holding.profit_loss_percent.toFixed(2)}%
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar dados:', error);
+        }
+    }, 60000);
+    
+    // Load chart on page load
+    loadChart();
+</script>
+{% endblock %}
+
