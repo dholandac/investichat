@@ -1,0 +1,514 @@
+/* ========================================
+   SIDEBAR NAVIGATION - Isolated Styles
+   ======================================== */
+
+/* Critical: Override universal selectors from base.css and other page styles */
+* #main-sidebar,
+* #main-sidebar * {
+    text-align: left !important;
+    justify-content: flex-start !important;
+}
+
+#main-sidebar {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    height: 100vh !important;
+    background: #1a1f2e !important;
+    color: #ffffff !important;
+    display: flex !important;
+    flex-direction: column !important;
+    z-index: 9999 !important;
+    transition: width 0.3s ease !important;
+    overflow: hidden !important;
+    border-top-right-radius: 16px !important;
+    border-bottom-right-radius: 16px !important;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3) !important;
+    text-align: left !important;
+    width: 64px !important;
+}
+
+#main-sidebar * {
+    text-align: left !important;
+}
+
+#main-sidebar .nav-item,
+#main-sidebar .nav-text,
+#main-sidebar .logo-text,
+#main-sidebar .profile-name,
+#main-sidebar .profile-email,
+#main-sidebar .sidebar-profile,
+#main-sidebar .sidebar-logo {
+    text-align: left !important;
+}
+
+#main-sidebar .sidebar-toggle-btn,
+#main-sidebar .sidebar-close-btn,
+#main-sidebar .profile-menu-btn {
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+#main-sidebar .sidebar-header,
+#main-sidebar .sidebar-nav,
+#main-sidebar .sidebar-footer {
+    justify-content: flex-start !important;
+}
+
+#main-sidebar.collapsed {
+    width: 64px !important;
+}
+
+#main-sidebar.expanded {
+    width: 260px !important;
+}
+
+/* Sidebar Header */
+#main-sidebar .sidebar-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 16px 12px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    min-height: 64px !important;
+    position: relative !important;
+    overflow: visible !important;
+}
+
+#main-sidebar .sidebar-logo {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+}
+
+#main-sidebar .logo-text {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    opacity: 0 !important;
+    transition: opacity 0.2s !important;
+    display: none !important;
+    text-align: left !important;
+}
+
+#main-sidebar.expanded .logo-text {
+    opacity: 1 !important;
+    display: block !important;
+}
+
+#main-sidebar .sidebar-toggle-btn {
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+    background: transparent !important;
+    border: none !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    padding: 8px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background 0.2s !important;
+    flex-shrink: 0 !important;
+    z-index: 10001 !important;
+}
+
+#main-sidebar .sidebar-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Sidebar Navigation */
+#main-sidebar .sidebar-nav {
+    flex: 1 !important;
+    padding: 8px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    justify-content: flex-start !important;
+}
+
+#main-sidebar .nav-item {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    padding: 12px !important;
+    margin-bottom: 4px !important;
+    border-radius: 8px !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    text-decoration: none !important;
+    transition: all 0.2s !important;
+    position: relative !important;
+    white-space: nowrap !important;
+    text-align: left !important;
+}
+
+#main-sidebar .nav-item:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+#main-sidebar .nav-item.active {
+    background: rgba(99, 102, 241, 0.2) !important;
+    color: #818cf8 !important;
+}
+
+/* Ensure active state is visible - override any other color rules */
+#main-sidebar .nav-item.active,
+#main-sidebar .nav-item.active *,
+#main-sidebar .nav-item.active .nav-text,
+#main-sidebar .nav-item.active .nav-icon,
+body #main-sidebar .nav-item.active,
+html #main-sidebar .nav-item.active {
+    color: #818cf8 !important;
+}
+
+#main-sidebar .nav-item.active .nav-icon {
+    stroke: #818cf8 !important;
+    color: #818cf8 !important;
+}
+
+#main-sidebar .nav-icon {
+    flex-shrink: 0 !important;
+    stroke: currentColor !important;
+}
+
+#main-sidebar .nav-text {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    opacity: 0 !important;
+    transition: opacity 0.2s !important;
+    overflow: hidden !important;
+    text-align: left !important;
+}
+
+#main-sidebar.expanded .nav-text {
+    opacity: 1 !important;
+}
+
+/* Collapsed state tooltip */
+#main-sidebar.collapsed .nav-item:hover::after {
+    content: attr(data-tooltip) !important;
+    position: absolute !important;
+    left: 100% !important;
+    margin-left: 12px !important;
+    padding: 8px 12px !important;
+    background: #1a1f2e !important;
+    color: #ffffff !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+    z-index: 10000 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    pointer-events: none !important;
+    text-align: left !important;
+}
+
+/* Sidebar Footer */
+#main-sidebar .sidebar-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 12px !important;
+    justify-content: flex-start !important;
+}
+
+
+/* Sidebar Profile */
+#main-sidebar .sidebar-profile {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px !important;
+    border-radius: 8px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    transition: background 0.2s !important;
+    justify-content: flex-start !important;
+}
+
+#main-sidebar .sidebar-profile:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+#main-sidebar .profile-avatar {
+    position: relative !important;
+    flex-shrink: 0 !important;
+}
+
+#main-sidebar .avatar-circle {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    background: rgba(99, 102, 241, 0.2) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #818cf8 !important;
+}
+
+#main-sidebar .status-dot {
+    position: absolute !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    width: 12px !important;
+    height: 12px !important;
+    background: #10b981 !important;
+    border: 2px solid #1a1f2e !important;
+    border-radius: 50% !important;
+}
+
+#main-sidebar .profile-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+    opacity: 0 !important;
+    transition: opacity 0.2s !important;
+    overflow: hidden !important;
+    text-align: left !important;
+}
+
+#main-sidebar.expanded .profile-info {
+    opacity: 1 !important;
+}
+
+#main-sidebar .profile-name {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: left !important;
+}
+
+#main-sidebar .profile-email {
+    font-size: 12px !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: left !important;
+}
+
+#main-sidebar .profile-menu-btn {
+    background: transparent !important;
+    border: none !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    cursor: pointer !important;
+    padding: 4px !important;
+    border-radius: 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s !important;
+    flex-shrink: 0 !important;
+    opacity: 0 !important;
+}
+
+#main-sidebar.expanded .profile-menu-btn {
+    opacity: 1 !important;
+}
+
+#main-sidebar .profile-menu-btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+/* Sidebar is overlay - no body adjustments needed */
+
+/* Scrollbar for sidebar */
+#main-sidebar .sidebar-nav::-webkit-scrollbar {
+    width: 4px !important;
+}
+
+#main-sidebar .sidebar-nav::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+#main-sidebar .sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-radius: 2px !important;
+}
+
+#main-sidebar .sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Sidebar is overlay - no layout adjustments needed for headers and containers */
+
+/* Force consistency across all pages - override any page-specific styles */
+#main-sidebar,
+#main-sidebar *,
+#main-sidebar *::before,
+#main-sidebar *::after {
+    box-sizing: border-box !important;
+}
+
+/* Ensure sidebar maintains its appearance regardless of page styles */
+body #main-sidebar,
+html #main-sidebar {
+    font-family: 'Poppins', Arial, sans-serif !important;
+}
+
+/* Override any universal selectors that might affect sidebar */
+body * #main-sidebar,
+html * #main-sidebar,
+* #main-sidebar {
+    text-align: left !important;
+    justify-content: flex-start !important;
+}
+
+/* Ensure sidebar is not affected by page-specific universal styles */
+body #main-sidebar *,
+html #main-sidebar * {
+    text-align: left !important;
+    color: inherit !important;
+}
+
+/* Force white text color for all sidebar text elements - highest priority */
+body #main-sidebar,
+html #main-sidebar,
+body #main-sidebar *,
+html #main-sidebar *,
+* #main-sidebar,
+* #main-sidebar * {
+    color: inherit !important;
+}
+
+/* Specific color overrides for all text elements - force white */
+#main-sidebar .nav-item,
+#main-sidebar .nav-text,
+#main-sidebar .logo-text,
+#main-sidebar .profile-name,
+#main-sidebar .profile-email,
+#main-sidebar .sidebar-profile,
+#main-sidebar .sidebar-logo,
+#main-sidebar a,
+#main-sidebar span,
+#main-sidebar div,
+#main-sidebar p {
+    color: inherit !important;
+}
+
+/* CRITICAL: Force white text for all sidebar elements - override page-specific styles like account.css */
+/* These rules have maximum specificity to override any page CSS */
+body #main-sidebar,
+html #main-sidebar,
+body #main-sidebar *,
+html #main-sidebar *,
+* #main-sidebar,
+* #main-sidebar * {
+    color: inherit !important;
+}
+
+/* Explicit white color for base sidebar */
+#main-sidebar {
+    color: #ffffff !important;
+}
+
+/* Force white colors for specific text elements - override account.css and other page styles */
+#main-sidebar .nav-item {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+#main-sidebar .nav-item:hover {
+    color: #ffffff !important;
+}
+
+#main-sidebar .nav-text {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+#main-sidebar.expanded .nav-text {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+#main-sidebar .logo-text {
+    color: #ffffff !important;
+}
+
+#main-sidebar.expanded .logo-text {
+    color: #ffffff !important;
+}
+
+#main-sidebar .profile-name {
+    color: #ffffff !important;
+}
+
+#main-sidebar .profile-email {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Override any page-specific color rules for sidebar elements (like account.css) */
+/* These rules ensure sidebar text is always white, even when page CSS sets color: black */
+body #main-sidebar h1,
+body #main-sidebar h2,
+body #main-sidebar h3,
+body #main-sidebar strong,
+body #main-sidebar span,
+body #main-sidebar div,
+body #main-sidebar a,
+html #main-sidebar h1,
+html #main-sidebar h2,
+html #main-sidebar h3,
+html #main-sidebar strong,
+html #main-sidebar span,
+html #main-sidebar div,
+html #main-sidebar a {
+    color: inherit !important;
+}
+
+/* CRITICAL: Force white text color for all sidebar elements - highest priority */
+/* This overrides any page-specific color rules (like account.css) */
+body #main-sidebar,
+html #main-sidebar,
+body #main-sidebar *,
+html #main-sidebar *,
+* #main-sidebar,
+* #main-sidebar *,
+#main-sidebar *,
+#main-sidebar span,
+#main-sidebar div,
+#main-sidebar a,
+#main-sidebar p,
+#main-sidebar label,
+#main-sidebar button,
+#main-sidebar h1,
+#main-sidebar h2,
+#main-sidebar h3,
+#main-sidebar strong {
+    color: inherit !important;
+}
+
+/* Ensure base color is white for sidebar */
+#main-sidebar {
+    color: #ffffff !important;
+}
+
+/* Force specific white colors for text elements */
+#main-sidebar .nav-item {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+#main-sidebar .nav-item:hover {
+    color: #ffffff !important;
+}
+
+#main-sidebar .nav-item.active {
+    color: #818cf8 !important;
+}
+
+#main-sidebar .nav-text {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+#main-sidebar .logo-text {
+    color: #ffffff !important;
+}
+
+#main-sidebar .profile-name {
+    color: #ffffff !important;
+}
+
+#main-sidebar .profile-email {
+    color: rgba(255, 255, 255, 0.6) !important;
+}

@@ -15,7 +15,7 @@ import re
 
 def handler404(request, exception):
     """Handler customizado para erro 404"""
-    return render(request, '404.html', {'show_sidebar': True}, status=404)
+    return render(request, '404.html', {}, status=404)
 
 
 def landing(request):
@@ -247,7 +247,7 @@ def account(request):
         perfilusuario = PerfilUsuario.objects.get(user=request.user)
     except PerfilUsuario.DoesNotExist:
         perfilusuario = None
-    return render(request, 'account.html', {'mensagem': mensagem, 'user': request.user, 'perfilusuario': perfilusuario, 'show_sidebar': True})
+    return render(request, 'account.html', {'mensagem': mensagem, 'user': request.user, 'perfilusuario': perfilusuario})
 
 @login_required(login_url="/auth/login/")
 def questionario_perfil(request):
@@ -350,6 +350,5 @@ def admin_panel(request):
     
     return render(request, 'admin_panel.html', {
         'users_data': users_data,
-        'mensagem': mensagem,
-        'show_sidebar': True
+        'mensagem': mensagem
     })

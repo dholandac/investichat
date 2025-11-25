@@ -17,9 +17,6 @@
         chatMessages: document.getElementById('chat-messages'),
         userInput: document.getElementById('user-input'),
         sendButton: document.getElementById('send-button'),
-        sidebar: document.getElementById('sidebar'),
-        sidebarToggle: document.getElementById('sidebar-toggle'),
-        sidebarClose: document.querySelector('.sidebar-close'),
         dropdownSelected: document.getElementById('dropdown-selected'),
         dropdownList: document.getElementById('dropdown-list'),
         customDropdown: document.getElementById('custom-dropdown'),
@@ -151,25 +148,6 @@
         }
     }
 
-    // ========================================
-    // SIDEBAR: NAVEGAÇÃO
-    // ========================================
-    
-    function setupSidebar() {
-        if (!elements.sidebar) return;
-
-        elements.sidebarToggle?.addEventListener('click', () => {
-            elements.sidebar.classList.remove('sidebar-hidden');
-            elements.sidebar.classList.add('sidebar-visible');
-            elements.sidebarToggle.classList.add('hide-when-sidebar');
-        });
-
-        elements.sidebarClose?.addEventListener('click', () => {
-            elements.sidebar.classList.remove('sidebar-visible');
-            elements.sidebar.classList.add('sidebar-hidden');
-            elements.sidebarToggle?.classList.remove('hide-when-sidebar');
-        });
-    }
 
     // ========================================
     // DROPDOWN: SELEÇÃO DE AÇÕES
@@ -384,7 +362,6 @@
         });
 
         // Setup de componentes
-        setupSidebar();
         setupDropdown();
         setupQuestionnaire();
 

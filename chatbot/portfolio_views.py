@@ -108,7 +108,6 @@ def portfolio_view(request):
             'total_cost': 0,
             'total_profit_loss': 0,
             'total_profit_loss_percent': 0,
-            'show_sidebar': True,
             'error_message': 'Erro ao conectar com a API de cotações. Tente novamente mais tarde.',
         }
         return render(request, 'chatbot/portfolio.html', context)
@@ -152,7 +151,6 @@ def portfolio_view(request):
         'total_cost': total_cost,
         'total_profit_loss': total_profit_loss,
         'total_profit_loss_percent': total_profit_loss_percent,
-        'show_sidebar': True,  # Habilita o sidebar
     }
     
     return render(request, 'chatbot/portfolio.html', context)
