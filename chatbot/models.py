@@ -128,7 +128,9 @@ class Portfolio(models.Model):
 					continue
 			
 			if quote:
-				total_value += quote.current_price * quantity
+				# Converte quantity (Decimal) para float para compatibilidade
+				quantity_float = float(quantity)
+				total_value += quote.current_price * quantity_float
 		
 		return total_value
 	
@@ -136,7 +138,8 @@ class Portfolio(models.Model):
 		"""Calcula o custo total investido (soma de todas as compras)"""
 		total_cost = 0.0
 		for transaction in self.transactions.filter(transaction_type='BUY'):
-			total_cost += transaction.price * transaction.quantity
+			# Converte Decimal para float para compatibilidade
+			total_cost += float(transaction.price) * float(transaction.quantity)
 		return total_cost
 	
 	def get_profit_loss(self):

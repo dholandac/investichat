@@ -5,6 +5,8 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.core.cache import cache
 from django.db import transaction as db_transaction
+from django.utils import timezone
+from datetime import timedelta
 import json
 import os
 import re
@@ -353,7 +355,19 @@ def get_portfolio_history(request):
         snapshots = portfolio.snapshots.all().order_by('created_at')[:30]  # Últimos 30 snapshots
         
         # Se não houver snapshots, cria um atual
+        should_create_snapshot = False
         if not snapshots.exists():
+            should_create_snapshot = True
+        else:
+            # Verifica se passou tempo suficiente desde o último snapshot (6 horas)
+            last_snapshot = snapshots.last()
+            if last_snapshot:
+                time_diff = timezone.now() - last_snapshot.created_at
+                # Cria snapshot se passou mais de 6 horas desde o último
+                if time_diff > timedelta(hours=6):
+                    should_create_snapshot = True
+        
+        if should_create_snapshot:
             try:
                 total_value = portfolio.get_total_value()
                 total_cost = portfolio.get_total_cost()
