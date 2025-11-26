@@ -478,10 +478,9 @@
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
     .portfolio-container {
-        margin-top: 80px;
-        margin-bottom: 100px;
+        margin: 0 !important;
         padding: 16px;
-        width: calc(100% - 32px);
+        width: 100% !important;
         max-width: 100%;
         overflow-x: hidden;
     }
@@ -622,10 +621,9 @@
 
 @media (max-width: 480px) {
     .portfolio-container {
-        margin-top: 70px;
-        margin-bottom: 80px;
+        margin: 0 !important;
         padding: 12px;
-        width: calc(100% - 24px);
+        width: 100% !important;
     }
     
     .portfolio-header {
