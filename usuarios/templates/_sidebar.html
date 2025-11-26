@@ -1,0 +1,63 @@
+{% load static %}
+{% if user.is_authenticated %}
+<!-- Sidebar Navigation -->
+<nav id="main-sidebar" class="sidebar collapsed">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+            <span class="logo-text">Investichat</span>
+        </div>
+        <button class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Toggle sidebar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+    
+    <div class="sidebar-nav">
+        <a href="{% url 'landing' %}" class="nav-item" data-page="home" data-tooltip="Home">
+            <img class="nav-icon" src="{% static 'images/home.png' %}" alt="Home" width="20" height="20">
+            <span class="nav-text">Home</span>
+        </a>
+        
+        <a href="{% url 'chatbot' %}" class="nav-item" data-page="chatbot" data-tooltip="Chatbot">
+            <img class="nav-icon" src="{% static 'images/message.png' %}" alt="Chatbot" width="20" height="20">
+            <span class="nav-text">Chatbot</span>
+        </a>
+        
+        <a href="{% url 'portfolio' %}" class="nav-item" data-page="portfolio" data-tooltip="Carteira">
+            <img class="nav-icon" src="{% static 'images/wallet.png' %}" alt="Carteira" width="20" height="20">
+            <span class="nav-text">Carteira</span>
+        </a>
+        
+        <a href="{% url 'account' %}" class="nav-item" data-page="account" data-tooltip="Conta">
+            <img class="nav-icon" src="{% static 'images/user.png' %}" alt="Conta" width="20" height="20">
+            <span class="nav-text">Conta</span>
+        </a>
+        
+        {% if user.is_staff %}
+        <a href="{% url 'admin_panel' %}" class="nav-item" data-page="admin" data-tooltip="Admin">
+            <img class="nav-icon" src="{% static 'images/admin.png' %}" alt="Admin" width="20" height="20">
+            <span class="nav-text">Admin</span>
+        </a>
+        {% endif %}
+    </div>
+    
+    <div class="sidebar-footer">
+        <div class="sidebar-profile">
+            <div class="profile-avatar">
+                <div class="avatar-circle">
+                    <img src="{% static 'images/user.png' %}" alt="Usuário" width="24" height="24">
+                </div>
+                <span class="status-dot"></span>
+            </div>
+            <div class="profile-info">
+                <div class="profile-name">{{ user.username }}</div>
+                <div class="profile-email">{{ user.email|default:"usuario@investichat.com" }}</div>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endif %}
+

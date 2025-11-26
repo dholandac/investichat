@@ -1,0 +1,124 @@
+{% if user.is_authenticated %}
+<script>
+    // Sidebar Toggle Functionality
+    (function() {
+        const sidebar = document.getElementById('main-sidebar');
+        const toggleBtn = document.getElementById('sidebar-toggle');
+        
+        if (!sidebar || !toggleBtn) return;
+        
+        // Load saved state from localStorage
+        const savedState = localStorage.getItem('sidebarState');
+        if (savedState === 'expanded') {
+            sidebar.classList.remove('collapsed');
+            sidebar.classList.add('expanded');
+        }
+        
+        // Toggle sidebar on button click
+        toggleBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            sidebar.classList.toggle('collapsed');
+            sidebar.classList.toggle('expanded');
+            
+            // Update body class for layout adjustments
+            if (sidebar.classList.contains('expanded')) {
+                document.body.classList.add('sidebar-expanded');
+                document.body.classList.remove('sidebar-collapsed');
+            } else {
+                document.body.classList.add('sidebar-collapsed');
+                document.body.classList.remove('sidebar-expanded');
+            }
+            
+            // Save state to localStorage
+            const isExpanded = sidebar.classList.contains('expanded');
+            localStorage.setItem('sidebarState', isExpanded ? 'expanded' : 'collapsed');
+        });
+        
+        // Set initial body class
+        if (sidebar.classList.contains('expanded')) {
+            document.body.classList.add('sidebar-expanded');
+        } else {
+            document.body.classList.add('sidebar-collapsed');
+        }
+        
+        // Mark active nav item based on current page
+        const currentPath = window.location.pathname;
+        const navItems = sidebar.querySelectorAll('.nav-item');
+        
+        // Remove active class from all items first
+        navItems.forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Map of data-page values to URL patterns (ordered from most specific to least specific)
+        const pagePatterns = {
+            'home': ['', '/'],
+            'chatbot': ['/chatbot/', '/chatbot'],
+            'portfolio': ['/chatbot/portfolio/', '/chatbot/portfolio'],
+            'account': ['/auth/account/', '/auth/account'],
+            'admin': ['/auth/admin-panel/', '/auth/admin-panel']
+        };
+        
+        // Normalize current path
+        const normalizedPath = currentPath.replace(/\/$/, '') || '/';
+        
+        // Find the most specific matching item
+        let bestMatch = null;
+        let bestMatchLength = -1;
+        
+        navItems.forEach(item => {
+            const href = item.getAttribute('href');
+            const dataPage = item.getAttribute('data-page');
+            
+            if (!href || !dataPage) return;
+            
+            // Normalize href
+            const normalizedHref = href.replace(/\/$/, '') || '/';
+            
+            // Check exact match first (highest priority)
+            if (normalizedPath === normalizedHref) {
+                const matchLength = normalizedHref.length;
+                if (matchLength > bestMatchLength) {
+                    bestMatch = item;
+                    bestMatchLength = matchLength;
+                }
+                return;
+            }
+            
+            // Check using page patterns
+            const patterns = pagePatterns[dataPage];
+            if (patterns) {
+                for (const pattern of patterns) {
+                    const normalizedPattern = pattern.replace(/\/$/, '') || '/';
+                    
+                    // Exact pattern match
+                    if (normalizedPath === normalizedPattern) {
+                        const matchLength = normalizedPattern.length;
+                        if (matchLength > bestMatchLength) {
+                            bestMatch = item;
+                            bestMatchLength = matchLength;
+                        }
+                        return;
+                    }
+                    
+                    // For nested routes (like portfolio sub-pages)
+                    // Only match if pattern is not root and path starts with pattern + '/'
+                    if (normalizedPattern !== '/' && normalizedPath.startsWith(normalizedPattern + '/')) {
+                        const matchLength = normalizedPattern.length;
+                        if (matchLength > bestMatchLength) {
+                            bestMatch = item;
+                            bestMatchLength = matchLength;
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Mark only the most specific match as active
+        if (bestMatch) {
+            bestMatch.classList.add('active');
+        }
+    })();
+</script>
+{% endif %}
+
