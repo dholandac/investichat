@@ -351,21 +351,25 @@ def get_portfolio_history(request):
     try:
         portfolio, _ = Portfolio.objects.get_or_create(user=request.user)
         
-        # Busca snapshots existentes
-        snapshots = portfolio.snapshots.all().order_by('created_at')[:30]  # Últimos 30 snapshots
+        # Busca snapshots existentes (sem slice ainda para poder usar métodos da QuerySet)
+        all_snapshots = portfolio.snapshots.all().order_by('created_at')
         
         # Se não houver snapshots, cria um atual
         should_create_snapshot = False
-        if not snapshots.exists():
+        if not all_snapshots.exists():
             should_create_snapshot = True
         else:
             # Verifica se passou tempo suficiente desde o último snapshot (6 horas)
-            last_snapshot = snapshots.last()
+            # Pega o último snapshot antes de fazer o slice
+            last_snapshot = all_snapshots.last()
             if last_snapshot:
                 time_diff = timezone.now() - last_snapshot.created_at
                 # Cria snapshot se passou mais de 6 horas desde o último
                 if time_diff > timedelta(hours=6):
                     should_create_snapshot = True
+        
+        # Agora faz o slice para pegar apenas os últimos 30
+        snapshots = all_snapshots[:30]
         
         if should_create_snapshot:
             try:
@@ -383,8 +387,9 @@ def get_portfolio_history(request):
                         profit_loss=profit_loss,
                         profit_loss_percent=profit_loss_percent
                     )
-                    # Recarrega os snapshots
-                    snapshots = portfolio.snapshots.all().order_by('created_at')[:30]
+                    # Recarrega os snapshots (faz nova query)
+                    all_snapshots = portfolio.snapshots.all().order_by('created_at')
+                    snapshots = all_snapshots[:30]
                 else:
                     # Se não há valor, retorna lista vazia
                     return JsonResponse({

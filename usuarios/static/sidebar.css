@@ -567,16 +567,16 @@ html #main-sidebar *,
     position: fixed !important;
     bottom: 16px !important;
     right: 16px !important;
-    z-index: 9997 !important;
+    z-index: 1 !important; /* Baixo quando não visível para não bloquear */
     background: #000000 !important;
     border: none !important;
     color: #ffffff !important;
     cursor: pointer !important;
-    padding: 12px !important;
+    padding: 0 !important; /* Remove padding para garantir tamanho exato */
     border-radius: 8px !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
     transition: background 0.2s !important;
-    pointer-events: none !important;
+    pointer-events: none !important; /* Desabilitado por padrão */
     width: 48px !important;
     height: 48px !important;
     min-width: 48px !important;
@@ -586,6 +586,9 @@ html #main-sidebar *,
     overflow: hidden !important;
     box-sizing: border-box !important;
     touch-action: manipulation !important;
+    margin: 0 !important; /* Remove qualquer margin */
+    /* Garante que o botão só capture cliques na sua área exata */
+    clip-path: inset(0) !important;
 }
 
 .mobile-menu-btn:hover {
@@ -599,6 +602,8 @@ html #main-sidebar *,
     display: block !important;
     object-fit: contain !important;
     pointer-events: none !important;
+    margin: 12px auto !important; /* Centraliza a imagem dentro do botão */
+    padding: 0 !important;
 }
 
 /* Ensure button only captures clicks on its visible area */
@@ -620,10 +625,12 @@ html #main-sidebar *,
     z-index: 9998 !important;
     opacity: 0 !important;
     transition: opacity 0.3s ease !important;
+    pointer-events: none !important; /* Não bloqueia cliques quando invisível */
 }
 
 .sidebar-overlay.active {
     opacity: 1 !important;
+    pointer-events: auto !important; /* Bloqueia cliques apenas quando visível */
 }
 
 /* Mobile Responsive Styles */
@@ -657,8 +664,8 @@ html #main-sidebar *,
     body .portfolio-container ~ .mobile-menu-btn,
     html .portfolio-container ~ .mobile-menu-btn {
         display: block !important;
-        pointer-events: auto !important;
-        z-index: 9997 !important;
+        pointer-events: auto !important; /* Habilita cliques apenas quando visível */
+        z-index: 10001 !important; /* Alto z-index apenas quando visível - acima de tudo */
         visibility: visible !important;
         opacity: 1 !important;
         position: fixed !important;
@@ -666,6 +673,7 @@ html #main-sidebar *,
         right: 16px !important;
         width: 48px !important;
         height: 48px !important;
+        cursor: pointer !important;
     }
     
     /* Override any portfolio or chatbot CSS that might hide the button */
@@ -675,15 +683,23 @@ html #main-sidebar *,
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
-        z-index: 9997 !important;
+        z-index: 10000 !important;
         position: fixed !important;
+        pointer-events: auto !important;
         width: 48px !important;
         height: 48px !important;
+        cursor: pointer !important;
     }
     
-    /* Show overlay when sidebar is open */
+    /* Show overlay when sidebar is open - mas só bloqueia cliques quando ativo */
     .sidebar-overlay {
         display: block !important;
+        pointer-events: none !important; /* Por padrão não bloqueia */
+    }
+    
+    /* Overlay só bloqueia cliques quando está ativo (sidebar aberta) */
+    .sidebar-overlay.active {
+        pointer-events: auto !important;
     }
     
     /* Hide desktop toggle button on mobile */
@@ -718,14 +734,15 @@ html #main-sidebar *,
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
-        z-index: 9997 !important;
+        z-index: 10001 !important; /* Alto z-index para ficar acima de outros elementos */
         position: fixed !important;
         bottom: 16px !important;
         right: 16px !important;
-        pointer-events: auto !important;
+        pointer-events: auto !important; /* Habilita cliques */
         margin: 0 !important;
         transform: none !important;
         width: 48px !important;
         height: 48px !important;
+        cursor: pointer !important;
     }
 }
