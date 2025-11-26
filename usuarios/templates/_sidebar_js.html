@@ -4,8 +4,66 @@
     (function() {
         const sidebar = document.getElementById('main-sidebar');
         const toggleBtn = document.getElementById('sidebar-toggle');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
         
-        if (!sidebar || !toggleBtn) return;
+        if (!sidebar) return;
+        
+        // Check if we're on mobile
+        const isMobile = () => window.innerWidth <= 768;
+        
+        // Mobile menu functionality
+        if (mobileMenuBtn && sidebarOverlay) {
+            const openMobileSidebar = () => {
+                sidebar.classList.add('mobile-open', 'expanded');
+                sidebar.classList.remove('collapsed');
+                sidebarOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            };
+            
+            const closeMobileSidebar = () => {
+                sidebar.classList.remove('mobile-open', 'expanded');
+                sidebar.classList.add('collapsed');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            };
+            
+            mobileMenuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (sidebar.classList.contains('mobile-open')) {
+                    closeMobileSidebar();
+                } else {
+                    openMobileSidebar();
+                }
+            });
+            
+            sidebarOverlay.addEventListener('click', function() {
+                closeMobileSidebar();
+            });
+            
+            // Close sidebar when clicking on nav items on mobile
+            const navItems = sidebar.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    if (isMobile() && sidebar.classList.contains('mobile-open')) {
+                        closeMobileSidebar();
+                    }
+                });
+            });
+            
+            // Handle window resize
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function() {
+                    if (!isMobile()) {
+                        closeMobileSidebar();
+                    }
+                }, 250);
+            });
+        }
+        
+        if (!toggleBtn) return;
         
         // Load saved state from localStorage
         const savedState = localStorage.getItem('sidebarState');

@@ -61,6 +61,48 @@ input, button {
     filter: invert(1);
 }
 
+/* Responsive: Hide welcome text on smaller screens, keep only icon */
+@media (max-width: 768px) {
+    [id$="-header"] span {
+        /* Hide text using text-indent, but keep icon visible */
+        text-indent: -9999px;
+        overflow: hidden;
+        white-space: nowrap;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    [id$="-header"] #user-icon {
+        float: none;
+        margin-left: 0;
+        margin-right: 0;
+        width: 30px !important;
+        height: 30px !important;
+        display: block !important;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        text-indent: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    [id$="-header"] span {
+        right: 12px;
+        width: 32px;
+        height: 32px;
+    }
+    
+    [id$="-header"] #user-icon {
+        width: 28px !important;
+        height: 28px !important;
+    }
+}
+
 
 .footer-contato {
     user-select: none;

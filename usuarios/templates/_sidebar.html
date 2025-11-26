@@ -1,5 +1,13 @@
 {% load static %}
 {% if user.is_authenticated %}
+<!-- Mobile Menu Button -->
+<button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Abrir menu">
+    <img src="{% static 'images/menu.png' %}" alt="Menu" width="24" height="24">
+</button>
+
+<!-- Sidebar Overlay (for mobile) -->
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
 <!-- Sidebar Navigation -->
 <nav id="main-sidebar" class="sidebar collapsed">
     <div class="sidebar-header">
@@ -7,11 +15,7 @@
             <span class="logo-text">Investichat</span>
         </div>
         <button class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Toggle sidebar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
+            <img src="{% static 'images/menu.png' %}" alt="Toggle menu" width="20" height="20">
         </button>
     </div>
     

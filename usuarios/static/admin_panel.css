@@ -264,37 +264,165 @@
 }
 
 @media (max-width: 768px) {
-    #account-container {
-        width: calc(100% - 16px);
-        padding: 12px 8px;
+    #account-container.admin-panel-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 12px 8px !important;
+        box-sizing: border-box !important;
+    }
+    
+    #account-container.admin-panel-container h1 {
+        font-size: 24px !important;
+        margin-bottom: 16px !important;
+        padding: 0 8px !important;
+    }
+    
+    .admin-stats {
+        padding: 12px !important;
+        margin-bottom: 16px !important;
+        font-size: 14px !important;
+    }
+    
+    .admin-table-container {
+        margin-top: 16px !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        width: 100% !important;
     }
     
     .admin-table {
-        font-size: 11px;
-        min-width: 500px;
+        font-size: 11px !important;
+        min-width: 600px !important;
+        width: 100% !important;
     }
     
-    .admin-table th,
+    .admin-table thead {
+        display: table-header-group !important;
+    }
+    
+    .admin-table th {
+        padding: 10px 6px !important;
+        font-size: 11px !important;
+        white-space: nowrap !important;
+    }
+    
     .admin-table td {
-        padding: 6px 4px;
-        font-size: 11px;
+        padding: 10px 6px !important;
+        font-size: 11px !important;
+        word-break: break-word !important;
+    }
+    
+    .admin-table th:nth-child(1),
+    .admin-table td:nth-child(1) {
+        min-width: 80px !important;
+        max-width: 120px !important;
+    }
+    
+    .admin-table th:nth-child(2),
+    .admin-table td:nth-child(2) {
+        min-width: 120px !important;
+        max-width: 180px !important;
+    }
+    
+    .admin-table th:nth-child(3),
+    .admin-table td:nth-child(3) {
+        min-width: 60px !important;
+        max-width: 80px !important;
+        text-align: center !important;
     }
     
     .admin-table th:nth-child(4),
     .admin-table td:nth-child(4) {
-        font-size: 10px;
+        min-width: 100px !important;
+        max-width: 130px !important;
+        font-size: 10px !important;
+    }
+    
+    .admin-table th:nth-child(5),
+    .admin-table td:nth-child(5) {
+        min-width: 180px !important;
     }
     
     .admin-actions {
-        flex-direction: column;
-        gap: 4px;
-        min-width: 150px;
+        flex-direction: column !important;
+        gap: 6px !important;
+        min-width: 180px !important;
+        align-items: stretch !important;
+    }
+    
+    .admin-actions form {
+        width: 100% !important;
+        flex: 1 1 auto !important;
     }
     
     .admin-btn {
-        width: 100%;
-        font-size: 10px;
-        padding: 6px 8px;
+        width: 100% !important;
+        font-size: 11px !important;
+        padding: 8px 12px !important;
+        min-width: auto !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+    }
+    
+    .admin-message {
+        padding: 10px 12px !important;
+        font-size: 13px !important;
+        margin-bottom: 16px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #account-container.admin-panel-container {
+        padding: 8px 4px !important;
+    }
+    
+    #account-container.admin-panel-container h1 {
+        font-size: 20px !important;
+        margin-bottom: 12px !important;
+        padding: 0 4px !important;
+    }
+    
+    .admin-stats {
+        padding: 10px !important;
+        margin-bottom: 12px !important;
+        font-size: 13px !important;
+    }
+    
+    .admin-table {
+        min-width: 550px !important;
+    }
+    
+    .admin-table th {
+        padding: 8px 4px !important;
+        font-size: 10px !important;
+    }
+    
+    .admin-table td {
+        padding: 8px 4px !important;
+        font-size: 10px !important;
+    }
+    
+    .admin-table th:nth-child(4),
+    .admin-table td:nth-child(4) {
+        font-size: 9px !important;
+    }
+    
+    .admin-actions {
+        min-width: 160px !important;
+        gap: 4px !important;
+    }
+    
+    .admin-btn {
+        font-size: 10px !important;
+        padding: 6px 10px !important;
+    }
+    
+    .admin-message {
+        padding: 8px 10px !important;
+        font-size: 12px !important;
+        margin-bottom: 12px !important;
     }
 }
 

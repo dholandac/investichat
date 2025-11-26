@@ -475,3 +475,210 @@
     color: #666;
 }
 
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .portfolio-container {
+        margin-top: 80px;
+        margin-bottom: 100px;
+        padding: 16px;
+        width: calc(100% - 32px);
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+    
+    .portfolio-header {
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+    
+    .portfolio-header h1 {
+        font-size: 1.5em;
+        margin-bottom: 16px;
+    }
+    
+    .portfolio-stats {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+    }
+    
+    .stat-card {
+        padding: 12px;
+    }
+    
+    .stat-value {
+        font-size: 1.3em;
+    }
+    
+    .profit-loss-highlight {
+        padding: 16px;
+        margin: 16px 0;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .highlight-amount {
+        font-size: 1.8em;
+    }
+    
+    .highlight-percent {
+        font-size: 1.2em;
+    }
+    
+    .add-transaction-btn,
+    .reset-portfolio-btn {
+        padding: 10px 16px;
+        font-size: 0.9em;
+        width: 100%;
+    }
+    
+    .chart-container {
+        padding: 16px;
+        margin-bottom: 16px;
+        overflow-x: hidden;
+    }
+    
+    .holdings-section {
+        padding: 16px;
+        margin-bottom: 16px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .holdings-table {
+        min-width: 600px;
+        width: 100%;
+        display: table;
+    }
+    
+    .holdings-table th,
+    .holdings-table td {
+        padding: 8px 6px;
+        font-size: 0.85em;
+        white-space: nowrap;
+    }
+    
+    .holdings-table th:nth-child(1),
+    .holdings-table td:nth-child(1) {
+        min-width: 60px;
+        max-width: 80px;
+    }
+    
+    .holdings-table th:nth-child(2),
+    .holdings-table td:nth-child(2) {
+        min-width: 80px;
+        max-width: 100px;
+    }
+    
+    .holdings-table th:nth-child(3),
+    .holdings-table td:nth-child(3) {
+        min-width: 100px;
+        max-width: 120px;
+    }
+    
+    .holdings-table th:nth-child(4),
+    .holdings-table td:nth-child(4) {
+        min-width: 100px;
+        max-width: 130px;
+    }
+    
+    .holdings-table th:nth-child(5),
+    .holdings-table td:nth-child(5) {
+        min-width: 100px;
+        max-width: 120px;
+    }
+    
+    .holdings-table th:nth-child(6),
+    .holdings-table td:nth-child(6) {
+        min-width: 100px;
+        max-width: 120px;
+    }
+    
+    .holdings-table th:nth-child(7),
+    .holdings-table td:nth-child(7) {
+        min-width: 80px;
+        max-width: 100px;
+    }
+    
+    .transactions-section {
+        padding: 16px;
+        overflow-x: hidden;
+    }
+    
+    .transaction-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+        margin: 10% auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .portfolio-container {
+        margin-top: 70px;
+        margin-bottom: 80px;
+        padding: 12px;
+        width: calc(100% - 24px);
+    }
+    
+    .portfolio-header {
+        padding: 12px;
+    }
+    
+    .portfolio-header h1 {
+        font-size: 1.3em;
+    }
+    
+    .portfolio-stats {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .stat-value {
+        font-size: 1.2em;
+    }
+    
+    .highlight-amount {
+        font-size: 1.5em;
+    }
+    
+    .highlight-percent {
+        font-size: 1em;
+    }
+    
+    .holdings-section {
+        padding: 12px;
+    }
+    
+    .holdings-table {
+        min-width: 550px;
+    }
+    
+    .holdings-table th,
+    .holdings-table td {
+        padding: 6px 4px;
+        font-size: 0.8em;
+    }
+    
+    .transactions-section {
+        padding: 12px;
+    }
+    
+    .chart-container {
+        padding: 12px;
+    }
+    
+    .modal-content {
+        width: 98%;
+        padding: 16px;
+        margin: 5% auto;
+    }
+}
+
