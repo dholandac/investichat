@@ -1,0 +1,284 @@
+/* Painel de Acessibilidade */
+.accessibility-panel {
+    position: fixed !important;
+    bottom: 80px;
+    right: 20px;
+    z-index: 9999 !important;
+    font-family: 'Poppins', Arial, sans-serif;
+    display: block !important;
+    visibility: visible !important;
+}
+
+.accessibility-toggle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #000000;
+    border: none;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+.accessibility-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+    background: #1a1a1a;
+}
+
+.accessibility-toggle:active {
+    transform: scale(0.95);
+}
+
+.accessibility-toggle img {
+    width: 28px;
+    height: 28px;
+    filter: brightness(0) invert(1);
+    display: block;
+}
+
+.accessibility-menu {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    width: 320px;
+    max-width: calc(100vw - 40px);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
+    z-index: 10000;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.accessibility-header {
+    background: rgb(32, 99, 255);
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.accessibility-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.accessibility-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.accessibility-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.accessibility-content {
+    padding: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.accessibility-option {
+    margin-bottom: 20px;
+}
+
+.accessibility-option:last-child {
+    margin-bottom: 0;
+}
+
+.accessibility-switch {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.accessibility-switch input[type="checkbox"] {
+    display: none;
+}
+
+.slider {
+    position: relative;
+    width: 50px;
+    height: 26px;
+    background-color: #ccc;
+    border-radius: 26px;
+    transition: background-color 0.3s;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: white;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.accessibility-switch input[type="checkbox"]:checked + .slider {
+    background-color: rgb(32, 99, 255);
+}
+
+.accessibility-switch input[type="checkbox"]:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.label-text {
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.accessibility-description {
+    font-size: 12px;
+    color: #666;
+    margin: 4px 0 0 62px;
+    line-height: 1.4;
+}
+
+.accessibility-option label:not(.accessibility-switch) {
+    display: block;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.accessibility-option input[type="range"] {
+    width: 100%;
+    margin: 8px 0;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: #e0e0e0;
+    outline: none;
+}
+
+.accessibility-option input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgb(32, 99, 255);
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.accessibility-option input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgb(32, 99, 255);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.accessibility-option span:not(.slider):not(.label-text) {
+    display: inline-block;
+    margin-left: 8px;
+    font-weight: 500;
+    color: rgb(32, 99, 255);
+    font-size: 14px;
+    min-width: 40px;
+    text-align: right;
+}
+
+.accessibility-btn {
+    width: 100%;
+    padding: 12px;
+    background: rgb(32, 99, 255);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.3s;
+    font-size: 14px;
+}
+
+.accessibility-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(32, 99, 255, 0.4);
+    background: rgb(25, 85, 230);
+}
+
+.accessibility-btn:active {
+    transform: translateY(0);
+}
+
+.accessibility-btn.stop-btn {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.accessibility-btn.stop-btn:hover {
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .accessibility-panel {
+        bottom: 70px;
+        right: 16px;
+        z-index: 9998; /* Abaixo do botão mobile menu */
+    }
+    
+    .accessibility-toggle {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .accessibility-toggle svg {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .accessibility-menu {
+        width: calc(100vw - 32px);
+        max-width: 320px;
+        bottom: 60px;
+    }
+}
+

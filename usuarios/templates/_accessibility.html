@@ -1,0 +1,56 @@
+{% load static %}
+<!-- Aba de Acessibilidade -->
+<div id="accessibility-panel" class="accessibility-panel">
+    <button id="accessibility-toggle" class="accessibility-toggle" aria-label="Abrir painel de acessibilidade" title="Acessibilidade">
+        <img src="{% static 'images/accessibility.png' %}" alt="Acessibilidade" width="28" height="28">
+    </button>
+    
+    <div id="accessibility-menu" class="accessibility-menu" style="display: none;" aria-hidden="true">
+        <div class="accessibility-header">
+            <h3>Acessibilidade</h3>
+            <button id="accessibility-close" class="accessibility-close" aria-label="Fechar painel">×</button>
+        </div>
+        
+        <div class="accessibility-content">
+            <div class="accessibility-option">
+                <label class="accessibility-switch">
+                    <input type="checkbox" id="voice-reader-toggle">
+                    <span class="slider"></span>
+                    <span class="label-text">Leitura de Voz</span>
+                </label>
+                <p class="accessibility-description">Ativa a leitura automática de mensagens do chat e elementos da página</p>
+            </div>
+            
+            <div class="accessibility-option">
+                <label class="accessibility-switch">
+                    <input type="checkbox" id="auto-read-chat-toggle" checked>
+                    <span class="slider"></span>
+                    <span class="label-text">Ler Mensagens do Chat Automaticamente</span>
+                </label>
+                <p class="accessibility-description">Lê automaticamente novas mensagens do chatbot quando recebidas</p>
+            </div>
+            
+            <div class="accessibility-option">
+                <label for="voice-speed">Velocidade da Voz:</label>
+                <input type="range" id="voice-speed" min="0.5" max="2" step="0.1" value="1">
+                <span id="voice-speed-value">1.0x</span>
+            </div>
+            
+            <div class="accessibility-option">
+                <label for="voice-pitch">Tom da Voz:</label>
+                <input type="range" id="voice-pitch" min="0" max="2" step="0.1" value="1">
+                <span id="voice-pitch-value">1.0</span>
+            </div>
+            
+            <div class="accessibility-option">
+                <label for="voice-volume">Volume:</label>
+                <input type="range" id="voice-volume" min="0" max="1" step="0.1" value="1">
+                <span id="voice-volume-value">100%</span>
+            </div>
+            
+            <button id="test-voice-btn" class="accessibility-btn">Testar Voz</button>
+            <button id="stop-voice-btn" class="accessibility-btn stop-btn">Parar Leitura</button>
+        </div>
+    </div>
+</div>
+

@@ -7,6 +7,7 @@
     <title>{% block title %}Investichat{% endblock %}</title>
     <link rel="icon" href="{% static 'images/investichaticon.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'base.css' %}">
+    <link rel="stylesheet" href="{% static 'accessibility.css' %}">
     {% if user.is_authenticated %}
     <link rel="stylesheet" href="{% static 'sidebar.css' %}">
     {% endif %}
@@ -44,6 +45,8 @@
     
     {% block extra_js %}{% endblock %}
     
+    {% include '_accessibility.html' %}
+    <script src="{% static 'accessibility.js' %}" defer></script>
     {% include '_sidebar_js.html' %}
 </body>
 </html>
